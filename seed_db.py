@@ -24,7 +24,7 @@ def main() -> None:
 
     if args.reset:
         _reset()
-        db._initialized = False
+        db._initialized.discard(db.DB_PATH)
         print("reset: removed existing database")
 
     conn = db.connect()  # triggers schema + seed
