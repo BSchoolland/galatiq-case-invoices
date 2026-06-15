@@ -141,6 +141,19 @@ CREATE TABLE IF NOT EXISTS findings (
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+-- The judge's category set: every kind of problem a held invoice has, each rated
+-- 1-10 by importance. Source of truth; invoices.review_category is the denormalized
+-- primary (the highest-importance row), kept for the hot path + the approve guard.
+CREATE TABLE IF NOT EXISTS review_categories (
+    id          INTEGER PRIMARY KEY,
+    invoice_id  INTEGER NOT NULL REFERENCES invoices(id),
+    category    TEXT NOT NULL,                    -- backend/review.py ReviewCategory
+    importance  INTEGER NOT NULL,                 -- 1-10, judge's ranking
+    reason      TEXT NOT NULL DEFAULT '',
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_review_categories_invoice ON review_categories(invoice_id);
+
 -- Per-invoice audit trail: every stage, LLM exchange, tool call, gate decision,
 -- and state transition. Survives across requests (initial run + review resume).
 CREATE TABLE IF NOT EXISTS invoice_trace (

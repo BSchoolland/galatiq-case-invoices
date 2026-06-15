@@ -77,7 +77,8 @@ def build_graph(ctx: RunContext):
         tracing.emit(uow, ctx.invoice_id, "judge", "verdict",
                      {"summary": verdict.summary,
                       "recommendation": (PayDecision.PAY if verdict.pay else PayDecision.HOLD).value,
-                      "category": verdict.review_category.value if verdict.review_category else None,
+                      "categories": [{"category": c.category.value, "importance": c.importance}
+                                     for c in verdict.categories],
                       "level": verdict.level.value})
         return {"verdict": verdict}
 
@@ -100,15 +101,12 @@ def build_graph(ctx: RunContext):
                           "summary": "hard checks passed and the judge cleared it — paying"})
             return {"decision": PayDecision.PAY}
 
-        category = verdict.review_category or (
-            result.suggested_categories[0] if result.suggested_categories else None)
-        if verdict.review_category is None and category is not None:
-            invoices.set_review_category(uow, ctx.invoice_id, category)
+        invoices.ensure_held_categories(uow, ctx.invoice_id, result.suggested_categories)
         invoices.set_status(uow, ctx.invoice_id, Status.NEEDS_REVIEW)
         invoices.set_outcome(uow, ctx.invoice_id, Outcome.NEEDS_REVIEW)
         tracing.emit(uow, ctx.invoice_id, "finalize", "gate",
                      {"outcome": Outcome.NEEDS_REVIEW.value, "summary": verdict.summary,
-                      "category": category.value if category is not None else None,
+                      "categories": [c.category.value for c in verdict.categories],
                       "blocking": result.blocking, "judge_recommended_pay": verdict.pay})
         return {"decision": PayDecision.HOLD}
 

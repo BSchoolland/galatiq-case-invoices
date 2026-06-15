@@ -30,14 +30,27 @@ function fmtQty(q) {
 }
 
 function headChip(inv) {
-  if (inv.review_level === "critical" || inv.review_category === "fraud_suspected")
-    return chip("chip-critical", categoryLabel(inv.review_category) || "Critical");
-  if (inv.status === "needs_review")
-    return chip("chip-review", categoryLabel(inv.review_category) || "Needs review");
+  if (inv.status === "needs_review") {
+    const critical = inv.review_level === "critical" || inv.review_category === "fraud_suspected";
+    return chip(critical ? "chip-critical" : "chip-review", "Needs review");
+  }
   if (inv.status === "paid" || inv.status === "approved") return chip("chip-paid", "Paid");
   if (inv.status === "rejected") return chip("chip-rejected", "Rejected");
   if (ACTIVE.has(inv.status)) return chip("chip-process", "Processing");
   return chip("chip-super", title(inv.status));
+}
+
+// All categories the judge assigned, importance-ordered, each with its 1-10 badge.
+function categoriesStrip(categories) {
+  const cats = categories || [];
+  if (!cats.length) return null;
+  const impClass = (n) => (n >= 8 ? "imp-hi" : n >= 5 ? "imp-mid" : "imp-lo");
+  return el("div", { class: "cat-strip" },
+    el("span", { class: "cat-strip-label" }, "Flagged as"),
+    el("div", { class: "cat-chips" }, ...cats.map((c) =>
+      el("span", { class: "cat-chip" },
+        el("span", { class: "cat-name" }, categoryLabel(c.category)),
+        el("span", { class: "cat-imp " + impClass(c.importance), title: "importance 1–10" }, String(c.importance))))));
 }
 
 // The deterministic layer and the LLM judge can each raise the same code; collapse
@@ -89,6 +102,8 @@ function decisionCard(data) {
 
   const findings = dedupeFindings(data.findings);
   const body = el("div", { class: "card-pad" });
+  const strip = categoriesStrip(data.categories);
+  if (strip) body.append(strip);
   if (findings.length) {
     body.append(
       el("h2", { class: "section-title" }, held ? "Why it is held" : "What the checks found"),

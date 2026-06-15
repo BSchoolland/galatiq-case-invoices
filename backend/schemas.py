@@ -50,12 +50,18 @@ class JudgeConcern(BaseModel):
     message: str = Field(description="one sentence a human reviewer can act on")
 
 
+class JudgeCategory(BaseModel):
+    category: ReviewCategory = Field(description="a kind of problem this invoice has")
+    importance: int = Field(ge=1, le=10, description="1-10: how central this category is to why the invoice is held (10 = the dominant reason)")
+    reason: str = Field(description="one short phrase: why this category applies")
+
+
 class JudgeVerdict(BaseModel):
     """The judge's advisory. It can withhold payment but never authorize past a
     deterministic block — `pay` is read by the gate, it is not a transition."""
     pay: bool = Field(description="True only if you'd be comfortable paying this automatically, no human needed")
-    review_category: ReviewCategory | None = Field(
-        description="single headline reason a human should look; null only when recommending payment with nothing notable")
-    level: Level = Field(description="how alarming a hold is — drives triage, not the decision")
+    categories: list[JudgeCategory] = Field(
+        description="EVERY category that applies, each rated 1-10 by importance. Empty only when recommending payment with nothing notable.")
+    level: Level = Field(description="how alarming the hold is overall — drives triage/urgency, not the decision")
     summary: str = Field(description="plain-English account of what this invoice is and why it lands where it does")
     concerns: list[JudgeConcern] = Field(description="specific qualitative observations behind the verdict")

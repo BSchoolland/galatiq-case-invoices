@@ -1,5 +1,5 @@
 import { apiGet } from "./client.js";
-import { money, relativeTime, statusChip, el, chip } from "./ui.js";
+import { money, relativeTime, statusChip, categoryTags, el, chip } from "./ui.js";
 
 const listEl = document.getElementById("list");
 const ledeEl = document.getElementById("lede");
@@ -9,13 +9,14 @@ let timer = null;
 
 function row(inv) {
   const s = statusChip(inv);
+  const tags = categoryTags(inv.categories, 2, { critical: s.rowClass === "critical" });
   return el("a", { class: ("row " + s.rowClass).trim(), href: `review.html?id=${inv.id}` },
     el("span", { class: "vendor" },
       el("span", { class: "v-name" }, inv.vendor_raw || "(no vendor)"),
       el("span", { class: "v-no tabular" }, inv.invoice_number || `#${inv.id}`)),
     el("span", { class: "status-cell" },
       chip(s.chip.cls, s.chip.label),
-      s.tag ? el("span", { class: s.tag.cls }, s.tag.label) : null),
+      tags.length ? el("span", { class: "cat-tags" }, ...tags) : null),
     el("span", { class: "amount tabular" }, money(inv.stated_total, inv.currency)),
     el("span", { class: "when" }, relativeTime(inv.created_at)));
 }

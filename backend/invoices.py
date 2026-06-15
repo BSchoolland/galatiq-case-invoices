@@ -107,15 +107,43 @@ def save_validation(uow: UnitOfWork, invoice_id: int, result) -> None:
 
 
 def save_verdict(uow: UnitOfWork, invoice_id: int, verdict) -> None:
-    """Persist the judge's advisory: pay/hold, the headline category + level, the
-    human-readable summary, and any qualitative concerns as findings."""
+    """Persist the judge's advisory: pay/hold, the alarm level, the summary, the set
+    of categories (each rated 1-10; the highest denormalized onto the row as the
+    primary), and the qualitative concerns as findings."""
+    cats = sorted(verdict.categories, key=lambda c: c.importance, reverse=True)
+    primary = cats[0].category if cats else None
     uow.execute(
         "UPDATE invoices SET recommendation=?, review_category=?, review_level=?, review_summary=?,"
         " updated_at=datetime('now') WHERE id=?",
         (_enum_val(PayDecision.PAY if verdict.pay else PayDecision.HOLD),
-         _enum_val(verdict.review_category),
-         _enum_val(verdict.level), verdict.summary, invoice_id))
+         _enum_val(primary), _enum_val(verdict.level), verdict.summary, invoice_id))
+    record_categories(uow, invoice_id, cats)
     record_findings(uow, invoice_id, verdict.concerns, source="llm")
+
+
+def record_categories(uow: UnitOfWork, invoice_id: int, cats: list) -> None:
+    """Replace the invoice's category set — the source of truth; the row's
+    review_category column holds the denormalized primary (highest importance)."""
+    uow.execute("DELETE FROM review_categories WHERE invoice_id=?", (invoice_id,))
+    for c in cats:
+        uow.execute(
+            "INSERT INTO review_categories (invoice_id, category, importance, reason) VALUES (?, ?, ?, ?)",
+            (invoice_id, _enum_val(c.category), c.importance, c.reason))
+
+
+def ensure_held_categories(uow: UnitOfWork, invoice_id: int, suggested: list) -> None:
+    """Fallback so a held invoice is never uncategorized: if the judge named no
+    categories, seed them from the deterministic suggestions (importance by order)."""
+    if uow.query("SELECT 1 FROM review_categories WHERE invoice_id=? LIMIT 1", (invoice_id,)):
+        return
+    primary = None
+    for i, cat in enumerate(suggested):
+        uow.execute(
+            "INSERT INTO review_categories (invoice_id, category, importance, reason) VALUES (?, ?, ?, ?)",
+            (invoice_id, _enum_val(cat), max(1, 6 - i), "raised by the deterministic checks"))
+        primary = primary or cat
+    if primary is not None:
+        uow.execute("UPDATE invoices SET review_category=? WHERE id=?", (_enum_val(primary), invoice_id))
 
 
 def set_outcome(uow: UnitOfWork, invoice_id: int, outcome: Outcome, *, superseded_by: int | None = None) -> None:
@@ -262,6 +290,9 @@ def load_invoice(uow: UnitOfWork, invoice_id: int) -> dict:
         "findings": [dict(r) for r in uow.query(
             "SELECT code, severity, message, source FROM findings WHERE invoice_id=? ORDER BY id",
             (invoice_id,))],
+        "categories": [dict(r) for r in uow.query(
+            "SELECT category, importance, reason FROM review_categories WHERE invoice_id=?"
+            " ORDER BY importance DESC, id", (invoice_id,))],
         "trace": [{**dict(r), "payload": json.loads(r["payload"])} for r in uow.query(
             "SELECT seq, stage, kind, payload FROM invoice_trace WHERE invoice_id=? ORDER BY seq",
             (invoice_id,))],

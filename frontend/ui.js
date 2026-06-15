@@ -54,32 +54,25 @@ export function statusChip(inv) {
   const { status, review_category, review_level } = inv;
   if (status === "needs_review") {
     const critical = review_level === "critical" || review_category === "fraud_suspected";
-    if (critical) {
-      return {
-        rowClass: "critical",
-        chip: { cls: "chip-critical", label: categoryLabel(review_category) || "Critical" },
-        tag: { cls: "tag crit", label: "needs review · critical" },
-      };
-    }
-    return {
-      rowClass: "",
-      chip: { cls: "chip-review", label: "Needs review" },
-      tag: review_category ? { cls: "tag", label: categoryLabel(review_category).toLowerCase() } : null,
-    };
+    return { rowClass: critical ? "critical" : "", chip: { cls: critical ? "chip-critical" : "chip-review", label: "Needs review" } };
   }
   const simple = {
-    processing: ["chip-process", "Processing"],
-    received: ["chip-process", "Received"],
-    approved: ["chip-paid", "Approved"],
-    paid: ["chip-paid", "Paid"],
-    rejected: ["chip-rejected", "Rejected"],
-    superseded: ["chip-super", "Superseded"],
+    processing: ["chip-process", "Processing"], received: ["chip-process", "Received"],
+    approved: ["chip-paid", "Approved"], paid: ["chip-paid", "Paid"],
+    rejected: ["chip-rejected", "Rejected"], superseded: ["chip-super", "Superseded"],
     failed: ["chip-failed", "Failed"],
   }[status] || ["chip-process", title(status)];
-  const tag = status === "rejected" && review_category
-    ? { cls: "tag", label: categoryLabel(review_category).toLowerCase() }
-    : status === "superseded" ? { cls: "tag", label: "duplicate" } : null;
-  return { rowClass: "", chip: { cls: simple[0], label: simple[1] }, tag };
+  return { rowClass: "", chip: { cls: simple[0], label: simple[1] } };
+}
+
+// Up to `max` category labels (already importance-ordered by the API), with a "…"
+// pill when there are more. The primary tag is tinted on a critical row.
+export function categoryTags(categories, max = 2, { critical = false } = {}) {
+  const cats = categories || [];
+  const nodes = cats.slice(0, max).map((c, i) =>
+    el("span", { class: "tag" + (critical && i === 0 ? " crit" : "") }, categoryLabel(c.category).toLowerCase()));
+  if (cats.length > max) nodes.push(el("span", { class: "tag more", title: `${cats.length - max} more` }, "…"));
+  return nodes;
 }
 
 // Tiny DOM builder. Text children become text nodes (escaped); { html } sets

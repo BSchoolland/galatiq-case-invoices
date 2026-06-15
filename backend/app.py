@@ -48,10 +48,18 @@ def submit_invoice(file: UploadFile = File(...)) -> dict:
 @api.get("/invoices")
 def list_invoices(limit: int = 50) -> list[dict]:
     with unit_of_work(get_current_event()) as uow:
-        return [dict(r) for r in uow.query(
+        rows = [dict(r) for r in uow.query(
             "SELECT id, status, invoice_number, vendor_raw, currency, stated_total,"
             " review_category, review_level, outcome, source_format, created_at"
             " FROM invoices ORDER BY id DESC LIMIT ?", (limit,))]
+        by_invoice: dict = {}
+        for c in uow.query("SELECT invoice_id, category, importance FROM review_categories"
+                           " ORDER BY importance DESC, id"):
+            by_invoice.setdefault(c["invoice_id"], []).append(
+                {"category": c["category"], "importance": c["importance"]})
+        for r in rows:
+            r["categories"] = by_invoice.get(r["id"], [])
+        return rows
 
 
 @api.get("/vendors")

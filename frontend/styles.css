@@ -276,7 +276,7 @@ summary:focus-visible,
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 200px 168px 76px;
+  grid-template-columns: 1fr 250px 150px 70px;
   align-items: center;
   gap: 22px;
   padding: 22px 30px;
@@ -696,3 +696,27 @@ input[type="file"] {
 .corr-li { margin-top: 8px; }
 .corr-num { text-align: right; }
 @media (max-width: 600px) { .corr-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------- categories */
+/* inbox: up to two category tags under the status chip, "…" if more */
+.cat-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag.more { background: transparent; border-color: transparent; color: var(--charcoal-40); padding: 3px 4px; }
+
+/* review: the full importance-ordered category set */
+.cat-strip { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+.cat-strip-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--charcoal-40); }
+.cat-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.cat-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; color: var(--charcoal);
+  background: var(--sand-deep); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 6px 4px 13px;
+}
+.cat-imp {
+  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 999px; color: var(--paper-warm);
+  font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.cat-imp.imp-hi  { background: var(--rust); }
+.cat-imp.imp-mid { background: var(--clay-deep); }
+.cat-imp.imp-lo  { background: var(--charcoal-40); }
