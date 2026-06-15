@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     due_date_raw    TEXT,                         -- verbatim due date when unparseable ('yesterday')
     po_reference    TEXT,
     revision        TEXT,
+    payment_terms   TEXT,                         -- terms as stated ('Net 30', 'Immediate'); null if absent
 
     -- Stated figures, verbatim from the document — never recomputed, so the
     -- verify step can compare the document's own arithmetic against the lines.

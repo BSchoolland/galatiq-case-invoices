@@ -43,7 +43,7 @@ def _client_header(action: str) -> str:
     return quote(json.dumps(ctx))
 
 
-async def process(invoice_path: str, server: str | None = None) -> None:
+async def process(invoice_path: str, server: str | None = None) -> dict:
     path = Path(invoice_path)
     if not path.exists():
         console.print(f"[red]file not found:[/red] {invoice_path}")
@@ -57,6 +57,7 @@ async def process(invoice_path: str, server: str | None = None) -> None:
         invoice_id = res.json()["invoice"]["id"]
         result = await _await_settled(client, invoice_id, headers)
     _render(result, server or "in-process (ASGITransport)")
+    return result
 
 
 async def _await_settled(
@@ -77,7 +78,7 @@ async def _await_settled(
             await asyncio.sleep(interval)
 
 
-async def approve(invoice_id: int, server: str | None = None) -> None:
+async def approve(invoice_id: int, server: str | None = None) -> dict:
     """Human review resolution from the CLI: clear a held invoice, which pays it."""
     headers = {"x-trace-id": f"trc_{uuid.uuid4().hex[:12]}", "x-client": _client_header("approve")}
     async with _client(server) as client:
@@ -86,7 +87,25 @@ async def approve(invoice_id: int, server: str | None = None) -> None:
         console.print(f"[yellow]{res.json()['detail']}[/yellow]")
         raise SystemExit(1)
     res.raise_for_status()
-    _render(res.json(), server or "in-process (ASGITransport)")
+    result = res.json()
+    _render(result, server or "in-process (ASGITransport)")
+    return result
+
+
+async def reject(invoice_id: int, reason: str, server: str | None = None) -> dict:
+    """Human review resolution from the CLI: decline a held invoice, with a reason
+    recorded on the trail. The only path to REJECTED."""
+    headers = {"x-trace-id": f"trc_{uuid.uuid4().hex[:12]}", "x-client": _client_header("reject")}
+    async with _client(server) as client:
+        res = await client.post(
+            f"/api/invoices/{invoice_id}/reject", headers=headers, json={"reason": reason})
+    if res.status_code == 409:
+        console.print(f"[yellow]{res.json()['detail']}[/yellow]")
+        raise SystemExit(1)
+    res.raise_for_status()
+    result = res.json()
+    _render(result, server or "in-process (ASGITransport)")
+    return result
 
 
 def _render(result: dict, where: str) -> None:

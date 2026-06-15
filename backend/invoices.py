@@ -10,10 +10,10 @@ import json
 import uuid
 from enum import Enum
 
-from . import tracing
+from . import payments, tracing
 from .impossible import impossible
 from .schemas import ExtractedInvoice
-from .statuses import Status, assert_transition
+from .statuses import Outcome, PayDecision, Status, assert_transition
 from .unit_of_work import UnitOfWork
 
 
@@ -63,11 +63,11 @@ def save_extraction(uow: UnitOfWork, invoice_id: int, ex: ExtractedInvoice) -> N
     charges = sum(c.amount for c in ex.other_charges) if ex.other_charges else None
     uow.execute(
         "UPDATE invoices SET invoice_number=?, vendor_raw=?, currency=?, invoice_date=?,"
-        " due_date=?, due_date_raw=?, po_reference=?, revision=?, stated_subtotal=?, stated_tax=?,"
-        " stated_charges=?, stated_total=?, updated_at=datetime('now') WHERE id=?",
+        " due_date=?, due_date_raw=?, po_reference=?, revision=?, payment_terms=?, stated_subtotal=?,"
+        " stated_tax=?, stated_charges=?, stated_total=?, updated_at=datetime('now') WHERE id=?",
         (ex.invoice_number, ex.vendor_name, ex.currency, ex.invoice_date, ex.due_date,
-         ex.due_date_raw, ex.po_reference, ex.revision, ex.stated_subtotal, ex.stated_tax,
-         charges, ex.stated_total, invoice_id),
+         ex.due_date_raw, ex.po_reference, ex.revision, ex.payment_terms, ex.stated_subtotal,
+         ex.stated_tax, charges, ex.stated_total, invoice_id),
     )
     for li in ex.line_items:
         uow.execute(
@@ -112,15 +112,16 @@ def save_verdict(uow: UnitOfWork, invoice_id: int, verdict) -> None:
     uow.execute(
         "UPDATE invoices SET recommendation=?, review_category=?, review_level=?, review_summary=?,"
         " updated_at=datetime('now') WHERE id=?",
-        ("pay" if verdict.pay else "hold", _enum_val(verdict.review_category),
+        (_enum_val(PayDecision.PAY if verdict.pay else PayDecision.HOLD),
+         _enum_val(verdict.review_category),
          _enum_val(verdict.level), verdict.summary, invoice_id))
     record_findings(uow, invoice_id, verdict.concerns, source="llm")
 
 
-def set_outcome(uow: UnitOfWork, invoice_id: int, outcome: str, *, superseded_by: int | None = None) -> None:
+def set_outcome(uow: UnitOfWork, invoice_id: int, outcome: Outcome, *, superseded_by: int | None = None) -> None:
     uow.execute(
         "UPDATE invoices SET outcome=?, superseded_by=?, updated_at=datetime('now') WHERE id=?",
-        (outcome, superseded_by, invoice_id))
+        (_enum_val(outcome), superseded_by, invoice_id))
 
 
 def apply_po_drawdown(uow: UnitOfWork, invoice_id: int) -> dict:
@@ -152,12 +153,100 @@ def apply_po_drawdown(uow: UnitOfWork, invoice_id: int) -> dict:
     return {"lines_drawn": len(lines), "pos_closed": closed}
 
 
+def pay(uow: UnitOfWork, invoice_id: int, *, stage: str, trigger: str = "") -> dict:
+    """Move money for an APPROVED invoice and land it on PAID: call the payment
+    rail, draw down the matched PO lines, set PAID + the paid outcome, and trace
+    it. The single payment path — both the touchless gate and a human review
+    approval call this, so the pay -> drawdown -> PAID -> outcome -> trace
+    sequence exists in exactly one place and the two can't drift.
+
+    `stage`/`trigger` only colour the trace (what set the payment off); the
+    money-moving sequence is identical either way. Returns the payment receipt."""
+    inv = uow.query(
+        "SELECT vendor_raw, stated_total, currency FROM invoices WHERE id=?", (invoice_id,))[0]
+    receipt = payments.pay(inv["vendor_raw"] or "(unknown)", inv["stated_total"] or 0.0, inv["currency"])
+    drawdown = apply_po_drawdown(uow, invoice_id)
+    set_status(uow, invoice_id, Status.PAID)
+    set_outcome(uow, invoice_id, Outcome.PAID)
+    tracing.emit(uow, invoice_id, stage, "payment",
+                 {"summary": f"{trigger}paid {receipt['amount']} {receipt['currency']} to {receipt['vendor']}",
+                  "reference": receipt["reference"], "drawdown": drawdown})
+    return receipt
+
+
 def set_review_category(uow: UnitOfWork, invoice_id: int, category) -> None:
     """Gate fallback: stamp a deterministic category when the judge held an
     invoice without naming one (it should, but the gate must never leave a held
     invoice uncategorized)."""
     uow.execute("UPDATE invoices SET review_category=?, updated_at=datetime('now') WHERE id=?",
                 (_enum_val(category), invoice_id))
+
+
+def reject(uow: UnitOfWork, invoice_id: int, reason: str, *, stage: str = "review") -> None:
+    """Record a human's decision to decline a held invoice: NEEDS_REVIEW -> REJECTED,
+    with the reviewer's reason on the trace. The only path to REJECTED — no automated
+    route reaches it (see statuses.py)."""
+    set_status(uow, invoice_id, Status.REJECTED)
+    set_outcome(uow, invoice_id, Outcome.REJECTED)
+    tracing.emit(uow, invoice_id, stage, "human_reject",
+                 {"summary": f"reviewer rejected: {reason}", "reason": reason})
+
+
+def add_review_note(uow: UnitOfWork, invoice_id: int, note: str, *, stage: str = "review") -> None:
+    """Append a reviewer note to the trace without moving the invoice — e.g. a
+    request for more information on a held invoice. Keeps the audit trail complete."""
+    tracing.emit(uow, invoice_id, stage, "note", {"summary": f"reviewer note: {note}", "note": note})
+
+
+_CORRECTABLE = ("vendor_raw", "invoice_number", "currency", "due_date", "payment_terms", "stated_total")
+
+
+def apply_corrections(uow: UnitOfWork, invoice_id: int, fields: dict, line_edits: list) -> int:
+    """Apply a reviewer's corrections to misread fields, recording each change
+    (old -> new) on the trace. Returns the number of values changed. Fixing a due
+    date also clears the unparseable due_date_raw so the corrected value is shown."""
+    row = uow.query("SELECT * FROM invoices WHERE id=?", (invoice_id,))[0]
+    changed = 0
+    for field, new in fields.items():
+        if field not in _CORRECTABLE or row[field] == new:
+            continue
+        uow.execute(f"UPDATE invoices SET {field}=?, updated_at=datetime('now') WHERE id=?", (new, invoice_id))
+        tracing.emit(uow, invoice_id, "review", "human_edit",
+                     {"summary": f"corrected {field}: {row[field]} -> {new}", "field": field, "from": row[field], "to": new})
+        changed += 1
+        if field == "due_date" and new is not None and row["due_date_raw"] is not None:
+            uow.execute("UPDATE invoices SET due_date_raw=NULL WHERE id=?", (invoice_id,))
+
+    for edit in line_edits:
+        rows = uow.query("SELECT * FROM invoice_line_items WHERE id=? AND invoice_id=?", (edit.get("id"), invoice_id))
+        if not rows:
+            continue
+        li = rows[0]
+        for field in ("item_raw", "quantity", "unit_price"):
+            if field in edit and edit[field] != li[field]:
+                uow.execute(f"UPDATE invoice_line_items SET {field}=? WHERE id=?", (edit[field], li["id"]))
+                tracing.emit(uow, invoice_id, "review", "human_edit",
+                             {"summary": f"corrected line {li['id']} {field}: {li[field]} -> {edit[field]}",
+                              "field": f"line.{field}", "line_id": li["id"], "from": li[field], "to": edit[field]})
+                changed += 1
+    return changed
+
+
+def revalidate(uow: UnitOfWork, invoice_id: int) -> None:
+    """Re-run ONLY the deterministic checks after a correction: drop the prior
+    deterministic findings + line matches, re-match against vendors/POs, and record
+    the refreshed result. The judge's verdict (recommendation/category/level/summary)
+    is deliberately left untouched — it predates the edit, and the UI flags it stale."""
+    from . import validation
+
+    uow.execute("DELETE FROM findings WHERE invoice_id=? AND source='deterministic'", (invoice_id,))
+    uow.execute("UPDATE invoice_line_items SET matched_item=NULL, matched_po_line_id=NULL WHERE invoice_id=?", (invoice_id,))
+    result = validation.validate(uow, invoice_id)
+    save_validation(uow, invoice_id, result)
+    tracing.emit(uow, invoice_id, "validate", "recheck",
+                 {"summary": f"re-checked after correction: {len(result.findings)} finding(s), "
+                             f"{'blocking' if result.blocking else 'clean'}",
+                  "findings": [f.code.value for f in result.findings], "blocking": result.blocking})
 
 
 def load_invoice(uow: UnitOfWork, invoice_id: int) -> dict:
@@ -173,6 +262,7 @@ def load_invoice(uow: UnitOfWork, invoice_id: int) -> dict:
         "findings": [dict(r) for r in uow.query(
             "SELECT code, severity, message, source FROM findings WHERE invoice_id=? ORDER BY id",
             (invoice_id,))],
-        "trace": [dict(r) for r in uow.query(
-            "SELECT seq, stage, kind FROM invoice_trace WHERE invoice_id=? ORDER BY seq", (invoice_id,))],
+        "trace": [{**dict(r), "payload": json.loads(r["payload"])} for r in uow.query(
+            "SELECT seq, stage, kind, payload FROM invoice_trace WHERE invoice_id=? ORDER BY seq",
+            (invoice_id,))],
     }

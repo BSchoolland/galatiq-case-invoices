@@ -7,8 +7,9 @@ from uuid import uuid4
 from fastapi import APIRouter, FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
 
-from . import invoices, jobs, payments, tracing
+from . import invoices, jobs
 from .invoices import create_invoice, load_invoice
 from .middleware import WideEventMiddleware
 from .statuses import Status
@@ -49,35 +50,120 @@ def list_invoices(limit: int = 50) -> list[dict]:
     with unit_of_work(get_current_event()) as uow:
         return [dict(r) for r in uow.query(
             "SELECT id, status, invoice_number, vendor_raw, currency, stated_total,"
-            " source_format, created_at FROM invoices ORDER BY id DESC LIMIT ?", (limit,))]
+            " review_category, review_level, outcome, source_format, created_at"
+            " FROM invoices ORDER BY id DESC LIMIT ?", (limit,))]
+
+
+@api.get("/vendors")
+def list_vendors() -> list[dict]:
+    with unit_of_work(get_current_event()) as uow:
+        return [dict(r) for r in uow.query(
+            "SELECT v.id, v.name, v.status, v.currency,"
+            " (SELECT COUNT(*) FROM purchase_orders p WHERE p.vendor_id=v.id AND p.status='open')"
+            " AS open_pos FROM vendors v ORDER BY v.name")]
+
+
+def _ensure_invoice(uow, invoice_id: int) -> None:
+    """A client can request any id — a missing one is a clean 404, not an impossible() 500."""
+    if not uow.query("SELECT 1 FROM invoices WHERE id=?", (invoice_id,)):
+        raise HTTPException(404, f"invoice {invoice_id} not found")
 
 
 @api.get("/invoices/{invoice_id}")
 def get_invoice(invoice_id: int) -> dict:
     with unit_of_work(get_current_event()) as uow:
+        _ensure_invoice(uow, invoice_id)
         return load_invoice(uow, invoice_id)
 
 
+_SOURCE_MEDIA = {"pdf": "application/pdf", "json": "application/json", "csv": "text/csv",
+                 "xml": "application/xml", "txt": "text/plain"}
+
+
+@api.get("/invoices/{invoice_id}/source")
+def invoice_source(invoice_id: int) -> FileResponse:
+    """Stream the original document inline so the reviewer sees exactly what was
+    submitted. The path is the one stored on ingest — never client input."""
+    with unit_of_work(get_current_event()) as uow:
+        rows = uow.query("SELECT source_path, source_format FROM invoices WHERE id=?", (invoice_id,))
+    if not rows:
+        raise HTTPException(404, f"invoice {invoice_id} not found")
+    path = Path(rows[0]["source_path"] or "")
+    if not path.is_file():
+        raise HTTPException(404, "source document is no longer available")
+    media = _SOURCE_MEDIA.get((rows[0]["source_format"] or "").lower(), "text/plain")
+    return FileResponse(path, media_type=media, content_disposition_type="inline")
+
+
+class ApproveBody(BaseModel):
+    note: str | None = None
+
+
+class RejectBody(BaseModel):
+    reason: str = Field(min_length=1)
+
+
+class LineItemEdit(BaseModel):
+    id: int
+    item_raw: str | None = None
+    quantity: float | None = None
+    unit_price: float | None = None
+
+
+class CorrectBody(BaseModel):
+    vendor_raw: str | None = None
+    invoice_number: str | None = None
+    currency: str | None = None
+    due_date: str | None = None
+    payment_terms: str | None = None
+    stated_total: float | None = None
+    line_items: list[LineItemEdit] | None = None
+
+
+def _require_review(uow, invoice_id: int) -> None:
+    """A reviewer action is only valid on a held invoice."""
+    _ensure_invoice(uow, invoice_id)
+    status = invoices.get_status(uow, invoice_id)
+    if status != Status.NEEDS_REVIEW:
+        raise HTTPException(409, f"invoice {invoice_id} is {status.value}, not awaiting review")
+
+
 @api.post("/invoices/{invoice_id}/approve")
-def approve_invoice(invoice_id: int) -> dict:
+def approve_invoice(invoice_id: int, body: ApproveBody | None = None) -> dict:
     """Human review resolution: a reviewer clears a held invoice, which pays it.
     The only forward move out of NEEDS_REVIEW — the system never auto-pays what
-    it held, but a person can."""
-    with unit_of_work(get_current_event()) as uow:
-        status = invoices.get_status(uow, invoice_id)
-        if status != Status.NEEDS_REVIEW:
-            raise HTTPException(409, f"invoice {invoice_id} is {status.value}, not awaiting review")
-        inv = uow.query(
-            "SELECT vendor_raw, stated_total, currency FROM invoices WHERE id=?", (invoice_id,))[0]
+    it held, but a person can. An optional note is recorded on the trail."""
+    with unit_of_work(get_current_event(), immediate=True) as uow:
+        _require_review(uow, invoice_id)
+        if body and body.note:
+            invoices.add_review_note(uow, invoice_id, body.note)
         invoices.set_status(uow, invoice_id, Status.APPROVED)
-        receipt = payments.pay(inv["vendor_raw"] or "(unknown)", inv["stated_total"] or 0.0, inv["currency"])
-        drawdown = invoices.apply_po_drawdown(uow, invoice_id)
-        invoices.set_status(uow, invoice_id, Status.PAID)
-        invoices.set_outcome(uow, invoice_id, "paid")
-        tracing.emit(uow, invoice_id, "review", "human_approve",
-                     {"summary": f"reviewer approved; paid {receipt['amount']} {receipt['currency']}"
-                                 f" to {inv['vendor_raw']}", "reference": receipt["reference"],
-                      "drawdown": drawdown})
+        invoices.pay(uow, invoice_id, stage="review", trigger="reviewer approved; ")
+        return load_invoice(uow, invoice_id)
+
+
+@api.post("/invoices/{invoice_id}/reject")
+def reject_invoice(invoice_id: int, body: RejectBody) -> dict:
+    """Human review resolution: a reviewer declines a held invoice. NEEDS_REVIEW ->
+    REJECTED, with the reason recorded on the trail. The only path to REJECTED."""
+    with unit_of_work(get_current_event(), immediate=True) as uow:
+        _require_review(uow, invoice_id)
+        invoices.reject(uow, invoice_id, body.reason)
+        return load_invoice(uow, invoice_id)
+
+
+@api.post("/invoices/{invoice_id}/correct")
+def correct_invoice(invoice_id: int, body: CorrectBody) -> dict:
+    """Fix a field the extractor misread (a wrong amount or vendor) during review.
+    Each change is logged old -> new on the trail, then the deterministic checks
+    re-run against the corrected data; the judge's verdict is left as-is (it predates
+    the edit) and the UI marks it stale. Only valid on a held invoice."""
+    fields = body.model_dump(exclude_unset=True, exclude={"line_items"})
+    line_edits = [li.model_dump(exclude_unset=True) for li in (body.line_items or [])]
+    with unit_of_work(get_current_event(), immediate=True) as uow:
+        _require_review(uow, invoice_id)
+        if invoices.apply_corrections(uow, invoice_id, fields, line_edits):
+            invoices.revalidate(uow, invoice_id)
         return load_invoice(uow, invoice_id)
 
 
@@ -99,9 +185,7 @@ def health() -> dict:
     return {"status": "ok"}
 
 
-@app.get("/")
-def index() -> FileResponse:
-    return FileResponse(FRONTEND_DIR / "index.html")
-
-
-app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+# Serve the multi-page console (index/review/upload + assets) from the frontend
+# directory. Mounted last so the /api/* routes above match first; html=True serves
+# index.html at "/" and resolves the relative links the console navigates between.
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

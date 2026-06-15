@@ -31,6 +31,9 @@ def main() -> None:
     parser.add_argument("--invoice_path", help="path to an invoice document to process")
     parser.add_argument("--approve", type=int, metavar="ID",
                         help="clear a held invoice through human review (pays it)")
+    parser.add_argument("--reject", type=int, metavar="ID",
+                        help="decline a held invoice through human review (requires --reason)")
+    parser.add_argument("--reason", help="reviewer's reason, required with --reject")
     parser.add_argument("--server", default=None, help="base URL of a running backend (default: in-process)")
     sub = parser.add_subparsers(dest="command")
 
@@ -51,6 +54,12 @@ def main() -> None:
         from cli.client import approve
 
         asyncio.run(approve(args.approve, args.server))
+    elif args.reject is not None:
+        from cli.client import reject
+
+        if not args.reason:
+            raise SystemExit("--reject requires --reason")
+        asyncio.run(reject(args.reject, args.reason, args.server))
     elif args.invoice_path:
         from cli.client import process
 

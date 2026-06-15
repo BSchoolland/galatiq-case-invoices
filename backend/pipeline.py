@@ -18,12 +18,12 @@ from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
 
-from . import agents, invoices, payments, tracing, validation
+from . import agents, invoices, tracing, validation
 from .impossible import impossible
 from .ingestion import SourceDoc, load_document
 from .llm import RunContext
 from .schemas import ExtractedInvoice, JudgeVerdict
-from .statuses import TERMINAL, Status
+from .statuses import TERMINAL, Outcome, PayDecision, Status
 from .unit_of_work import UnitOfWork, unit_of_work
 from .validation import ValidationResult
 
@@ -36,7 +36,7 @@ class PipelineState(TypedDict, total=False):
     extracted: ExtractedInvoice
     validation: ValidationResult
     verdict: JudgeVerdict
-    decision: str  # "pay" | "hold", set by the gate to route to the pay node
+    decision: PayDecision  # set by the gate to route to the pay node
 
 
 def build_graph(ctx: RunContext):
@@ -76,7 +76,7 @@ def build_graph(ctx: RunContext):
         invoices.save_verdict(uow, ctx.invoice_id, verdict)
         tracing.emit(uow, ctx.invoice_id, "judge", "verdict",
                      {"summary": verdict.summary,
-                      "recommendation": "pay" if verdict.pay else "hold",
+                      "recommendation": (PayDecision.PAY if verdict.pay else PayDecision.HOLD).value,
                       "category": verdict.review_category.value if verdict.review_category else None,
                       "level": verdict.level.value})
         return {"verdict": verdict}
@@ -84,9 +84,9 @@ def build_graph(ctx: RunContext):
     def supersede(state: PipelineState, uow: UnitOfWork) -> PipelineState:
         dup = state["validation"].duplicate_of
         invoices.set_status(uow, ctx.invoice_id, Status.SUPERSEDED)
-        invoices.set_outcome(uow, ctx.invoice_id, "superseded", superseded_by=dup)
+        invoices.set_outcome(uow, ctx.invoice_id, Outcome.SUPERSEDED, superseded_by=dup)
         tracing.emit(uow, ctx.invoice_id, "finalize", "gate",
-                     {"outcome": "superseded", "summary": f"exact duplicate of invoice #{dup}"})
+                     {"outcome": Outcome.SUPERSEDED.value, "summary": f"exact duplicate of invoice #{dup}"})
         return {}
 
     def gate(state: PipelineState, uow: UnitOfWork) -> PipelineState:
@@ -94,33 +94,26 @@ def build_graph(ctx: RunContext):
         if not result.blocking and verdict.pay:
             invoices.set_review_category(uow, ctx.invoice_id, None)  # paid: no hold reason
             invoices.set_status(uow, ctx.invoice_id, Status.APPROVED)
-            invoices.set_outcome(uow, ctx.invoice_id, "approved")
+            invoices.set_outcome(uow, ctx.invoice_id, Outcome.APPROVED)
             tracing.emit(uow, ctx.invoice_id, "finalize", "gate",
-                         {"outcome": "approved",
+                         {"outcome": Outcome.APPROVED.value,
                           "summary": "hard checks passed and the judge cleared it — paying"})
-            return {"decision": "pay"}
+            return {"decision": PayDecision.PAY}
 
         category = verdict.review_category or (
             result.suggested_categories[0] if result.suggested_categories else None)
         if verdict.review_category is None and category is not None:
             invoices.set_review_category(uow, ctx.invoice_id, category)
         invoices.set_status(uow, ctx.invoice_id, Status.NEEDS_REVIEW)
-        invoices.set_outcome(uow, ctx.invoice_id, "needs_review")
+        invoices.set_outcome(uow, ctx.invoice_id, Outcome.NEEDS_REVIEW)
         tracing.emit(uow, ctx.invoice_id, "finalize", "gate",
-                     {"outcome": "needs_review", "summary": verdict.summary,
+                     {"outcome": Outcome.NEEDS_REVIEW.value, "summary": verdict.summary,
                       "category": category.value if category is not None else None,
                       "blocking": result.blocking, "judge_recommended_pay": verdict.pay})
-        return {"decision": "hold"}
+        return {"decision": PayDecision.HOLD}
 
     def pay(state: PipelineState, uow: UnitOfWork) -> PipelineState:
-        ex = state["extracted"]
-        receipt = payments.pay(ex.vendor_name or "(unknown)", ex.stated_total or 0.0, ex.currency)
-        drawdown = invoices.apply_po_drawdown(uow, ctx.invoice_id)
-        invoices.set_status(uow, ctx.invoice_id, Status.PAID)
-        invoices.set_outcome(uow, ctx.invoice_id, "paid")
-        tracing.emit(uow, ctx.invoice_id, "pay", "payment",
-                     {"summary": f"paid {receipt['amount']} {receipt['currency']} to {receipt['vendor']}",
-                      "reference": receipt["reference"], "drawdown": drawdown})
+        invoices.pay(uow, ctx.invoice_id, stage="pay")
         return {}
 
     def transactional(fn):
@@ -146,7 +139,7 @@ def build_graph(ctx: RunContext):
         {"supersede": "supersede", "judge": "judge"})
     sg.add_edge("judge", "gate")
     sg.add_conditional_edges(
-        "gate", lambda s: "pay" if s.get("decision") == "pay" else "done",
+        "gate", lambda s: "pay" if s.get("decision") == PayDecision.PAY else "done",
         {"pay": "pay", "done": END})
     sg.add_edge("supersede", END)
     sg.add_edge("pay", END)

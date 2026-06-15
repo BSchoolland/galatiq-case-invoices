@@ -2,19 +2,21 @@
 ASGITransport, which doesn't run lifespan events. Schema and reference data live
 in schema.sql / seed.sql; both are applied idempotently on first connect."""
 
+import os
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "app.db"
+DB_PATH = Path(os.environ.get("GALATIQ_DB_PATH") or Path(__file__).resolve().parent.parent / "app.db")
 SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
 SEED_PATH = Path(__file__).resolve().parent / "seed.sql"
 
-_initialized = False
+# Keyed by path, not a bare flag, so a test can point DB_PATH at a fresh temp
+# file and get a clean schema+seed applied to it without a stale guard blocking.
+_initialized: set[Path] = set()
 
 
 def _ensure_init() -> None:
-    global _initialized
-    if _initialized:
+    if DB_PATH in _initialized:
         return
     conn = sqlite3.connect(DB_PATH)
     try:
@@ -24,7 +26,7 @@ def _ensure_init() -> None:
         conn.commit()
     finally:
         conn.close()
-    _initialized = True
+    _initialized.add(DB_PATH)
 
 
 def connect() -> sqlite3.Connection:
