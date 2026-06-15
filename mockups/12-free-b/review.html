@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Review — INV-1003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="ledger.css" />
+<style>
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--ink-faint); margin-bottom: 28px;
+    transition: color 0.16s ease, gap 0.16s ease;
+  }
+  .back:hover { color: var(--blood); gap: 12px; }
+
+  /* dossier header */
+  .dossier {
+    border-top: 3px double var(--blood);
+    border-bottom: 1px solid var(--rule);
+    padding: 22px 0 24px;
+  }
+  .dossier .id {
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.1em; color: var(--ink-faint);
+  }
+  .dossier h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 50px; line-height: 1; letter-spacing: -0.025em;
+    margin: 8px 0 14px; color: var(--blood-ink);
+  }
+  .verdict {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--paper); background: var(--blood);
+    padding: 6px 12px;
+  }
+
+  /* hero amount */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero .amount-cell {
+    padding: 34px 36px 34px 0;
+    border-right: 1px solid var(--rule);
+  }
+  .hero .amount-cell .lab { margin-bottom: 10px; }
+  .hero .amount-cell .val {
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: 56px; letter-spacing: -0.03em; line-height: 1;
+    color: var(--blood-ink);
+  }
+  .hero .amount-cell .ccy {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--ink-faint); letter-spacing: 0.1em; margin-top: 8px;
+  }
+  .hero .vendor-cell {
+    padding: 34px 0 34px 36px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero .vendor-cell .nm {
+    font-family: var(--serif); font-size: 26px; letter-spacing: -0.01em;
+  }
+  .hero .vendor-cell .warn {
+    margin-top: 10px;
+    font-size: 14px; color: var(--blood); line-height: 1.5;
+  }
+  .hero .vendor-cell .warn b { font-weight: 600; }
+
+  /* two-column body */
+  .body {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 0;
+  }
+  .body .findings { padding: 32px 40px 32px 0; border-right: 1px solid var(--rule); }
+  .body .facts     { padding: 32px 0 32px 40px; }
+
+  .sec-title {
+    font-family: var(--serif); font-size: 22px; font-style: italic;
+    margin: 0 0 18px; letter-spacing: -0.01em;
+  }
+
+  .finding {
+    display: grid; grid-template-columns: 22px 1fr;
+    gap: 14px; padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .finding:last-of-type { border-bottom: none; }
+  .finding .n {
+    font-family: var(--serif); font-size: 18px; color: var(--blood);
+    line-height: 1.4;
+  }
+  .finding .t { font-size: 15px; line-height: 1.5; }
+  .finding .t b { font-weight: 600; }
+  .finding .t .by {
+    display: block; font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.1em; color: var(--ink-faint);
+    text-transform: uppercase; margin-top: 4px;
+  }
+
+  .reco {
+    margin-top: 24px;
+    background: var(--blood-wash);
+    border-left: 3px solid var(--blood);
+    padding: 16px 20px;
+    font-family: var(--serif); font-size: 17px;
+    color: var(--blood-ink); line-height: 1.45;
+  }
+  .reco .lab2 {
+    display: block; font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--blood); margin-bottom: 6px;
+  }
+
+  /* facts list */
+  .fact {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding: 12px 0; border-bottom: 1px solid var(--rule);
+    font-size: 14px;
+  }
+  .fact:last-child { border-bottom: none; }
+  .fact .k { color: var(--ink-faint); }
+  .fact .v { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .fact .v.flagged { color: var(--blood); }
+
+  /* action bar */
+  .actions {
+    margin-top: 8px;
+    border-top: 3px double var(--ink);
+    padding-top: 26px;
+  }
+  .act-row { display: flex; gap: 14px; align-items: stretch; flex-wrap: wrap; }
+  .act {
+    font-family: var(--sans); font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    padding: 13px 22px; border: 1px solid var(--ink);
+    background: transparent; color: var(--ink); cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+  }
+  .act:hover { background: var(--ink); color: var(--paper); }
+  .act:active { transform: translateY(1px); }
+
+  /* the guarded, wrong-move button */
+  .act.pay {
+    border-color: var(--rule-bold); color: var(--ink-faint);
+  }
+  .act.pay:hover { background: var(--blood); border-color: var(--blood); color: var(--paper); }
+  .guard {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .guard .lock {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--blood);
+  }
+
+  .reject { background: var(--blood); border-color: var(--blood); color: var(--paper); }
+  .reject:hover { background: var(--blood-ink); border-color: var(--blood-ink); }
+
+  .note {
+    margin-top: 22px;
+  }
+  .note label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .note textarea {
+    display: block; width: 100%; margin-top: 8px;
+    background: var(--paper-deep); border: 1px solid var(--rule-bold);
+    font-family: var(--sans); font-size: 14px; color: var(--ink);
+    padding: 12px 14px; resize: vertical; min-height: 64px;
+  }
+  .note textarea::placeholder { color: var(--ink-faint); }
+  .note textarea:focus { outline: none; border-color: var(--blood); background: var(--paper); }
+
+  /* trace disclosure */
+  .trace {
+    margin-top: 34px;
+    border-top: 1px solid var(--rule);
+    padding-top: 8px;
+  }
+  .trace summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  .trace summary::-webkit-details-marker { display: none; }
+  .trace summary:hover { color: var(--ink); }
+  .trace summary .chev { transition: transform 0.2s ease; color: var(--ink-faint); }
+  .trace[open] summary .chev { transform: rotate(90deg); }
+
+  .trace-body { padding: 8px 0 4px; }
+  .step {
+    display: grid; grid-template-columns: 90px 1fr 70px;
+    gap: 18px; align-items: baseline;
+    padding: 9px 0; border-bottom: 1px solid var(--rule);
+    font-family: var(--mono); font-size: 12px;
+  }
+  .step:last-child { border-bottom: none; }
+  .step .stage { color: var(--ink); letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+  .step .detail { color: var(--ink-soft); font-family: var(--sans); font-size: 13px; }
+  .step .ms { text-align: right; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .step.fail .stage, .step.fail .ms { color: var(--blood); }
+
+  /* confirm dialog */
+  .scrim {
+    display: none; position: fixed; inset: 0;
+    background: rgba(27,24,19,0.45); z-index: 50;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .scrim.on { display: flex; }
+  .confirm {
+    background: var(--paper); max-width: 460px; width: 100%;
+    border: 1px solid var(--ink);
+    box-shadow: 14px 14px 0 rgba(124,28,16,0.18);
+    padding: 30px 32px;
+  }
+  .confirm h3 {
+    font-family: var(--serif); font-weight: 400; font-size: 26px;
+    margin: 0 0 12px; color: var(--blood-ink);
+  }
+  .confirm p { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0 0 22px; }
+  .confirm p b { color: var(--blood); }
+  .confirm .row2 { display: flex; gap: 12px; justify-content: flex-end; }
+
+  @media (max-width: 820px) {
+    .hero, .body { grid-template-columns: 1fr; }
+    .hero .amount-cell { border-right: none; border-bottom: 1px solid var(--rule); padding: 28px 0; }
+    .hero .vendor-cell { padding: 28px 0; }
+    .body .findings { border-right: none; padding: 28px 0; }
+    .body .facts { padding: 28px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead rise" style="animation-delay:0s">
+    <div class="brand">
+      <span class="mark"><span class="glyph">¶</span>&nbsp;Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </div>
+    <span class="dateline">Acme Corp — Review Dossier</span>
+  </header>
+
+  <div class="topnav rise" style="animation-delay:0.05s">
+    <nav>
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </nav>
+    <div class="nav-right">
+      <a href="upload.html" class="btn-upload">Upload invoice</a>
+      <span class="whoami"><span class="av">D</span><span class="nm">Dana Okafor</span></span>
+    </div>
+  </div>
+
+  <a href="index.html" class="back rise" style="animation-delay:0.1s">← Back to the inbox</a>
+
+  <section class="dossier rise" style="animation-delay:0.16s">
+    <div>
+      <div class="id">INV-1003 · Fraudster LLC</div>
+      <h1>A six-figure<br>wire request.</h1>
+      <span class="verdict"><span class="dot crit"></span> Held · critical — fraud suspected</span>
+    </div>
+  </section>
+
+  <section class="hero rise" style="animation-delay:0.22s">
+    <div class="amount-cell">
+      <div class="kicker lab">Amount requested</div>
+      <div class="val">$100,000.00</div>
+      <div class="ccy">USD · wire, immediate</div>
+    </div>
+    <div class="vendor-cell">
+      <div class="kicker">Payee</div>
+      <div class="nm">Fraudster LLC</div>
+      <div class="warn"><b>Not in our vendor master.</b> No relationship, contract, or banking details on file.</div>
+    </div>
+  </section>
+
+  <section class="body">
+    <div class="findings rise" style="animation-delay:0.28s">
+      <h2 class="sec-title">Why it is held</h2>
+
+      <div class="finding">
+        <span class="n">01</span>
+        <span class="t"><b>Unknown vendor.</b> Not in our master — no relationship or banking details on file.</span>
+      </div>
+      <div class="finding">
+        <span class="n">02</span>
+        <span class="t"><b>Unauthorized item.</b> “FakeItem × 100” matches no open purchase order.</span>
+      </div>
+      <div class="finding">
+        <span class="n">03</span>
+        <span class="t"><b>Urgency to wire immediately</b> — a classic fraud pattern.<span class="by">Raised by the judging agent</span></span>
+      </div>
+
+      <div class="reco">
+        <span class="lab2">Agent recommendation</span>
+        Recommend HOLD. Do not pay; route to AP fraud review.
+      </div>
+    </div>
+
+    <aside class="facts rise" style="animation-delay:0.34s">
+      <h2 class="sec-title">On the record</h2>
+      <div class="fact"><span class="k">Due date</span><span class="v flagged">yesterday — unparsed</span></div>
+      <div class="fact"><span class="k">Terms</span><span class="v">Immediate</span></div>
+      <div class="fact"><span class="k">Line items</span><span class="v">1</span></div>
+      <div class="fact"><span class="k">FakeItem</span><span class="v">×100 @ $1,000.00</span></div>
+      <div class="fact"><span class="k">Line total</span><span class="v">$100,000.00</span></div>
+    </aside>
+  </section>
+
+  <section class="actions rise" style="animation-delay:0.4s">
+    <div class="act-row">
+      <button class="act reject" type="button" onclick="logAction('Rejected & logged — routed to AP fraud review.')">Reject &amp; log</button>
+      <button class="act" type="button" onclick="logAction('Information request sent to the originating mailbox.')">Request info</button>
+      <span class="guard">
+        <button class="act pay" type="button" onclick="openConfirm()">Approve &amp; pay</button>
+        <span class="lock">⚠ guarded — confirm required</span>
+      </span>
+    </div>
+
+    <div class="note">
+      <label for="rn">Reviewer note</label>
+      <textarea id="rn" placeholder="Add context for the audit trail…"></textarea>
+    </div>
+  </section>
+
+  <details class="trace rise" style="animation-delay:0.46s">
+    <summary><span>View processing trace</span><span class="chev">▸</span></summary>
+    <div class="trace-body">
+      <div class="step"><span class="stage">Ingest</span><span class="detail">Email attachment received · PDF parsed</span><span class="ms">120ms</span></div>
+      <div class="step"><span class="stage">Extract</span><span class="detail">1 line item, payee, amount, terms read by model</span><span class="ms">2,440ms</span></div>
+      <div class="step fail"><span class="stage">Validate</span><span class="detail">Vendor not found in master · PO match failed · due date unparsable</span><span class="ms">310ms</span></div>
+      <div class="step fail"><span class="stage">Judge</span><span class="detail">Fraud signals: unknown payee + no PO + immediate-wire urgency</span><span class="ms">1,980ms</span></div>
+      <div class="step fail"><span class="stage">Gate</span><span class="detail">Touchless payment blocked · routed to human review</span><span class="ms">40ms</span></div>
+    </div>
+  </details>
+
+  <footer class="colophon rise" style="animation-delay:0.52s">
+    <span>Dossier INV-1003 · held 15 Jun 2026, 09:58</span>
+    <span>Galatiq Autonomous AP — Acme Corp</span>
+  </footer>
+
+</div>
+
+<!-- guard dialog -->
+<div class="scrim" id="scrim" role="dialog" aria-modal="true" aria-labelledby="cmt">
+  <div class="confirm">
+    <h3 id="cmt">Pay $100,000.00 to an unknown payee?</h3>
+    <p>Fraudster LLC is <b>not in your vendor master</b> and the agent recommends <b>HOLD</b>. Approving sends a six-figure wire that cannot be recalled. Type-confirm only if you have independently verified this vendor.</p>
+    <div class="row2">
+      <button class="act" type="button" onclick="closeConfirm()">Cancel — keep held</button>
+      <button class="act pay" type="button" onclick="closeConfirm(); logAction('Approval overridden — escalation logged to audit.')">I have verified · pay anyway</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openConfirm(){ document.getElementById('scrim').classList.add('on'); }
+  function closeConfirm(){ document.getElementById('scrim').classList.remove('on'); }
+  function logAction(msg){
+    var bar = document.querySelector('.act-row');
+    var n = document.createElement('div');
+    n.style.cssText = 'flex-basis:100%;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:0.04em;color:var(--blood-ink);';
+    n.textContent = '✓ ' + msg;
+    bar.appendChild(n);
+  }
+  document.getElementById('scrim').addEventListener('click', function(e){ if(e.target === this) closeConfirm(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeConfirm(); });
+</script>
+</body>
+</html>

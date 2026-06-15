@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Vendor master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="ledger.css" />
+<style>
+  .lede { margin-bottom: 34px; }
+  .lede .kicker { display: block; margin-bottom: 10px; }
+  .lede h1 {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 54px; line-height: 1; letter-spacing: -0.025em; margin: 0;
+  }
+  .lede h1 em { font-style: italic; }
+  .lede p { max-width: 54ch; color: var(--ink-soft); margin: 14px 0 0; font-size: 15px; }
+
+  .roster { border-top: 1px solid var(--rule-bold); }
+
+  .vrow {
+    display: grid;
+    grid-template-columns: 1fr 150px 150px 110px;
+    gap: 24px; align-items: baseline;
+    padding: 18px 2px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .vrow .nm {
+    font-family: var(--serif); font-size: 21px;
+    letter-spacing: -0.01em; line-height: 1.1;
+  }
+  .vrow .terms { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; }
+  .vrow .since { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
+  .vrow .state {
+    justify-self: end;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ok);
+  }
+
+  /* one quiet oxblood line: the unknown payee currently held is NOT on the master */
+  .unmastered {
+    margin-top: 30px;
+    background: linear-gradient(90deg, var(--blood-wash) 0%, rgba(239,224,211,0) 70%);
+    border-left: 3px solid var(--blood);
+    padding: 16px 20px;
+  }
+  .unmastered .lab {
+    display: block; font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--blood); margin-bottom: 6px;
+  }
+  .unmastered .t { font-family: var(--serif); font-size: 17px; color: var(--blood-ink); line-height: 1.45; }
+  .unmastered .t a { color: var(--blood); text-decoration: underline; text-underline-offset: 3px; }
+
+  @media (max-width: 820px) {
+    .lede h1 { font-size: 38px; }
+    .vrow { grid-template-columns: 1fr auto; gap: 6px 14px; }
+    .vrow .since { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead rise" style="animation-delay:0s">
+    <div class="brand">
+      <span class="mark"><span class="glyph">¶</span>&nbsp;Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </div>
+    <span class="dateline">Acme Corp — Vendor Master · 15 Jun 2026</span>
+  </header>
+
+  <div class="topnav rise" style="animation-delay:0.05s">
+    <nav>
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html" class="current">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </nav>
+    <div class="nav-right">
+      <a href="upload.html" class="btn-upload">Upload invoice</a>
+      <span class="whoami"><span class="av">D</span><span class="nm">Dana Okafor</span></span>
+    </div>
+  </div>
+
+  <section class="lede rise" style="animation-delay:0.12s">
+    <span class="kicker">The Vendor Master</span>
+    <h1>Payees we have<br><em>cleared to pay.</em></h1>
+    <p>Vendors with a relationship, terms, and banking details on file. Touchless payment is only ever extended to a name on this list.</p>
+  </section>
+
+  <main class="roster rise" style="animation-delay:0.18s">
+    <div class="vrow rise" style="animation-delay:0.24s">
+      <span class="nm">Widgets Inc.</span>
+      <span class="terms">Net 30</span>
+      <span class="since">since 2019</span>
+      <span class="state">Active</span>
+    </div>
+    <div class="vrow rise" style="animation-delay:0.30s">
+      <span class="nm">Precision Parts Ltd.</span>
+      <span class="terms">Net 45</span>
+      <span class="since">since 2020</span>
+      <span class="state">Active</span>
+    </div>
+    <div class="vrow rise" style="animation-delay:0.36s">
+      <span class="nm">Gadgets Co.</span>
+      <span class="terms">Net 30</span>
+      <span class="since">since 2021</span>
+      <span class="state">Active</span>
+    </div>
+    <div class="vrow rise" style="animation-delay:0.42s">
+      <span class="nm">Northwind Supply</span>
+      <span class="terms">Net 30</span>
+      <span class="since">since 2022</span>
+      <span class="state">Active</span>
+    </div>
+    <div class="vrow rise" style="animation-delay:0.48s">
+      <span class="nm">Orion Components</span>
+      <span class="terms">Net 15</span>
+      <span class="since">since 2023</span>
+      <span class="state">Active</span>
+    </div>
+    <div class="vrow rise" style="animation-delay:0.54s">
+      <span class="nm">Bluepeak Logistics</span>
+      <span class="terms">Net 30</span>
+      <span class="since">since 2024</span>
+      <span class="state">Active</span>
+    </div>
+  </main>
+
+  <div class="unmastered rise" style="animation-delay:0.60s">
+    <span class="lab">Not on this list</span>
+    <p class="t" style="margin:0"><b>Fraudster LLC</b> has no record here — which is why its $100,000.00 wire is <a href="review.html">held for review</a>, not paid.</p>
+  </div>
+
+  <footer class="colophon rise" style="animation-delay:0.66s">
+    <span>Vendor master · onboarding requires verified banking details</span>
+    <span>Galatiq Autonomous AP — Acme Corp</span>
+  </footer>
+
+</div>
+</body>
+</html>

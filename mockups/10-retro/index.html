@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inbox · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Frijole&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* ---- inbox-specific ---- */
+  .inbox-head { padding: 56px 0 18px; }
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--mustard-deep); margin: 0 0 14px;
+  }
+  .summary {
+    font-family: var(--face); font-weight: 700;
+    font-size: clamp(26px, 3.4vw, 40px); line-height: 1.12; margin: 0;
+    color: var(--ink); max-width: 18ch;
+  }
+  .summary b { color: var(--sienna); }
+  .summary .sun-accent { color: var(--mustard); }
+
+  /* the list */
+  .list {
+    margin: 30px 0 0;
+    background: var(--cream-3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 18px minmax(180px, 1.4fr) minmax(220px, 1.6fr) 150px 70px 22px;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--line-soft);
+    transition: background .16s;
+    position: relative;
+  }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--cream-2); }
+  .row:hover .arrow { opacity: 1; transform: translateX(0); }
+
+  .row .vendor { display: flex; flex-direction: column; gap: 2px; }
+  .row .vendor .v-name { font-weight: 700; font-size: 16px; color: var(--ink); }
+  .row .vendor .v-no { font-size: 12px; font-weight: 600; color: var(--ink-faint); letter-spacing: .02em; }
+
+  .row .meta { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .row .meta .status-word { white-space: nowrap; }
+
+  .row .amount { text-align: right; font-weight: 700; font-size: 16px; color: var(--ink); }
+  .row .when { text-align: right; font-size: 12px; font-weight: 600; color: var(--ink-faint); }
+
+  .arrow {
+    color: var(--sienna); font-size: 18px; opacity: 0; transform: translateX(-4px);
+    transition: opacity .18s, transform .18s; text-align: right;
+  }
+
+  /* the critical row quietly draws the eye */
+  .row.critical {
+    background:
+      linear-gradient(90deg, rgba(168,52,31,.07), rgba(168,52,31,0) 60%);
+  }
+  .row.critical::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: linear-gradient(var(--critical), var(--sienna));
+  }
+  .row.critical:hover { background: linear-gradient(90deg, rgba(168,52,31,.1), rgba(168,52,31,0) 60%); }
+  .row.critical .v-name { color: var(--critical); }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 14px 1fr auto; gap: 10px 14px; }
+    .row .meta { grid-column: 2 / -1; }
+    .row .amount, .row .when { text-align: left; }
+    .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Inbox</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <span class="org-pill">Acme Corp</span>
+      <a href="upload.html"><button class="btn-upload">Upload invoice</button></a>
+      <span class="whoami"><span class="avatar">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <header class="inbox-head">
+    <p class="eyebrow rise" style="animation-delay:.02s">Tuesday &middot; The desk is calm</p>
+    <h1 class="summary rise" style="animation-delay:.06s">
+      <b>5 invoices</b> need your review<span class="sun-accent">.</span>
+    </h1>
+  </header>
+
+  <section class="list rise" style="animation-delay:.12s" aria-label="Invoices">
+
+    <a class="row critical" href="review.html">
+      <span class="dot critical" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Fraudster LLC</span>
+        <span class="v-no">INV-1003</span>
+      </span>
+      <span class="meta">
+        <span class="status-word critical">Needs review</span>
+        <span class="tag critical">Fraud suspected</span>
+      </span>
+      <span class="amount tnum">$100,000.00</span>
+      <span class="when">2m</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot warn" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Gadgets Co.</span>
+        <span class="v-no">INV-1002</span>
+      </span>
+      <span class="meta">
+        <span class="status-word warn">Needs review</span>
+        <span class="tag warn">Over budget</span>
+      </span>
+      <span class="amount tnum">$15,000.00</span>
+      <span class="when">14m</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot warn" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Northwind Supply</span>
+        <span class="v-no">INV-1008</span>
+      </span>
+      <span class="meta">
+        <span class="status-word warn">Needs review</span>
+        <span class="tag warn">Unknown item</span>
+      </span>
+      <span class="amount tnum">$8,420.00</span>
+      <span class="when">1h</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot warn" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Orion Components</span>
+        <span class="v-no">INV-1009</span>
+      </span>
+      <span class="meta">
+        <span class="status-word warn">Needs review</span>
+        <span class="tag warn">Data integrity</span>
+      </span>
+      <span class="amount tnum">$2,400.00</span>
+      <span class="when">3h</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot process" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Bluepeak Logistics</span>
+        <span class="v-no">INV-1011</span>
+      </span>
+      <span class="meta">
+        <span class="status-word process">Processing</span>
+      </span>
+      <span class="amount tnum">$12,300.00</span>
+      <span class="when">just now</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot paid" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Precision Parts Ltd.</span>
+        <span class="v-no">INV-1004</span>
+      </span>
+      <span class="meta">
+        <span class="status-word paid">Paid</span>
+      </span>
+      <span class="amount tnum">$4,750.00</span>
+      <span class="when">4h</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot paid" aria-hidden="true"></span>
+      <span class="vendor">
+        <span class="v-name">Widgets Inc.</span>
+        <span class="v-no">INV-1001</span>
+      </span>
+      <span class="meta">
+        <span class="status-word paid">Paid</span>
+      </span>
+      <span class="amount tnum">$5,000.00</span>
+      <span class="when">5h</span>
+      <span class="arrow" aria-hidden="true">&rarr;</span>
+    </a>
+
+  </section>
+</main>
+
+<footer class="foot">
+  <span><span class="sun"></span>Galatiq — autonomous accounts payable</span>
+  <span>Acme Corp &middot; signed in as Dana Okafor</span>
+</footer>
+
+<script>
+  // Safety net: if the entrance keyframe never advances (slow paint, font swap,
+  // throttled tab), force content visible so the page is never stuck blank.
+  setTimeout(() => document.querySelectorAll('.rise').forEach(el => {
+    el.style.opacity = '1'; el.style.transform = 'none';
+  }), 700);
+</script>
+
+</body>
+</html>

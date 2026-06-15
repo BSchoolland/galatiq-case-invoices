@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>INV-1003 · Review · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Frijole&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; color: var(--ink-soft);
+    margin: 40px 0 22px; padding: 7px 14px 7px 11px; border-radius: 999px;
+    background: var(--cream-3); border: 1px solid var(--line);
+    transition: color .16s, transform .16s, border-color .16s;
+  }
+  .back:hover { color: var(--sienna); transform: translateX(-2px); border-color: var(--mustard); }
+
+  .grid { display: grid; grid-template-columns: 1.55fr .95fr; gap: 28px; align-items: start; }
+  @media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--cream-3); border: 1px solid var(--line);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-soft);
+    padding: 30px 32px;
+  }
+
+  /* header block */
+  .case-head { padding: 0 0 4px; }
+  .case-line {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    font-size: 13px; font-weight: 700; color: var(--ink-faint);
+    letter-spacing: .03em; margin: 0 0 12px;
+  }
+  .case-line .sep { color: var(--line); }
+  .case-title {
+    font-family: var(--display); font-size: clamp(30px, 4vw, 44px);
+    color: var(--critical); margin: 0; line-height: 1.05; letter-spacing: .01em;
+  }
+  .case-sub { margin: 12px 0 0; font-size: 17px; font-weight: 600; color: var(--ink); }
+  .case-sub .vend { color: var(--ink); }
+
+  /* hero amount */
+  .hero {
+    margin-top: 24px; display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 18px;
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(214,161,60,.22), transparent 55%),
+      var(--cream-2);
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 26px 30px;
+  }
+  .hero .amt-label { font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 6px; }
+  .hero .amt { font-family: var(--face); font-weight: 700; font-size: clamp(34px, 5vw, 52px); color: var(--ink); line-height: 1; }
+  .hero .amt .cur { font-size: .42em; font-weight: 700; color: var(--ink-soft); margin-left: 8px; letter-spacing: .08em; }
+  .hero .vendor-flag {
+    text-align: right; font-size: 13px; font-weight: 700; color: var(--critical);
+    max-width: 22ch;
+  }
+  .hero .vendor-flag .x { display:inline-grid; place-items:center; width:20px;height:20px;border-radius:50%; background:var(--critical); color:var(--cream-3); font-size:12px; margin-right:6px; vertical-align:-4px;}
+
+  h2.sec {
+    font-size: 13px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--mustard-deep); margin: 0 0 16px;
+  }
+  .section { margin-top: 28px; }
+
+  /* findings */
+  .findings { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .finding {
+    display: grid; grid-template-columns: 26px 1fr; gap: 14px; align-items: start;
+    padding: 16px 18px; border-radius: var(--r-md);
+    background: var(--cream-2); border: 1px solid var(--line-soft);
+  }
+  .finding .num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--critical-bg); color: var(--critical);
+    font-weight: 700; font-size: 13px; display: grid; place-items: center;
+  }
+  .finding .ftxt { font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.45; }
+  .finding .ftxt b { color: var(--critical); font-weight: 700; }
+  .finding .by { display: block; font-size: 12px; font-weight: 600; color: var(--ink-faint); margin-top: 3px; }
+
+  /* recommendation */
+  .recommend {
+    margin-top: 24px; display: flex; gap: 14px; align-items: center;
+    padding: 18px 22px; border-radius: var(--r-md);
+    background: linear-gradient(100deg, rgba(168,52,31,.1), rgba(214,161,60,.12));
+    border: 1px solid var(--line);
+  }
+  .recommend .badge {
+    font-family: var(--display); font-size: 15px; color: var(--cream-3);
+    background: var(--critical); padding: 6px 14px; border-radius: 999px; white-space: nowrap;
+  }
+  .recommend p { margin: 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+
+  /* facts sidebar */
+  .facts { display: grid; gap: 0; }
+  .fact {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 13px 0; border-bottom: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .fact:last-child { border-bottom: none; }
+  .fact .k { font-weight: 600; color: var(--ink-soft); }
+  .fact .v { font-weight: 700; color: var(--ink); text-align: right; }
+  .fact .v.flag { color: var(--critical); }
+
+  .lineitem {
+    margin-top: 16px; padding: 14px 16px; border-radius: var(--r-sm);
+    background: var(--cream-2); border: 1px dashed var(--line);
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+  .lineitem .li-name { color: var(--critical); }
+
+  /* action bar */
+  .actions { margin-top: 28px; }
+  .act-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .act {
+    font-family: var(--face); font-weight: 700; font-size: 14px;
+    padding: 13px 22px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--cream-3); color: var(--ink);
+    transition: transform .14s, background .16s, border-color .16s, color .16s;
+  }
+  .act:hover { transform: translateY(-1px); }
+  .act.reject { background: var(--sienna); color: var(--cream-3); border-color: var(--sienna); }
+  .act.reject:hover { background: var(--sienna-deep); }
+  .act.info:hover { border-color: var(--mustard); color: var(--mustard-deep); }
+
+  /* guarded approve */
+  .guard { position: relative; }
+  .approve-summary {
+    list-style: none; display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--face); font-weight: 700; font-size: 14px;
+    padding: 13px 20px; border-radius: 999px; cursor: pointer;
+    border: 1px dashed var(--critical); color: var(--critical); background: transparent;
+    transition: background .16s;
+  }
+  .approve-summary::-webkit-details-marker { display: none; }
+  .approve-summary:hover { background: var(--critical-bg); }
+  .approve-summary .lock { font-size: 13px; }
+  details[open] .approve-summary { background: var(--critical-bg); }
+  .guard-body {
+    margin-top: 12px; padding: 16px 18px; border-radius: var(--r-md);
+    background: var(--critical-bg); border: 1px solid #e3b8a6;
+    font-size: 13.5px; font-weight: 600; color: #6e2414; max-width: 520px;
+    animation: rise .3s ease both;
+  }
+  .guard-body .confirm-row { margin-top: 12px; display: flex; gap: 10px; align-items: center; }
+  .guard-body .confirm-btn {
+    font-family: var(--face); font-weight: 700; font-size: 13px;
+    padding: 9px 16px; border-radius: 999px; border: none; cursor: pointer;
+    background: var(--critical); color: var(--cream-3);
+  }
+  .guard-body label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+
+  /* reviewer note */
+  .note { margin-top: 22px; }
+  .note label { display: block; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; }
+  .note textarea {
+    width: 100%; min-height: 74px; resize: vertical;
+    font-family: var(--face); font-size: 14px; font-weight: 500; color: var(--ink);
+    background: var(--cream-3); border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 13px 15px;
+  }
+  .note textarea::placeholder { color: var(--ink-faint); }
+  .note textarea:focus { outline: none; border-color: var(--mustard); box-shadow: 0 0 0 3px rgba(214,161,60,.3); }
+
+  /* trace disclosure */
+  .trace { margin-top: 28px; }
+  .trace > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 700; letter-spacing: .04em; color: var(--ink-soft);
+    padding: 14px 18px; border-radius: var(--r-md);
+    background: var(--cream-2); border: 1px solid var(--line);
+    transition: color .16s, border-color .16s;
+  }
+  .trace > summary::-webkit-details-marker { display: none; }
+  .trace > summary:hover { color: var(--sienna); border-color: var(--mustard); }
+  .trace > summary .chev { transition: transform .2s; color: var(--mustard-deep); }
+  .trace[open] > summary .chev { transform: rotate(90deg); }
+  .trace-body { padding: 8px 4px 0; animation: rise .35s ease both; }
+  .step {
+    display: grid; grid-template-columns: 20px 96px 1fr auto; gap: 14px; align-items: center;
+    padding: 12px 8px; border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+  }
+  .step:last-child { border-bottom: none; }
+  .step .s-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--mustard); }
+  .step .s-name { font-family: var(--mono); font-weight: 600; color: var(--ink); text-transform: uppercase; font-size: 11px; letter-spacing: .08em; }
+  .step .s-desc { color: var(--ink-soft); font-weight: 600; }
+  .step .s-ms { font-family: var(--mono); color: var(--ink-faint); font-weight: 500; font-size: 12px; }
+  .step.gate .s-dot { background: var(--critical); }
+  .step.gate .s-desc { color: var(--critical); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <span class="org-pill">Acme Corp</span>
+      <a href="upload.html"><button class="btn-upload">Upload invoice</button></a>
+      <span class="whoami"><span class="avatar">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <a class="back rise" href="index.html" style="animation-delay:.02s">&larr; Back to inbox</a>
+
+  <div class="grid">
+
+    <!-- LEFT: case -->
+    <div>
+      <header class="case-head rise" style="animation-delay:.08s">
+        <p class="case-line">
+          INV-1003 <span class="sep">/</span>
+          <span class="status-word critical">Needs review</span>
+          <span class="sep">/</span>
+          <span class="tag critical">CRITICAL · Fraud suspected</span>
+        </p>
+        <h1 class="case-title">Fraudster LLC</h1>
+        <p class="case-sub">Held by the agent before any money moved. Your call decides what happens next.</p>
+
+        <div class="hero">
+          <div>
+            <p class="amt-label">Amount requested</p>
+            <div class="amt tnum">$100,000.00<span class="cur">USD</span></div>
+          </div>
+          <div class="vendor-flag">
+            <span class="x" aria-hidden="true">✕</span>Vendor is <u>not</u> in our master file.
+          </div>
+        </div>
+      </header>
+
+      <section class="section rise" style="animation-delay:.16s">
+        <h2 class="sec">Why it is held</h2>
+        <ul class="findings">
+          <li class="finding">
+            <span class="num">1</span>
+            <span class="ftxt"><b>Unknown vendor.</b> Not in our master — no relationship or banking details on file.</span>
+          </li>
+          <li class="finding">
+            <span class="num">2</span>
+            <span class="ftxt"><b>Unauthorized item.</b> &ldquo;FakeItem x100&rdquo; matches no purchase order.</span>
+          </li>
+          <li class="finding">
+            <span class="num">3</span>
+            <span class="ftxt"><b>Urgency to wire immediately</b> — a classic fraud pattern.<span class="by">Raised by the agent</span></span>
+          </li>
+        </ul>
+
+        <div class="recommend">
+          <span class="badge">Recommend HOLD</span>
+          <p>Do not pay; route to AP fraud review.</p>
+        </div>
+      </section>
+
+      <!-- ACTIONS -->
+      <section class="actions rise" style="animation-delay:.24s" aria-label="Decision">
+        <h2 class="sec">Your decision</h2>
+        <div class="act-row">
+          <details class="guard">
+            <summary class="approve-summary"><span class="lock" aria-hidden="true">🔒</span> Approve &amp; Pay</summary>
+            <div class="guard-body">
+              You are about to wire <b>$100,000.00</b> to a vendor that is <b>not in the master file</b>,
+              against the agent&rsquo;s HOLD recommendation. This cannot be undone.
+              <div class="confirm-row">
+                <label><input type="checkbox" /> I accept the fraud risk and override the hold.</label>
+                <button class="confirm-btn" type="button">Confirm payment</button>
+              </div>
+            </div>
+          </details>
+          <button class="act reject" type="button">Reject &amp; log</button>
+          <button class="act info" type="button">Request info</button>
+        </div>
+
+        <div class="note">
+          <label for="rnote">Reviewer note</label>
+          <textarea id="rnote" placeholder="Add context for the audit trail — e.g. &ldquo;Confirmed fraud, escalated to security@acme.&rdquo;"></textarea>
+        </div>
+      </section>
+
+      <!-- TRACE (collapsed) -->
+      <details class="trace rise" style="animation-delay:.3s">
+        <summary><span class="chev" aria-hidden="true">▸</span> View processing trace <span style="color:var(--ink-faint);font-weight:600;">— 5 stages · 612&thinsp;ms</span></summary>
+        <div class="trace-body">
+          <div class="step"><span class="s-dot"></span><span class="s-name">Ingest</span><span class="s-desc">PDF received, 1 page, hashed</span><span class="s-ms">38 ms</span></div>
+          <div class="step"><span class="s-dot"></span><span class="s-name">Extract</span><span class="s-desc">Fields parsed; due date unreadable</span><span class="s-ms">204 ms</span></div>
+          <div class="step"><span class="s-dot"></span><span class="s-name">Validate</span><span class="s-desc">Vendor lookup failed · PO lookup failed</span><span class="s-ms">96 ms</span></div>
+          <div class="step"><span class="s-dot"></span><span class="s-name">Judge</span><span class="s-desc">3 fraud signals scored · confidence 0.94</span><span class="s-ms">231 ms</span></div>
+          <div class="step gate"><span class="s-dot"></span><span class="s-name">Gate</span><span class="s-desc">HELD — routed to human review</span><span class="s-ms">43 ms</span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- RIGHT: facts -->
+    <aside class="panel rise" style="animation-delay:.18s">
+      <h2 class="sec">Invoice details</h2>
+      <div class="facts">
+        <div class="fact"><span class="k">Due</span><span class="v flag">yesterday · unparsed</span></div>
+        <div class="fact"><span class="k">Terms</span><span class="v">Immediate</span></div>
+        <div class="fact"><span class="k">Line items</span><span class="v">1</span></div>
+      </div>
+
+      <div class="lineitem">
+        <span class="li-name">FakeItem &times;100</span>
+        <span class="tnum">@ $1,000.00</span>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <span><span class="sun"></span>Galatiq — autonomous accounts payable</span>
+  <span>Acme Corp &middot; signed in as Dana Okafor</span>
+</footer>
+
+<script>
+  // Safety net: force entrance content visible if the keyframe never advances.
+  setTimeout(() => document.querySelectorAll('.rise').forEach(el => {
+    el.style.opacity = '1'; el.style.transform = 'none';
+  }), 700);
+</script>
+
+</body>
+</html>

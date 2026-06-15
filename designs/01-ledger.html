@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Accounts Payable — Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&family=Spectral+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     GALATIQ — LEDGER
+     A financial broadsheet / 19th-century counting house.
+     Cream paper, deep ink, oxblood accent, antique gold.
+     ============================================================ */
+
+  :root {
+    --paper:        #f4eddc;
+    --paper-deep:   #f0e7d2;
+    --paper-edge:   #e7dcc2;
+    --ink:          #1b1714;
+    --ink-soft:     #4a423a;
+    --ink-faint:    #7d7263;
+    --ink-ghost:    #a99c86;
+    --rule:         #c9bda1;
+    --rule-strong:  #a99578;
+    --hair:         #d8cdb2;
+
+    --oxblood:      #7a2b2b;
+    --oxblood-deep: #5e1f1f;
+    --oxblood-bright:#9a3636;
+    --gold:         #9a7b33;
+    --gold-deep:    #7c611f;
+    --green:        #3e5a36;
+    --green-soft:   #5a7350;
+
+    --serif:  'Spectral', Georgia, 'Times New Roman', serif;
+    --smallcaps: 'Spectral SC', 'Spectral', Georgia, serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    --measure: 1440px;
+    --ease: cubic-bezier(.22,.61,.36,1);
+
+    /* oldstyle + tabular figures for money & ledger columns */
+    --figs-tab: "tnum" 1, "lnum" 1;
+    --figs-old: "onum" 1, "pnum" 1;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background-color: var(--paper);
+    background-image:
+      /* faint paper grain via layered noise-ish gradients */
+      radial-gradient(circle at 18% 22%, rgba(154,123,51,.035), transparent 42%),
+      radial-gradient(circle at 82% 8%, rgba(122,43,43,.030), transparent 38%),
+      radial-gradient(circle at 60% 88%, rgba(27,23,20,.025), transparent 46%),
+      repeating-linear-gradient(0deg, rgba(27,23,20,.012) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(27,23,20,.010) 0 1px, transparent 1px 4px);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: var(--figs-old);
+  }
+
+  /* very faint speckle overlay for "fine paper" texture */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+
+  ::selection { background: rgba(122,43,43,.18); }
+
+  a { color: inherit; }
+
+  .money {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: var(--figs-tab);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .oldstyle { font-feature-settings: var(--figs-old); }
+
+  .sc {
+    font-family: var(--smallcaps);
+    text-transform: lowercase;
+    letter-spacing: .04em;
+    font-feature-settings: "smcp" 1, "c2sc" 1;
+  }
+  .caps {
+    font-family: var(--smallcaps);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-size: .72rem;
+    font-weight: 600;
+  }
+
+  .wrap {
+    max-width: var(--measure);
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ===== page-load orchestration ===== */
+  .reveal { opacity: 0; transform: translateY(10px); animation: rise .8s var(--ease) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .d1 { animation-delay: .05s; }
+  .d2 { animation-delay: .18s; }
+  .d3 { animation-delay: .34s; }
+  .d4 { animation-delay: .50s; }
+  .d5 { animation-delay: .66s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; animation: none; }
+    .pulse-dot, .pulse-ring, .blink { animation: none !important; }
+  }
+
+  /* ============================================================
+     1 · MASTHEAD
+     ============================================================ */
+  .masthead {
+    border-top: 2px solid var(--ink);
+    margin-top: 14px;
+  }
+  .masthead-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 18px 40px 16px;
+    max-width: var(--measure);
+    margin: 0 auto;
+    border-bottom: 1px solid var(--ink);
+    position: relative;
+  }
+  /* double rule under masthead */
+  .masthead-inner::after {
+    content: "";
+    position: absolute;
+    left: 40px; right: 40px; bottom: -4px;
+    height: 1px;
+    background: var(--ink);
+  }
+
+  .masthead-left { font-feature-settings: var(--figs-old); }
+  .estd {
+    font-family: var(--smallcaps);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-size: .64rem;
+    color: var(--ink-faint);
+  }
+  .estd .gold { color: var(--gold-deep); }
+
+  .wordmark {
+    text-align: center;
+    line-height: 1;
+  }
+  .wordmark h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.55rem;
+    letter-spacing: .015em;
+    color: var(--ink);
+  }
+  .wordmark .descriptor {
+    margin-top: 5px;
+    font-family: var(--smallcaps);
+    text-transform: uppercase;
+    letter-spacing: .42em;
+    font-size: .68rem;
+    color: var(--ink-soft);
+    padding-left: .42em;
+  }
+  .wordmark .ornament {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-top: 7px;
+    color: var(--oxblood);
+  }
+  .wordmark .ornament .line { height: 1px; width: 46px; background: currentColor; opacity: .55; }
+  .wordmark .ornament svg { width: 13px; height: 13px; }
+
+  .masthead-right {
+    text-align: right;
+    font-feature-settings: var(--figs-old);
+  }
+  .user-block { display: inline-flex; flex-direction: column; align-items: flex-end; }
+  .user-name { font-weight: 600; font-size: .98rem; }
+  .user-role {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: .6rem; color: var(--ink-faint);
+  }
+  .user-name .initials {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 27px; height: 27px; margin-left: 9px;
+    border: 1px solid var(--ink); border-radius: 50%;
+    font-size: .72rem; font-weight: 600; vertical-align: middle;
+    color: var(--oxblood);
+  }
+
+  /* ===== nav / dateline bar ===== */
+  .dateline {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0 0;
+  }
+  .navline {
+    display: flex; align-items: stretch; gap: 0;
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .16em;
+    font-size: .72rem; font-weight: 500;
+  }
+  .navline a {
+    text-decoration: none; color: var(--ink-soft);
+    padding: 4px 18px 5px; position: relative;
+    border-left: 1px solid var(--rule);
+    transition: color .2s var(--ease);
+  }
+  .navline a:first-child { border-left: 0; padding-left: 0; }
+  .navline a:hover { color: var(--oxblood); }
+  .navline a.active { color: var(--ink); font-weight: 700; }
+  .navline a.active::after {
+    content: ""; position: absolute; left: 18px; right: 18px; bottom: -7px;
+    height: 2px; background: var(--oxblood);
+  }
+  .navline a:first-child.active::after { left: 0; }
+  .navline a:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+  .dateline-right { display: flex; align-items: center; gap: 18px; }
+  .dateline-meta {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .64rem; color: var(--ink-faint);
+    font-feature-settings: var(--figs-old);
+  }
+  .dateline-meta .gold { color: var(--gold-deep); }
+
+  .btn-upload {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .12em;
+    font-size: .72rem; font-weight: 600;
+    color: var(--paper); background: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 7px 16px 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background .2s var(--ease), color .2s var(--ease);
+  }
+  .btn-upload svg { width: 13px; height: 13px; }
+  .btn-upload:hover { background: var(--oxblood); border-color: var(--oxblood); }
+  .btn-upload:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+  .nav-rule { border: 0; border-top: 1px solid var(--ink); margin: 8px 0 0; }
+
+  /* ============================================================
+     LAYOUT GRID
+     ============================================================ */
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 540px;
+    gap: 0;
+    margin-top: 22px;
+    border-top: 1px solid var(--rule);
+  }
+  .col-ledger { border-right: 1px solid var(--ink); padding: 0 30px 60px 0; min-width: 0; }
+  .col-case { padding: 0 0 60px 30px; min-width: 0; }
+
+  /* ============================================================
+     SECTION HEADERS — numbered, double-ruled
+     ============================================================ */
+  .sec-head {
+    display: flex; align-items: baseline; gap: 14px;
+    padding-top: 26px;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 7px;
+    margin-bottom: 0;
+  }
+  .sec-num {
+    font-family: var(--smallcaps);
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--oxblood);
+    font-feature-settings: var(--figs-old);
+    width: 1.4em;
+  }
+  .sec-title {
+    font-weight: 600; font-size: 1.18rem;
+    letter-spacing: .01em; flex: 1;
+  }
+  .sec-aside {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: .62rem; color: var(--ink-faint);
+    font-feature-settings: var(--figs-old);
+  }
+
+  /* ============================================================
+     2 · KPI SUMMARY STRIP
+     ============================================================ */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-bottom: 1px solid var(--ink);
+  }
+  .kpi {
+    padding: 14px 16px 13px;
+    border-left: 1px solid var(--hair);
+    position: relative;
+  }
+  .kpi:first-child { border-left: 0; padding-left: 2px; }
+  .kpi .kpi-label {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: .58rem; color: var(--ink-faint);
+    display: block; margin-bottom: 4px;
+  }
+  .kpi .kpi-val {
+    font-size: 1.78rem; font-weight: 500; line-height: 1;
+    font-feature-settings: var(--figs-old);
+    letter-spacing: -.01em;
+  }
+  .kpi .kpi-val .cur { font-size: 1.05rem; color: var(--ink-soft); vertical-align: .12em; }
+  .kpi.alert .kpi-val { color: var(--oxblood); }
+  .kpi.alert .kpi-label { color: var(--oxblood); }
+  .kpi.gold .kpi-val { color: var(--gold-deep); }
+  .kpi .kpi-sub {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .08em;
+    font-size: .54rem; color: var(--ink-ghost); margin-top: 5px;
+  }
+  .kpi.alert::before {
+    content: ""; position: absolute; left: 0; top: 12px; bottom: 12px;
+    width: 2px; background: var(--oxblood);
+  }
+  .kpi:first-child.alert::before { left: -2px; }
+
+  /* ============================================================
+     2 · LEDGER TABLE (the inbox as a ruled ledger book)
+     ============================================================ */
+  .ledger {
+    width: 100%;
+    border-collapse: collapse;
+    font-feature-settings: var(--figs-old);
+  }
+  .ledger thead th {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: .58rem; font-weight: 600; color: var(--ink-faint);
+    text-align: left; padding: 10px 8px 7px;
+    border-bottom: 1px solid var(--ink);
+    vertical-align: bottom;
+  }
+  .ledger thead th.r { text-align: right; }
+  .ledger thead th.c { text-align: center; }
+
+  .ledger tbody tr {
+    border-bottom: 1px solid var(--hair);
+    transition: background .18s var(--ease);
+    cursor: pointer;
+  }
+  .ledger tbody tr:hover { background: rgba(154,123,51,.07); }
+  .ledger tbody td {
+    padding: 9px 8px;
+    vertical-align: baseline;
+    font-size: .92rem;
+  }
+  .ledger .num { color: var(--ink); font-weight: 500; }
+  .ledger .num .ord {
+    font-family: var(--smallcaps); font-size: .6rem; letter-spacing: .08em;
+    color: var(--ink-faint); display: block; text-transform: uppercase;
+  }
+  .ledger .vendor { color: var(--ink-soft); }
+  .ledger .amt { font-variant-numeric: tabular-nums lining-nums; font-feature-settings: var(--figs-tab); text-align: right; white-space: nowrap; font-weight: 500; }
+  .ledger .recv { color: var(--ink-faint); font-size: .82rem; text-align: right; white-space: nowrap; }
+  .ledger .flag-cell { color: var(--ink-soft); font-style: italic; font-size: .86rem; }
+
+  /* running balance column — the ledger signature */
+  .ledger .bal {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: var(--figs-tab);
+    text-align: right; white-space: nowrap;
+    color: var(--ink-faint); font-size: .8rem;
+  }
+  .ledger .bal .lbl { font-family: var(--smallcaps); text-transform: uppercase; letter-spacing: .06em; font-size: .52rem; color: var(--ink-ghost); display: block; }
+
+  /* selected / active row */
+  .ledger tr.selected {
+    background: rgba(122,43,43,.065);
+    box-shadow: inset 3px 0 0 var(--oxblood);
+  }
+  .ledger tr.selected:hover { background: rgba(122,43,43,.085); }
+  .ledger tr.selected td { padding-top: 11px; padding-bottom: 11px; }
+  .ledger tr.selected .num { color: var(--oxblood); font-weight: 600; }
+  .ledger tr.selected .amt { color: var(--oxblood); font-weight: 600; }
+  .ledger .marginhand {
+    color: var(--oxblood); font-style: italic; font-size: .78rem;
+    font-family: var(--serif);
+  }
+
+  /* superseded / muted row */
+  .ledger tr.muted td { color: var(--ink-ghost); }
+  .ledger tr.muted .num,
+  .ledger tr.muted .vendor,
+  .ledger tr.muted .amt { color: var(--ink-ghost); }
+  .ledger tr.muted .amt { text-decoration: line-through; text-decoration-color: var(--ink-ghost); }
+
+  /* ===== STATUS STAMPS ===== */
+  .stamp {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: .58rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px 3px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .stamp .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .stamp.s-review  { color: var(--oxblood); border-color: var(--oxblood); }
+  .stamp.s-paid    { color: var(--green); border-color: var(--green-soft); }
+  .stamp.s-paid .dot { border-radius: 0; }
+  .stamp.s-proc    { color: var(--gold-deep); border-color: var(--gold); }
+  .stamp.s-super   { color: var(--ink-ghost); border-color: var(--ink-ghost); border-style: dashed; }
+
+  /* paid gets a faint embossed "settled" feel */
+  .stamp.s-paid { background: rgba(62,90,54,.07); }
+  .stamp.s-review { background: rgba(122,43,43,.06); }
+
+  /* processing pulse */
+  .pulse-dot { position: relative; }
+  .pulse-dot::after {
+    content: ""; position: absolute; inset: -3px; border-radius: 50%;
+    border: 1px solid var(--gold); opacity: .6;
+    animation: pulsering 1.6s ease-out infinite;
+  }
+  @keyframes pulsering {
+    0% { transform: scale(.7); opacity: .7; }
+    100% { transform: scale(2.6); opacity: 0; }
+  }
+
+  /* ===== ALARM BADGES ===== */
+  .alarm {
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .12em;
+    font-size: .56rem; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .alarm .tick { display: inline-flex; gap: 1px; }
+  .alarm .tick i { width: 2px; height: 9px; background: currentColor; display: block; opacity: .25; }
+  .alarm.a-critical { color: var(--oxblood); }
+  .alarm.a-critical .tick i { opacity: 1; }
+  .alarm.a-high     { color: var(--oxblood-bright); }
+  .alarm.a-high .tick i:nth-child(-n+3) { opacity: 1; }
+  .alarm.a-medium   { color: var(--gold-deep); }
+  .alarm.a-medium .tick i:nth-child(-n+2) { opacity: 1; }
+  .alarm.a-low      { color: var(--ink-faint); }
+  .alarm.a-low .tick i:nth-child(1) { opacity: 1; }
+  .alarm.a-info     { color: var(--ink-ghost); }
+  .alarm.a-info .tick i:nth-child(1) { opacity: .55; }
+  .alarm.a-none     { color: var(--ink-ghost); }
+  .alarm.a-none .em { font-size: .9rem; line-height: 0; }
+
+  .alarm.a-critical {
+    padding: 1px 6px 2px; border: 1px solid var(--oxblood);
+    background: var(--oxblood); color: var(--paper);
+  }
+  .alarm.a-critical .tick i { background: var(--paper); }
+  .alarm.a-critical .blink { animation: blink 1.4s steps(2) infinite; }
+  @keyframes blink { 0%,55% { opacity: 1; } 56%,100% { opacity: .35; } }
+
+  .ledger-foot td {
+    border-top: 1px solid var(--ink);
+    padding-top: 10px;
+    font-feature-settings: var(--figs-old);
+    color: var(--ink-soft);
+  }
+  .ledger-foot .caps { color: var(--ink-faint); }
+
+  /* ===== KEY TO THE LEDGER — alarm spectrum legend ===== */
+  .ledger-key {
+    margin-top: 14px;
+    border-top: 1px solid var(--hair);
+    padding-top: 11px;
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 6px 20px;
+  }
+  .ledger-key .key-lead {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .12em; font-size: .56rem; font-weight: 600;
+    color: var(--ink-faint);
+  }
+  .ledger-key .key-item {
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .ledger-key .key-item .gloss {
+    font-family: var(--smallcaps); text-transform: lowercase;
+    letter-spacing: .02em; font-size: .62rem; color: var(--ink-faint);
+    font-feature-settings: "smcp" 1;
+  }
+
+  /* ============================================================
+     3 · CASE FILE (review detail)
+     ============================================================ */
+  .casefile { font-feature-settings: var(--figs-old); }
+
+  .case-banner {
+    border: 1px solid var(--oxblood);
+    border-top: 5px solid var(--oxblood);
+    background: rgba(122,43,43,.035);
+    padding: 0; margin-top: 16px; position: relative;
+    overflow: hidden;
+  }
+
+  /* printed/stamped HOLD overstamp — rotated ink-red with a faint registration offset */
+  .overstamp {
+    position: absolute; top: 14px; right: 14px;
+    pointer-events: none; user-select: none;
+    transform: rotate(-9deg);
+  }
+  .overstamp .ink {
+    display: block;
+    font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .14em;
+    font-size: 1.55rem; font-weight: 700; line-height: 1;
+    color: var(--oxblood);
+    border: 3px double var(--oxblood);
+    padding: 4px 12px 5px;
+    opacity: .62;
+  }
+  /* registration mis-print: a faint offset second impression */
+  .overstamp .ink.ghost {
+    position: absolute; top: 1.5px; left: -2px;
+    color: var(--oxblood-bright); opacity: .22;
+  }
+
+  .case-banner-body { padding: 14px 18px 16px; }
+  .case-banner-body .case-tag,
+  .case-banner-body .case-title { padding-right: 96px; }
+  .case-tag {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .18em; font-size: .58rem; font-weight: 700;
+    color: var(--oxblood); display: flex; align-items: center; gap: 8px;
+  }
+  .case-tag svg { width: 14px; height: 14px; }
+  .case-title {
+    margin: 8px 0 2px; font-size: 1.9rem; font-weight: 600;
+    letter-spacing: -.01em; line-height: 1.05;
+  }
+  .case-title .vendor-name { color: var(--oxblood); font-style: italic; }
+  .case-sub {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .62rem; color: var(--ink-soft);
+    display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px;
+  }
+  .case-sub .div { color: var(--rule-strong); }
+  .case-sub .crit { color: var(--oxblood); font-weight: 700; }
+
+  /* extracted fields ledger */
+  .fields {
+    width: 100%; border-collapse: collapse; margin-top: 18px;
+  }
+  .fields tr { border-bottom: 1px solid var(--hair); }
+  .fields tr:first-child { border-top: 1px solid var(--ink); }
+  .fields th {
+    text-align: left; font-family: var(--smallcaps);
+    text-transform: uppercase; letter-spacing: .09em;
+    font-size: .58rem; font-weight: 600; color: var(--ink-faint);
+    padding: 8px 8px 8px 0; width: 38%; vertical-align: baseline;
+  }
+  .fields td { padding: 8px 0; font-size: .95rem; vertical-align: baseline; }
+  .fields td.money { font-size: 1.15rem; font-weight: 600; }
+  .fields .warn { color: var(--oxblood); }
+  .fields .warn .note { font-style: italic; font-size: .8rem; color: var(--ink-faint); display: block; }
+  .fields .notfound {
+    color: var(--oxblood); font-weight: 600;
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .06em; font-size: .72rem;
+  }
+
+  .sub-head {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .12em; font-size: .68rem; font-weight: 600;
+    color: var(--ink); margin: 26px 0 0;
+    border-bottom: 1px solid var(--ink); padding-bottom: 5px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .sub-head .aside { color: var(--ink-faint); font-size: .58rem; letter-spacing: .08em; }
+
+  /* line items */
+  .lineitems { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .lineitems th {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .09em; font-size: .56rem; font-weight: 600;
+    color: var(--ink-faint); text-align: left; padding: 8px 6px 6px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .lineitems th.r { text-align: right; }
+  .lineitems td { padding: 9px 6px; font-size: .92rem; border-bottom: 1px solid var(--hair); }
+  .lineitems td.r { text-align: right; font-variant-numeric: tabular-nums lining-nums; font-feature-settings: var(--figs-tab); }
+  .lineitems .item-flag {
+    color: var(--oxblood); font-style: italic; font-size: .78rem;
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 3px;
+  }
+  .lineitems .item-flag svg { width: 11px; height: 11px; }
+  .lineitems tfoot td {
+    border-bottom: 0; border-top: 1px solid var(--ink);
+    font-weight: 600; padding-top: 9px;
+  }
+
+  /* ===== FINDINGS as numbered marginalia / footnotes ===== */
+  .findings { margin-top: 8px; counter-reset: fnote; }
+  .finding {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 0 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--hair);
+    position: relative;
+  }
+  .finding:first-child { border-top: 1px solid var(--ink); }
+  .finding .fnum {
+    counter-increment: fnote;
+    font-feature-settings: var(--figs-old);
+    font-size: 1.15rem; color: var(--oxblood);
+    text-align: right; line-height: 1.1;
+    font-weight: 500;
+  }
+  .finding .fnum::before { content: counter(fnote, decimal) "."; }
+  .finding .fbody { }
+  .finding .fkey {
+    font-family: var(--mono);
+    font-weight: 500; font-size: .82rem; letter-spacing: -.01em;
+    color: var(--ink);
+    font-feature-settings: "tnum" 1;
+  }
+  .finding .fmeta {
+    display: inline-flex; gap: 8px; align-items: center;
+    margin-left: 10px; vertical-align: .04em;
+  }
+  .sev {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .54rem; font-weight: 700;
+    padding: 1px 6px 2px; border: 1px solid currentColor;
+  }
+  .sev.error { color: var(--paper); background: var(--oxblood); border-color: var(--oxblood); }
+  .sev.warning { color: var(--gold-deep); border-color: var(--gold); background: rgba(154,123,51,.1); }
+  .raiser {
+    font-size: .56rem; color: var(--ink-faint);
+  }
+  /* deterministic = stamped machine tag */
+  .raiser.det {
+    font-family: var(--mono); text-transform: lowercase;
+    letter-spacing: 0; font-size: .58rem; font-weight: 500;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule); padding: 0 5px 1px;
+  }
+  /* agent / LLM = ink-handwritten in the margin */
+  .raiser.llm {
+    font-family: var(--serif); font-style: italic;
+    font-size: .8rem; letter-spacing: 0;
+    color: var(--gold-deep); text-transform: none;
+  }
+  .finding .ftext {
+    margin-top: 4px; font-size: .9rem; color: var(--ink-soft);
+    line-height: 1.5; max-width: 46ch;
+  }
+  .finding.is-error .fnum { color: var(--oxblood); font-weight: 700; }
+
+  /* ===== AGENT VERDICT ===== */
+  .verdict {
+    margin-top: 24px;
+    border: 1px solid var(--ink);
+    border-left: 4px solid var(--oxblood);
+    padding: 16px 18px;
+    background: rgba(27,23,20,.025);
+    position: relative;
+  }
+  .verdict .vlabel {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .14em; font-size: .58rem; font-weight: 700;
+    color: var(--ink-faint); display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .verdict .recommend {
+    color: var(--oxblood); font-weight: 700;
+    border: 1px solid var(--oxblood); padding: 1px 8px 2px;
+  }
+  .verdict .vtext {
+    margin-top: 9px; font-size: 1.02rem; line-height: 1.6;
+    font-style: italic;
+  }
+  .verdict .vtext .dropcap {
+    float: left; font-size: 3.1rem; line-height: .78; font-weight: 600;
+    font-style: normal; color: var(--oxblood);
+    margin: 4px 9px 0 0; font-feature-settings: var(--figs-old);
+  }
+
+  /* ===== TRACE TIMELINE ===== */
+  details.trace { margin-top: 22px; }
+  details.trace > summary {
+    list-style: none; cursor: pointer;
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .12em; font-size: .68rem; font-weight: 600;
+    color: var(--ink); border-bottom: 1px solid var(--ink);
+    padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;
+  }
+  details.trace > summary::-webkit-details-marker { display: none; }
+  details.trace > summary .chev { transition: transform .25s var(--ease); color: var(--ink-faint); }
+  details.trace[open] > summary .chev { transform: rotate(90deg); }
+  details.trace > summary:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+
+  .trace-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .trace-table td {
+    padding: 8px 8px; font-size: .85rem; border-bottom: 1px solid var(--hair);
+    vertical-align: baseline;
+  }
+  .trace-table tr:last-child td { border-bottom: 0; }
+  .trace-table .ts {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: var(--figs-tab);
+    color: var(--ink-faint); width: 70px;
+  }
+  .trace-table .step {
+    font-family: var(--mono); text-transform: lowercase;
+    letter-spacing: 0; font-size: .68rem; font-weight: 600;
+    color: var(--oxblood); width: 78px;
+  }
+  .trace-table .desc { color: var(--ink-soft); }
+  .trace-table .desc .v { color: var(--ink); font-weight: 600; }
+  .trace-table .dur {
+    text-align: right; font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: var(--figs-tab);
+    color: var(--ink-faint); white-space: nowrap;
+  }
+  .trace-table tr.gate .step { color: var(--oxblood); }
+  .trace-table tr.gate .desc .v { color: var(--oxblood); }
+
+  /* ===== ACTION BAR ===== */
+  .actionbar {
+    margin-top: 24px; border-top: 3px double var(--ink);
+    padding-top: 16px;
+  }
+  .note-field { margin-bottom: 14px; }
+  .note-field label {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .58rem; color: var(--ink-faint);
+    display: block; margin-bottom: 5px;
+  }
+  .note-field textarea {
+    width: 100%; resize: vertical; min-height: 52px;
+    background: rgba(255,255,255,.28);
+    border: 1px solid var(--rule-strong);
+    border-radius: 0; padding: 9px 11px;
+    font-family: var(--serif); font-size: .92rem; color: var(--ink);
+    line-height: 1.5;
+    background-image: repeating-linear-gradient(transparent, transparent 25px, var(--hair) 25px, var(--hair) 26px);
+  }
+  .note-field textarea:focus {
+    outline: none; border-color: var(--oxblood);
+    box-shadow: inset 0 0 0 1px rgba(122,43,43,.25);
+  }
+  .note-field textarea::placeholder { color: var(--ink-ghost); font-style: italic; }
+
+  .actions { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+  .act {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .72rem; font-weight: 600;
+    padding: 9px 16px; cursor: pointer;
+    border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
+  }
+  .act svg { width: 13px; height: 13px; }
+  .act:hover { background: var(--ink); color: var(--paper); }
+  .act:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+  .act.danger {
+    border-color: var(--oxblood); color: var(--oxblood);
+    border-style: dashed; position: relative;
+  }
+  .act.danger:hover { background: var(--oxblood); color: var(--paper); border-style: solid; }
+  .act.danger .lock { opacity: .7; }
+  .act.danger::after {
+    content: "requires confirmation";
+    position: absolute; left: 0; right: 0; bottom: -15px;
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .08em; font-size: .48rem; color: var(--oxblood);
+    text-align: center; opacity: .8;
+  }
+  .act.primary-reject {
+    margin-left: auto; background: var(--ink); color: var(--paper);
+  }
+  .act.primary-reject:hover { background: var(--oxblood); border-color: var(--oxblood); }
+
+  .guard-note {
+    margin-top: 26px;
+    font-size: .82rem; color: var(--ink-faint); font-style: italic;
+    display: flex; gap: 9px; align-items: flex-start;
+  }
+  .guard-note svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--oxblood); }
+
+  /* ============================================================
+     4 · UPLOAD DROPZONE
+     ============================================================ */
+  .upload-section { margin-top: 30px; }
+  .dropzone {
+    border: 2px dashed var(--rule-strong);
+    padding: 30px 26px; text-align: center;
+    margin-top: 14px; position: relative;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(154,123,51,.05), transparent 60%);
+    transition: border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .dropzone:hover, .dropzone.drag {
+    border-color: var(--oxblood);
+    background: rgba(122,43,43,.04);
+  }
+  .dropzone .dz-mark {
+    width: 38px; height: 38px; margin: 0 auto 10px; color: var(--gold-deep);
+  }
+  .dropzone .dz-mark svg { width: 100%; height: 100%; }
+  .dropzone h3 {
+    margin: 0; font-size: 1.25rem; font-weight: 500; font-style: italic;
+  }
+  .dropzone .dz-formats {
+    margin-top: 8px; font-size: .88rem; color: var(--ink-soft);
+  }
+  .dropzone .dz-formats .fmt {
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .06em; font-weight: 600; color: var(--ink);
+  }
+  .dropzone .dz-hint {
+    margin-top: 12px; font-size: .76rem; color: var(--ink-faint);
+    font-style: italic; padding-top: 10px;
+    border-top: 1px solid var(--hair); display: inline-block;
+  }
+  .dropzone .dz-browse {
+    margin-top: 14px;
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .68rem; font-weight: 600;
+    border: 1px solid var(--ink); background: transparent; color: var(--ink);
+    padding: 7px 18px; cursor: pointer;
+    transition: background .18s var(--ease), color .18s var(--ease);
+  }
+  .dropzone .dz-browse:hover { background: var(--ink); color: var(--paper); }
+  .dropzone .dz-browse:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+
+  /* ============================================================
+     COLOPHON / FOOTER
+     ============================================================ */
+  .colophon {
+    border-top: 2px solid var(--ink);
+    margin-top: 8px;
+    padding: 16px 0 40px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--smallcaps); text-transform: uppercase;
+    letter-spacing: .1em; font-size: .58rem; color: var(--ink-faint);
+    font-feature-settings: var(--figs-old);
+  }
+  .colophon .gold { color: var(--gold-deep); }
+  .colophon .ox { color: var(--oxblood); }
+
+  /* ============================================================
+     RESPONSIVE — collapse to single column when narrow
+     ============================================================ */
+  @media (max-width: 1180px) {
+    .columns { grid-template-columns: 1fr; }
+    .col-ledger { border-right: 0; border-bottom: 1px solid var(--ink); padding-right: 0; }
+    .col-case { padding-left: 0; }
+    .ledger .bal { display: none; }
+    .kpis { grid-template-columns: repeat(3, 1fr); }
+    .kpi:nth-child(4) { border-left: 0; }
+  }
+  @media (max-width: 760px) {
+    .wrap, .masthead-inner { padding-left: 18px; padding-right: 18px; }
+    .masthead-inner { grid-template-columns: 1fr; gap: 12px; text-align: center; }
+    .masthead-left, .masthead-right { text-align: center; }
+    .user-block { align-items: center; }
+    .dateline { flex-direction: column; gap: 10px; align-items: stretch; }
+    .navline { flex-wrap: wrap; justify-content: center; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .wordmark h1 { font-size: 2rem; }
+    .ledger thead .col-flag, .ledger .flag-cell { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============================================================
+       1 · MASTHEAD
+       ============================================================ -->
+  <header class="masthead reveal d1">
+    <div class="masthead-inner">
+      <div class="masthead-left">
+        <div class="estd">Accounts Payable <span class="gold">·</span> Counting House</div>
+        <div class="estd">Folio for <strong style="font-weight:600;color:var(--ink-soft)">Acme Corp</strong></div>
+      </div>
+
+      <div class="wordmark">
+        <h1>Galatiq</h1>
+        <div class="descriptor">Accounts Payable</div>
+        <div class="ornament" aria-hidden="true">
+          <span class="line"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M5 8l7-6 7 6M5 16l7 6 7-6"/></svg>
+          <span class="line"></span>
+        </div>
+      </div>
+
+      <div class="masthead-right">
+        <div class="user-block">
+          <div class="user-name">Dana Okafor<span class="initials">DO</span></div>
+          <div class="user-role">Accounts Payable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="dateline">
+        <nav class="navline" aria-label="Primary">
+          <a href="#" class="active" aria-current="page">Inbox</a>
+          <a href="#">Vendors</a>
+          <a href="#">Purchase Orders</a>
+          <a href="#">Audit</a>
+        </nav>
+        <div class="dateline-right">
+          <div class="dateline-meta">Sunday, 15 June 2026 <span class="gold">·</span> Folio 47</div>
+          <button class="btn-upload" id="openUpload" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            Upload Invoice
+          </button>
+        </div>
+      </div>
+      <hr class="nav-rule" />
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN — two columns: ledger book + case file
+       ============================================================ -->
+  <main class="wrap">
+    <div class="columns">
+
+      <!-- =================== LEFT: LEDGER =================== -->
+      <section class="col-ledger" aria-labelledby="ledger-head">
+        <!-- KPI strip -->
+        <div class="sec-head reveal d2">
+          <span class="sec-num">I.</span>
+          <h2 class="sec-title" id="ledger-head">Day-Book Summary</h2>
+          <span class="sec-aside">as posted 14:32, current session</span>
+        </div>
+
+        <div class="kpis reveal d2">
+          <div class="kpi alert">
+            <span class="kpi-label">Needs Review</span>
+            <span class="kpi-val">5</span>
+            <span class="kpi-sub">1 critical · 2 medium · 2 low</span>
+          </div>
+          <div class="kpi alert">
+            <span class="kpi-label">Held Value</span>
+            <span class="kpi-val"><span class="cur">$</span>128,970</span>
+            <span class="kpi-sub">across 5 holds</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Processing</span>
+            <span class="kpi-val">1</span>
+            <span class="kpi-sub">extracting now</span>
+          </div>
+          <div class="kpi">
+            <span class="kpi-label">Paid Today</span>
+            <span class="kpi-val">2</span>
+            <span class="kpi-sub">both touchless</span>
+          </div>
+          <div class="kpi gold">
+            <span class="kpi-label">Touchless · 7d</span>
+            <span class="kpi-val">94<span class="cur" style="font-size:.85rem;vertical-align:.05em">%</span></span>
+            <span class="kpi-sub">paid without a hand</span>
+          </div>
+        </div>
+
+        <!-- ledger table -->
+        <div class="sec-head reveal d3" style="border-bottom:none;padding-bottom:0;margin-top:6px">
+          <span class="sec-num">II.</span>
+          <h2 class="sec-title">Invoice Register</h2>
+          <span class="sec-aside">nine entries · running balance in suspense</span>
+        </div>
+
+        <table class="ledger reveal d3">
+          <thead>
+            <tr>
+              <th>Invoice</th>
+              <th>Vendor</th>
+              <th class="r">Amount</th>
+              <th>Status</th>
+              <th class="col-flag">Flag</th>
+              <th class="c">Alarm</th>
+              <th class="r">Received</th>
+              <th class="r">Held Bal.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- SELECTED / CRITICAL -->
+            <tr class="selected" tabindex="0" aria-selected="true">
+              <td class="num">INV-1003 <span class="marginhand">‹ open</span></td>
+              <td class="vendor">Fraudster LLC</td>
+              <td class="amt">100,000.00</td>
+              <td><span class="stamp s-review"><span class="dot"></span>Needs Review</span></td>
+              <td class="flag-cell">Fraud suspected</td>
+              <td style="text-align:center">
+                <span class="alarm a-critical"><span class="tick"><i></i><i></i><i></i><i></i></span><span class="blink">Critical</span></span>
+              </td>
+              <td class="recv">2m ago</td>
+              <td class="bal"><span class="lbl">running</span>100,000.00</td>
+            </tr>
+
+            <tr tabindex="0">
+              <td class="num">INV-1002</td>
+              <td class="vendor">Gadgets Co.</td>
+              <td class="amt">15,000.00</td>
+              <td><span class="stamp s-review"><span class="dot"></span>Needs Review</span></td>
+              <td class="flag-cell">Over budget</td>
+              <td style="text-align:center"><span class="alarm a-medium"><span class="tick"><i></i><i></i><i></i><i></i></span>Medium</span></td>
+              <td class="recv">14m ago</td>
+              <td class="bal">115,000.00</td>
+            </tr>
+
+            <tr tabindex="0">
+              <td class="num">INV-1008</td>
+              <td class="vendor">Northwind Supply</td>
+              <td class="amt">8,420.00</td>
+              <td><span class="stamp s-review"><span class="dot"></span>Needs Review</span></td>
+              <td class="flag-cell">Unknown item</td>
+              <td style="text-align:center"><span class="alarm a-low"><span class="tick"><i></i><i></i><i></i><i></i></span>Low</span></td>
+              <td class="recv">1h ago</td>
+              <td class="bal">123,420.00</td>
+            </tr>
+
+            <tr tabindex="0">
+              <td class="num">INV-1016</td>
+              <td class="vendor">Northwind Supply</td>
+              <td class="amt">3,150.00</td>
+              <td><span class="stamp s-review"><span class="dot"></span>Needs Review</span></td>
+              <td class="flag-cell">Unknown item</td>
+              <td style="text-align:center"><span class="alarm a-low"><span class="tick"><i></i><i></i><i></i><i></i></span>Low</span></td>
+              <td class="recv">2h ago</td>
+              <td class="bal">126,570.00</td>
+            </tr>
+
+            <tr tabindex="0">
+              <td class="num">INV-1009</td>
+              <td class="vendor">Orion Components</td>
+              <td class="amt">2,400.00</td>
+              <td><span class="stamp s-review"><span class="dot"></span>Needs Review</span></td>
+              <td class="flag-cell">Data integrity</td>
+              <td style="text-align:center"><span class="alarm a-medium"><span class="tick"><i></i><i></i><i></i><i></i></span>Medium</span></td>
+              <td class="recv">3h ago</td>
+              <td class="bal">128,970.00</td>
+            </tr>
+
+            <!-- PROCESSING -->
+            <tr tabindex="0">
+              <td class="num">INV-1011</td>
+              <td class="vendor">Bluepeak Logistics</td>
+              <td class="amt">12,300.00</td>
+              <td>
+                <span class="stamp s-proc">
+                  <span class="dot pulse-dot"></span>Processing
+                </span>
+              </td>
+              <td class="flag-cell"><em>extracting…</em></td>
+              <td style="text-align:center"><span class="alarm a-none"><span class="em">—</span></span></td>
+              <td class="recv">just now</td>
+              <td class="bal">—</td>
+            </tr>
+
+            <!-- PAID -->
+            <tr tabindex="0">
+              <td class="num">INV-1004</td>
+              <td class="vendor">Precision Parts Ltd.</td>
+              <td class="amt">4,750.00</td>
+              <td><span class="stamp s-paid"><span class="dot"></span>Paid</span></td>
+              <td class="flag-cell">Touchless</td>
+              <td style="text-align:center"><span class="alarm a-none"><span class="em">—</span></span></td>
+              <td class="recv">4h ago</td>
+              <td class="bal">—</td>
+            </tr>
+
+            <tr tabindex="0">
+              <td class="num">INV-1001</td>
+              <td class="vendor">Widgets Inc.</td>
+              <td class="amt">5,000.00</td>
+              <td><span class="stamp s-paid"><span class="dot"></span>Paid</span></td>
+              <td class="flag-cell">Touchless</td>
+              <td style="text-align:center"><span class="alarm a-none"><span class="em">—</span></span></td>
+              <td class="recv">5h ago</td>
+              <td class="bal">—</td>
+            </tr>
+
+            <!-- SUPERSEDED -->
+            <tr class="muted" tabindex="0">
+              <td class="num">INV-1004-R</td>
+              <td class="vendor">Precision Parts Ltd.</td>
+              <td class="amt">4,750.00</td>
+              <td><span class="stamp s-super"><span class="dot"></span>Superseded</span></td>
+              <td class="flag-cell">Exact duplicate</td>
+              <td style="text-align:center"><span class="alarm a-none"><span class="em">—</span></span></td>
+              <td class="recv">4h ago</td>
+              <td class="bal">void</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="ledger-foot">
+              <td colspan="2"><span class="caps">Carried forward · in suspense</span></td>
+              <td class="amt" style="color:var(--oxblood);font-weight:600">128,970.00</td>
+              <td colspan="4"><span class="caps">5 entries awaiting the reviewer's hand</span></td>
+              <td class="bal" style="color:var(--oxblood);font-weight:600;font-size:.95rem">128,970.00</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- key to the ledger: full alarm spectrum -->
+        <div class="ledger-key reveal d3" aria-label="Key to alarm levels">
+          <span class="key-lead">Key · alarm spectrum</span>
+          <span class="key-item"><span class="alarm a-critical" style="padding:1px 5px"><span class="tick"><i></i><i></i><i></i><i></i></span>Critical</span></span>
+          <span class="key-item"><span class="alarm a-high"><span class="tick"><i></i><i></i><i></i><i></i></span>High</span><span class="gloss">block, urgent</span></span>
+          <span class="key-item"><span class="alarm a-medium"><span class="tick"><i></i><i></i><i></i><i></i></span>Medium</span></span>
+          <span class="key-item"><span class="alarm a-low"><span class="tick"><i></i><i></i><i></i><i></i></span>Low</span></span>
+          <span class="key-item"><span class="alarm a-info"><span class="tick"><i></i><i></i><i></i><i></i></span>Info</span><span class="gloss">noted only</span></span>
+        </div>
+      </section>
+
+      <!-- =================== RIGHT: CASE FILE =================== -->
+      <section class="col-case casefile" aria-labelledby="case-head">
+        <div class="sec-head reveal d3">
+          <span class="sec-num">III.</span>
+          <h2 class="sec-title" id="case-head">Case File</h2>
+          <span class="sec-aside">opened for human decision</span>
+        </div>
+
+        <!-- banner -->
+        <div class="case-banner reveal d4">
+          <div class="overstamp" aria-hidden="true">
+            <span class="ink ghost">Hold</span>
+            <span class="ink">Hold</span>
+          </div>
+          <div class="case-banner-body">
+            <div class="case-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+              Fraud Suspected · Alarm Critical · Touchless Blocked
+            </div>
+            <h1 class="case-title">INV-1003 — <span class="vendor-name">Fraudster LLC</span></h1>
+            <div class="case-sub">
+              <span><span class="stamp s-review" style="font-size:.54rem"><span class="dot"></span>Needs Review</span></span>
+              <span class="div">·</span>
+              <span class="crit">$100,000.00 USD</span>
+              <span class="div">·</span>
+              <span>Invoice dated 20 January 2026</span>
+              <span class="div">·</span>
+              <span>Terms: Immediate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- extracted fields -->
+        <h3 class="sub-head reveal d4">Extracted Particulars <span class="aside">LLM · grok · 5 fields</span></h3>
+        <table class="fields reveal d4">
+          <tr>
+            <th>Amount</th>
+            <td class="money">$100,000.00 <span style="font-size:.7rem;color:var(--ink-faint)">USD</span></td>
+          </tr>
+          <tr>
+            <th>Invoice Date</th>
+            <td>20 January 2026</td>
+          </tr>
+          <tr>
+            <th>Due Date</th>
+            <td class="warn">“yesterday” <span class="note">could not be parsed — see footnote 4</span></td>
+          </tr>
+          <tr>
+            <th>Terms</th>
+            <td class="warn">Immediate <span class="note">document demands an immediate wire</span></td>
+          </tr>
+          <tr>
+            <th>Vendor</th>
+            <td>
+              Fraudster LLC<br />
+              <span class="notfound">Not found in vendor master</span>
+              <span class="note" style="font-style:italic;font-size:.8rem;color:var(--ink-faint);display:block">No relationship; no banking details on file.</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- line items -->
+        <h3 class="sub-head reveal d4">Schedule of Line Items <span class="aside">1 line · unmatched</span></h3>
+        <table class="lineitems reveal d4">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="r">Qty</th>
+              <th class="r">Unit</th>
+              <th class="r">Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                FakeItem
+                <span class="item-flag">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  not on any purchase order
+                </span>
+              </td>
+              <td class="r">100</td>
+              <td class="r">$1,000.00</td>
+              <td class="r" style="font-weight:600">$100,000.00</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><span class="caps" style="color:var(--ink-faint)">Total charged</span></td>
+              <td class="r" style="color:var(--oxblood)">$100,000.00</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- findings as numbered marginalia -->
+        <h3 class="sub-head reveal d5">Findings <span class="aside">4 raised · 2 errors block pay</span></h3>
+        <div class="findings reveal d5">
+          <div class="finding is-error">
+            <div class="fnum"></div>
+            <div class="fbody">
+              <span class="fkey">unknown_vendor</span>
+              <span class="fmeta"><span class="sev error">Error</span><span class="raiser det">deterministic</span></span>
+              <p class="ftext">No vendor “Fraudster LLC” in the master. We have no relationship or banking details on file.</p>
+            </div>
+          </div>
+          <div class="finding is-error">
+            <div class="fnum"></div>
+            <div class="fbody">
+              <span class="fkey">item_not_on_po</span>
+              <span class="fmeta"><span class="sev error">Error</span><span class="raiser det">deterministic</span></span>
+              <p class="ftext">“FakeItem” matches no authorized purchase-order line for any vendor.</p>
+            </div>
+          </div>
+          <div class="finding">
+            <div class="fnum"></div>
+            <div class="fbody">
+              <span class="fkey">suspicious_pressure</span>
+              <span class="fmeta"><span class="sev warning">Warning</span><span class="raiser llm">— raised by the agent</span></span>
+              <p class="ftext">Document pressures an immediate wire transfer (“URGENT — pay immediately to avoid penalties”). Classic fraud pattern.</p>
+            </div>
+          </div>
+          <div class="finding">
+            <div class="fnum"></div>
+            <div class="fbody">
+              <span class="fkey">due_date_invalid</span>
+              <span class="fmeta"><span class="sev warning">Warning</span><span class="raiser det">deterministic</span></span>
+              <p class="ftext">Due date “yesterday” is not a parseable date.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- verdict -->
+        <div class="verdict reveal d5">
+          <div class="vlabel">
+            <span>Agent's Verdict</span>
+            <span class="recommend">Recommend · Hold</span>
+          </div>
+          <p class="vtext">
+            <span class="dropcap">R</span>ecommend HOLD. An unknown vendor, an unauthorized six-figure line item, and explicit wire-transfer urgency together read as a fabricated invoice. Do not pay. Route to AP fraud review.
+          </p>
+        </div>
+
+        <!-- trace timeline -->
+        <details class="trace reveal d5" open>
+          <summary>
+            <span>Audit Trace — five steps</span>
+            <span class="chev" aria-hidden="true">›</span>
+          </summary>
+          <table class="trace-table">
+            <tbody>
+              <tr>
+                <td class="ts">14:32:06</td>
+                <td class="step">Ingest</td>
+                <td class="desc">routed <span class="v">text/plain</span></td>
+                <td class="dur">8 ms</td>
+              </tr>
+              <tr>
+                <td class="ts">14:32:06</td>
+                <td class="step">Extract</td>
+                <td class="desc">LLM <span class="v">(grok)</span> — parsed 5 fields, 1 line item</td>
+                <td class="dur">1,180 ms</td>
+              </tr>
+              <tr>
+                <td class="ts">14:32:07</td>
+                <td class="step">Validate</td>
+                <td class="desc">vendor master + PO match — <span class="v">3 findings</span> raised</td>
+                <td class="dur">42 ms</td>
+              </tr>
+              <tr>
+                <td class="ts">14:32:07</td>
+                <td class="step">Judge</td>
+                <td class="desc">LLM critique loop (2 passes) — verdict: <span class="v">HOLD</span></td>
+                <td class="dur">1,640 ms</td>
+              </tr>
+              <tr class="gate">
+                <td class="ts">14:32:09</td>
+                <td class="step">Gate</td>
+                <td class="desc">→ <span class="v">NEEDS_REVIEW</span> (fraud_suspected, critical)</td>
+                <td class="dur">2 ms</td>
+              </tr>
+            </tbody>
+          </table>
+        </details>
+
+        <!-- action bar -->
+        <div class="actionbar reveal d5">
+          <div class="note-field">
+            <label for="rnote">Reviewer's Note · entered into the audit folio</label>
+            <textarea id="rnote" placeholder="Record your reasoning before posting a decision…"></textarea>
+          </div>
+          <div class="actions">
+            <button class="act danger" type="button" id="approveBtn">
+              <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              Approve &amp; Pay
+            </button>
+            <button class="act" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 17h.01M12 13a3 3 0 1 0-3-3"/><circle cx="12" cy="12" r="10"/></svg>
+              Request More Info
+            </button>
+            <button class="act primary-reject" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              Reject &amp; Log Reason
+            </button>
+          </div>
+
+          <p class="guard-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span>Payment is <strong>guarded</strong>. Two deterministic errors block touchless settlement and the alarm is <strong style="color:var(--oxblood)">critical</strong>. Approving this hold against the agent's HOLD verdict requires an explicit, logged confirmation.</span>
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================
+         4 · UPLOAD
+         ============================================================ -->
+    <section class="upload-section reveal d5" aria-labelledby="upload-head">
+      <div class="sec-head">
+        <span class="sec-num">IV.</span>
+        <h2 class="sec-title" id="upload-head">Receiving</h2>
+        <span class="sec-aside">one intake · web app and command line, the same ledger</span>
+      </div>
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop an invoice to process">
+        <div class="dz-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6M9 15l3-3 3 3"/></svg>
+        </div>
+        <h3>Drop an invoice to process</h3>
+        <p class="dz-formats">
+          <span class="fmt">PDF</span> · <span class="fmt">CSV</span> · <span class="fmt">JSON</span> · <span class="fmt">XML</span> · <span class="fmt">TXT</span>
+          — the same API backs the web app and the CLI.
+        </p>
+        <button class="dz-browse" type="button">Choose a File</button>
+        <div class="dz-hint">Processing runs as a background job; watch it move through the queue.</div>
+      </div>
+    </section>
+
+    <!-- colophon -->
+    <footer class="colophon reveal d5">
+      <span>Galatiq <span class="gold">·</span> Accounts Payable Counting House <span class="gold">·</span> Folio for Acme Corp</span>
+      <span>Autonomous intake <span class="ox">·</span> human adjudication <span class="ox">·</span> full audit folio retained</span>
+    </footer>
+  </main>
+
+  <script>
+    // --- Row selection: clicking a register row "opens" it as the case ---
+    (function () {
+      var rows = document.querySelectorAll('.ledger tbody tr');
+      rows.forEach(function (row) {
+        function activate() {
+          rows.forEach(function (r) { r.classList.remove('selected'); r.setAttribute('aria-selected', 'false'); });
+          row.classList.add('selected');
+          row.setAttribute('aria-selected', 'true');
+        }
+        row.addEventListener('click', activate);
+        row.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+        });
+      });
+    })();
+
+    // --- Guarded approve: requires explicit confirmation, as befits a critical hold ---
+    (function () {
+      var btn = document.getElementById('approveBtn');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var ok = window.confirm(
+          'GUARDED ACTION — INV-1003 carries a CRITICAL fraud alarm and two blocking errors.\n\n' +
+          'The agent recommends HOLD. Approving will pay $100,000.00 to an unknown vendor with no banking details on file.\n\n' +
+          'Type-of-record confirmation required. Proceed against the HOLD verdict?'
+        );
+        if (!ok) {
+          btn.textContent = 'Hold sustained';
+          setTimeout(function () {
+            btn.innerHTML = '<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Approve &amp; Pay';
+          }, 1600);
+        }
+      });
+    })();
+
+    // --- Upload button + dropzone affordance (visual only) ---
+    (function () {
+      var dz = document.getElementById('dropzone');
+      var open = document.getElementById('openUpload');
+      if (open && dz) {
+        open.addEventListener('click', function () {
+          dz.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          dz.classList.add('drag');
+          setTimeout(function () { dz.classList.remove('drag'); }, 1100);
+        });
+      }
+      if (dz) {
+        ['dragenter', 'dragover'].forEach(function (ev) {
+          dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('drag'); });
+        });
+        ['dragleave', 'drop'].forEach(function (ev) {
+          dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove('drag'); });
+        });
+        dz.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dz.classList.add('drag'); setTimeout(function () { dz.classList.remove('drag'); }, 700); }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

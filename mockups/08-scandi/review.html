@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>INV-1003 · Review · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,420;9..144,460;9..144,500;9..144,600&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable — Inbox">
+    <span class="mark">Galatiq<span class="dot">.</span></span>
+    <span class="descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+  </div>
+  <div class="nav-right">
+    <a href="upload.html" class="btn btn-primary">Upload invoice</a>
+    <div class="who">
+      <span class="av">DO</span>
+      <span>
+        <span class="name">Dana Okafor</span><br />
+        <span class="org">Acme Corp</span>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <a class="back reveal" href="index.html" style="animation-delay:.05s">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Back to inbox
+  </a>
+
+  <header class="r-head reveal" style="animation-delay:.12s">
+    <span class="inv-no tabular">INV-1003</span>
+    <span class="sep">·</span>
+    <span class="vendor-name">Fraudster LLC</span>
+    <span class="chip chip-critical"><span class="seed"></span>Fraud suspected</span>
+  </header>
+
+  <div class="r-grid">
+
+    <!-- LEFT: the decision -->
+    <div>
+      <section class="card reveal" style="animation-delay:.2s">
+        <div class="hero">
+          <span class="h-label">Amount requested</span>
+          <span class="h-amount tabular">$100,000.00<span class="cur">USD</span></span>
+          <span class="h-flag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+            Vendor is <b>not</b> in our master file
+          </span>
+        </div>
+
+        <div class="card-pad">
+          <h2 class="section-title">Why it is held</h2>
+          <p class="section-note">Only the findings that matter for this decision.</p>
+
+          <ul class="findings">
+            <li>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+              <span class="f-body">
+                <span class="f-title">Unknown vendor</span>
+                <span class="f-detail">Not in our master — no relationship or banking details on file.</span>
+              </span>
+            </li>
+            <li>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg></span>
+              <span class="f-body">
+                <span class="f-title">Unauthorized item</span>
+                <span class="f-detail">"FakeItem x100" matches no purchase order.</span>
+              </span>
+            </li>
+            <li>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+              <span class="f-body">
+                <span class="f-title">Urgency to wire immediately</span>
+                <span class="f-detail">A classic fraud pattern.</span>
+                <span class="f-by">raised by the agent</span>
+              </span>
+            </li>
+          </ul>
+
+          <div class="reco">
+            <span class="badge">Agent</span>
+            <span class="reco-text">Recommend <b>HOLD</b>. Do not pay; route to AP fraud review.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRACE — collapsed -->
+      <details class="disclosure reveal" style="animation-delay:.32s">
+        <summary>
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+          View processing trace
+          <svg class="caret" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </summary>
+        <div class="trace">
+          <div class="trace-step">
+            <span class="node"></span>
+            <span class="t-name">Ingest <small>parsed PDF, 1 page</small></span>
+            <span class="t-ms tabular">38 ms</span>
+          </div>
+          <div class="trace-step">
+            <span class="node"></span>
+            <span class="t-name">Extract <small>vendor, amount, 1 line item</small></span>
+            <span class="t-ms tabular">1,240 ms</span>
+          </div>
+          <div class="trace-step">
+            <span class="node"></span>
+            <span class="t-name">Validate <small>vendor master miss · PO miss · unparseable due date</small></span>
+            <span class="t-ms tabular">86 ms</span>
+          </div>
+          <div class="trace-step">
+            <span class="node"></span>
+            <span class="t-name">Judge <small>fraud signals: 3 · confidence 0.94</small></span>
+            <span class="t-ms tabular">2,010 ms</span>
+          </div>
+          <div class="trace-step hold">
+            <span class="node"></span>
+            <span class="t-name">Gate <small>routed to human · HOLD</small></span>
+            <span class="t-ms tabular">12 ms</span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- RIGHT: facts + actions -->
+    <aside>
+      <section class="card card-pad reveal" style="animation-delay:.26s">
+        <h2 class="section-title">The essentials</h2>
+        <ul class="facts" style="margin-top:14px">
+          <li><span class="k">Due date</span><span class="v warn">Yesterday · unparseable</span></li>
+          <li><span class="k">Terms</span><span class="v">Immediate</span></li>
+          <li><span class="k">Line items</span><span class="v">1</span></li>
+          <li><span class="k">FakeItem × 100</span><span class="v tabular">$1,000.00</span></li>
+        </ul>
+
+        <div class="actions">
+          <div class="action-row">
+            <button class="btn btn-lg btn-reject">Reject &amp; log</button>
+            <button class="btn btn-lg btn-info">Request info</button>
+          </div>
+
+          <div class="approve-guard">
+            <button class="btn btn-lg btn-approve" id="approveBtn" type="button">Approve &amp; Pay</button>
+            <span class="guard-note">Guarded — the agent recommends against paying. Confirm twice.</span>
+          </div>
+
+          <div class="note-field">
+            <label for="note">Reviewer note</label>
+            <textarea id="note" placeholder="Add a note for the audit trail…"></textarea>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+  </div>
+</main>
+
+<script>
+  // Guard the wrong move: require an explicit double confirmation to pay a suspected-fraud invoice.
+  (function () {
+    var btn = document.getElementById("approveBtn");
+    var armed = false, t;
+    btn.addEventListener("click", function () {
+      if (!armed) {
+        armed = true;
+        btn.textContent = "Are you sure? This is flagged fraud — click again to pay $100,000.00";
+        btn.style.borderStyle = "solid";
+        clearTimeout(t);
+        t = setTimeout(function () {
+          armed = false;
+          btn.textContent = "Approve & Pay";
+          btn.style.borderStyle = "dashed";
+        }, 4000);
+        return;
+      }
+      armed = false;
+      btn.textContent = "Held — second confirmation logged, payment blocked";
+      btn.disabled = true;
+      btn.style.opacity = ".6";
+    });
+  })();
+</script>
+
+</body>
+</html>

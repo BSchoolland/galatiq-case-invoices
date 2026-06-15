@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audit · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<style>
+  .ledger { padding: 0 0 140px; }
+  .ledger__list { border-top: 1.5px solid var(--rule-strong); margin-top: 8px; }
+  .ev {
+    display: grid;
+    grid-template-columns: 96px 1fr 200px;
+    gap: var(--gut);
+    align-items: baseline;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ev__time {
+    font-family: "Archivo", sans-serif;
+    font-weight: 700;
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .ev__what { font-family:"Archivo",sans-serif; font-weight:700; font-size: var(--step-1); letter-spacing:-0.01em; }
+  .ev__what .id { color: var(--faint); font-weight:600; margin-left:10px; font-size:var(--step--1); letter-spacing:0.08em; }
+  .ev__detail { color: var(--mute); margin-top:5px; font-size: var(--step-0); }
+  .ev__actor {
+    text-align: right;
+    font-size: var(--step--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .ev__actor.agent { color: var(--ink); }
+  .ev__actor.flag { color: var(--red); }
+  @media (max-width:1080px){ .ev{ grid-template-columns: 80px 1fr; } .ev__actor{ grid-column:2; text-align:left; margin-top:6px; } }
+</style>
+<script>document.documentElement.className += " js-anim";</script>
+</head>
+<body>
+<div class="page">
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="wordmark" href="index.html" aria-label="Galatiq, Accounts Payable, home">
+        <span class="wordmark__mark">Galatiq</span>
+        <span class="wordmark__desc">Accounts&nbsp;Payable</span>
+      </a>
+      <nav class="nav__links">
+        <a class="nav__link" href="index.html">Inbox</a>
+        <a class="nav__link nav__link--active" href="audit.html">Audit</a>
+      </nav>
+      <div class="nav__right">
+        <a class="btn-upload" href="upload.html">Upload invoice</a>
+        <div class="user">
+          <span class="user__dot">DO</span>
+          <span class="user__name">Dana Okafor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="frame ledger">
+    <section class="head" style="border-bottom:none; padding-bottom:0;">
+      <div class="head__index reveal">
+        <span class="num">04</span>
+        <span class="label">Audit · Acme Corp</span>
+      </div>
+      <h1 class="head__title reveal" style="animation-delay:.05s">Every decision, on the record.</h1>
+    </section>
+
+    <div class="summary-line reveal" style="animation-delay:.12s">
+      <span class="txt">Today · <b>7 events</b>. Each pay, hold, and escalation is logged immutably.</span>
+    </div>
+
+    <div class="ledger__list">
+      <div class="ev reveal" style="animation-delay:.18s">
+        <span class="ev__time">14:02:11</span>
+        <div><div class="ev__what">Flagged for human review <span class="id">INV-1003</span></div>
+          <div class="ev__detail">Fraud signals: unknown vendor, no matching PO, urgency to wire.</div></div>
+        <span class="ev__actor flag">Agent · gate</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.22s">
+        <span class="ev__time">14:00:48</span>
+        <div><div class="ev__what">Extraction complete <span class="id">INV-1011</span></div>
+          <div class="ev__detail">Bluepeak Logistics · awaiting validation.</div></div>
+        <span class="ev__actor agent">Agent · extract</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.26s">
+        <span class="ev__time">13:48:30</span>
+        <div><div class="ev__what">Paid touchless <span class="id">INV-1004</span></div>
+          <div class="ev__detail">Precision Parts Ltd. · $4,750.00 · matched PO-2261.</div></div>
+        <span class="ev__actor agent">Agent · pay</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.30s">
+        <span class="ev__time">12:15:09</span>
+        <div><div class="ev__what">Held — over budget <span class="id">INV-1002</span></div>
+          <div class="ev__detail">Gadgets Co. · $15,000.00 exceeds department cap.</div></div>
+        <span class="ev__actor agent">Agent · judge</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.34s">
+        <span class="ev__time">11:52:44</span>
+        <div><div class="ev__what">Reviewer note added <span class="id">INV-1009</span></div>
+          <div class="ev__detail">“Requested updated unit prices from vendor.”</div></div>
+        <span class="ev__actor">Dana Okafor</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.38s">
+        <span class="ev__time">09:30:02</span>
+        <div><div class="ev__what">Paid touchless <span class="id">INV-1001</span></div>
+          <div class="ev__detail">Widgets Inc. · $5,000.00 · matched PO-2240.</div></div>
+        <span class="ev__actor agent">Agent · pay</span>
+      </div>
+      <div class="ev reveal" style="animation-delay:.42s">
+        <span class="ev__time">08:11:57</span>
+        <div><div class="ev__what">Vendor master synced <span class="id">SYS</span></div>
+          <div class="ev__detail">312 active payees · 0 changes pending.</div></div>
+        <span class="ev__actor">System</span>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

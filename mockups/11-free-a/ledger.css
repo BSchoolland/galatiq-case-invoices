@@ -1,0 +1,232 @@
+/* Galatiq · Accounts Payable — "The Ledger"
+   Archival paper aesthetic: cream stock, ink, oxidized-copper accent.
+   Display: Fraunces (optical, characterful serif). Figures/UI: Spline Sans Mono. */
+
+:root {
+  --paper:        #f3ecdd;
+  --paper-2:      #ece3cf;   /* slightly deeper card stock */
+  --paper-edge:   #e3d7bd;
+  --ink:          #211d17;   /* near-black warm ink */
+  --ink-soft:     #5a5142;
+  --ink-faint:    #8c8068;
+  --rule:         #d8cbab;   /* hairline rules */
+  --rule-strong:  #c4b389;
+  --copper:       #9a4a1f;   /* the one confident accent — oxidized copper */
+  --copper-deep:  #6f3413;
+  --copper-tint:  #ead7c4;
+  --crimson:      #8a1c10;   /* reserved exclusively for CRITICAL / fraud */
+  --crimson-tint: #eccfc6;
+  --moss:         #4d5a32;   /* paid / cleared */
+  --slate:        #4a5560;   /* processing / neutral motion */
+
+  --shadow: 0 1px 0 #fff8ea inset, 0 18px 40px -28px rgba(33,29,23,.55);
+
+  --max: 1080px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  /* Paper grain: faint warp + fiber speckle, no images. */
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(154,74,31,.05), transparent 38%),
+    radial-gradient(circle at 86% 88%, rgba(77,90,50,.045), transparent 42%),
+    repeating-linear-gradient(0deg, rgba(33,29,23,.012) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(33,29,23,.012) 0 1px, transparent 1px 3px);
+  color: var(--ink);
+  font-family: "Spline Sans Mono", ui-monospace, monospace;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: .005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- Type ---------- */
+.serif { font-family: "Fraunces", Georgia, serif; }
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 540;
+  letter-spacing: -.01em;
+  margin: 0;
+  font-optical-sizing: auto;
+}
+
+.eyebrow {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+a { color: inherit; }
+
+/* ---------- Layout shell ---------- */
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 40px; }
+
+/* ---------- Top nav ---------- */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background:
+    linear-gradient(var(--paper), var(--paper)) padding-box,
+    var(--paper);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: saturate(120%);
+}
+.nav::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--rule-strong);
+  opacity: .5;
+  margin-top: -1px;
+}
+.nav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 18px 40px;
+  display: flex;
+  align-items: baseline;
+  gap: 30px;
+}
+.brand { display: flex; align-items: baseline; gap: 11px; text-decoration: none; margin-right: 8px; }
+.brand .mark {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: 23px;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+.brand .mark::first-letter { color: var(--copper); }
+.brand .desc {
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-left: 1px solid var(--rule-strong);
+  padding-left: 11px;
+}
+
+.nav-links { display: flex; gap: 26px; margin-left: 4px; }
+.nav-links a {
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid transparent;
+  transition: color .18s var(--ease), border-color .18s var(--ease);
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--copper);
+}
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+
+.btn {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  text-decoration: none;
+  border: 1px solid var(--copper);
+  color: var(--copper-deep);
+  background: transparent;
+  padding: 9px 16px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .18s var(--ease), color .18s var(--ease), transform .12s var(--ease);
+}
+.btn:hover { background: var(--copper); color: var(--paper); }
+.btn:active { transform: translateY(1px); }
+.btn-solid { background: var(--copper); color: var(--paper); }
+.btn-solid:hover { background: var(--copper-deep); }
+.btn-ghost { border-color: var(--rule-strong); color: var(--ink-soft); }
+.btn-ghost:hover { background: var(--paper-2); color: var(--ink); border-color: var(--ink-faint); }
+
+.who {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.who .dot {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--copper-tint);
+  border: 1px solid var(--rule-strong);
+  font-size: 11px; font-weight: 600; color: var(--copper-deep);
+  font-family: "Fraunces", serif;
+}
+
+/* ---------- Status indicators ---------- */
+.status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.glyph {
+  width: 9px; height: 9px; border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 3px rgba(0,0,0,.03);
+}
+.glyph.review  { background: var(--copper); }
+.glyph.crit    { background: var(--crimson); box-shadow: 0 0 0 4px var(--crimson-tint); }
+.glyph.proc    { background: var(--slate); }
+.glyph.paid    { background: var(--moss); }
+
+.tag {
+  font-size: 11px;
+  letter-spacing: .03em;
+  color: var(--ink-soft);
+}
+.tag.crit { color: var(--crimson); font-weight: 600; }
+
+/* ---------- Focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Footer rule ---------- */
+.foot {
+  max-width: var(--max);
+  margin: 64px auto 40px;
+  padding: 18px 40px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---------- Entrance motion ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise { opacity: .001; animation: rise .6s var(--ease) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; opacity: 1; transform: none; }
+  * { scroll-behavior: auto !important; }
+}
+
+/* ---------- Narrow guard ---------- */
+@media (max-width: 760px) {
+  .nav-inner { flex-wrap: wrap; gap: 14px 22px; }
+  .nav-links { order: 3; width: 100%; }
+  .wrap { padding: 0 22px; }
+}

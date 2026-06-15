@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="brutal.css" />
+<script src="brutal.js"></script>
+<style>
+.log { border-top: var(--bw) solid var(--line); margin-top: 8px; }
+.entry {
+  display: grid; grid-template-columns: 120px 14px 1fr auto; gap: 0; align-items: stretch;
+  border-bottom: var(--bwthin) solid var(--line); background: var(--paper);
+  transition: background 0.12s linear;
+}
+.entry:hover { background: var(--paper-2); }
+.entry__t {
+  font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.06em;
+  color: var(--ink-2); padding: 22px; border-right: var(--bwthin) solid var(--line);
+  display: flex; align-items: center;
+}
+.entry__spine { background: var(--paper); }
+.entry--crit .entry__spine { background: var(--accent); }
+.entry--act .entry__spine { background: var(--ink); }
+.entry__body { padding: 22px; }
+.entry__what { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+.entry__what em { font-style: normal; color: var(--accent); }
+.entry__who {
+  font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-2); margin-top: 4px;
+}
+.entry__inv {
+  padding: 22px var(--gut) 22px 22px; display: flex; align-items: center;
+  font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--ink-2);
+}
+.entry__inv a { text-decoration: none; }
+.entry__inv a:hover { color: var(--accent); }
+
+@media (max-width: 760px) {
+  .entry { grid-template-columns: 14px 1fr; }
+  .entry__t { grid-column: 2; border-right: 0; padding-bottom: 0; }
+  .entry__inv { grid-column: 2; padding-top: 0; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__wordmark">galatiq</span>
+    <span class="nav__descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav__links">
+    <a class="nav__link" href="index.html">Inbox</a>
+    <a class="nav__link" href="vendors.html">Vendors</a>
+    <a class="nav__link" href="audit.html" aria-current="page">Audit</a>
+  </div>
+  <div class="nav__right">
+    <a class="nav__cta" href="upload.html">Upload invoice</a>
+    <div class="nav__user">
+      <span class="nav__user-name">Dana Okafor</span>
+      <span class="nav__user-org">Acme Corp</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <header class="pagehead reveal">
+    <h1 class="pagehead__title">Audit</h1>
+    <span class="regmark">IMMUTABLE LOG &nbsp;/&nbsp; TODAY &nbsp;/&nbsp; ACME CORP</span>
+  </header>
+
+  <section class="summaryline reveal">
+    <span class="summaryline__big">Every decision, by agent or human, on the record.</span>
+    <span class="summaryline__meta">append-only</span>
+  </section>
+
+  <section class="log reveal" aria-label="Audit log">
+
+    <div class="entry entry--crit">
+      <span class="entry__t">14:02:11</span>
+      <span class="entry__spine" aria-hidden="true"></span>
+      <div class="entry__body">
+        <div class="entry__what">Held at gate · <em>CRITICAL fraud suspected</em></div>
+        <div class="entry__who">Agent · galatiq-judge</div>
+      </div>
+      <div class="entry__inv"><a href="review.html">INV-1003</a></div>
+    </div>
+
+    <div class="entry">
+      <span class="entry__t">13:48:30</span>
+      <span class="entry__spine" aria-hidden="true"></span>
+      <div class="entry__body">
+        <div class="entry__what">Held · over budget</div>
+        <div class="entry__who">Agent · galatiq-gate</div>
+      </div>
+      <div class="entry__inv"><a href="review.html">INV-1002</a></div>
+    </div>
+
+    <div class="entry entry--act">
+      <span class="entry__t">10:11:04</span>
+      <span class="entry__spine" aria-hidden="true"></span>
+      <div class="entry__body">
+        <div class="entry__what">Paid touchless · cleared all checks</div>
+        <div class="entry__who">Agent · galatiq-pay</div>
+      </div>
+      <div class="entry__inv"><a href="review.html">INV-1004</a></div>
+    </div>
+
+    <div class="entry entry--act">
+      <span class="entry__t">09:02:55</span>
+      <span class="entry__spine" aria-hidden="true"></span>
+      <div class="entry__body">
+        <div class="entry__what">Approved &amp; paid</div>
+        <div class="entry__who">Human · Dana Okafor</div>
+      </div>
+      <div class="entry__inv"><a href="review.html">INV-1001</a></div>
+    </div>
+
+    <div class="entry">
+      <span class="entry__t">08:30:19</span>
+      <span class="entry__spine" aria-hidden="true"></span>
+      <div class="entry__body">
+        <div class="entry__what">Ingested · queued for review</div>
+        <div class="entry__who">Agent · galatiq-ingest</div>
+      </div>
+      <div class="entry__inv"><a href="review.html">INV-1008</a></div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>Galatiq AP · System of record</span>
+  <span>Log hash verified · append-only</span>
+</footer>
+
+</body>
+</html>

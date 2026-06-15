@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="deco.css" />
+<script>document.documentElement.className += " anim";</script>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galat<b>i</b>q</span>
+      <span class="descriptor">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html" aria-current="page">Audit</a>
+    </div>
+    <a class="btn-upload" href="upload.html">Upload Invoice</a>
+    <div class="user">
+      <span>Dana Okafor</span>
+      <span class="monogram" aria-hidden="true">DO</span>
+    </div>
+  </nav>
+  <div class="nav-rule"><div class="double"></div></div>
+
+  <main class="shell">
+
+    <header class="rise d1">
+      <p class="kicker">Acme Corp · The Record</p>
+      <h1 class="page-title">Audit</h1>
+    </header>
+
+    <div class="ledger rise d2" role="list" style="margin-top:30px">
+
+      <div class="row decision" role="listitem" style="cursor:default">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name" style="color:var(--bone)">Widgets Inc.</span>
+          <span class="no">INV-1001 · Paid touchless</span>
+        </span>
+        <span class="money amount">$5,000.00</span>
+        <span class="status">
+          <span class="actor-label">Reviewer</span>
+          <span class="state">Dana Okafor</span>
+          <span class="reason">Auto-cleared · agent gate</span>
+        </span>
+        <span class="when">5h</span>
+      </div>
+
+      <div class="row decision" role="listitem" style="cursor:default">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name" style="color:var(--bone)">Precision Parts Ltd.</span>
+          <span class="no">INV-1004 · Paid touchless</span>
+        </span>
+        <span class="money amount">$4,750.00</span>
+        <span class="status">
+          <span class="actor-label">Reviewer</span>
+          <span class="state">Dana Okafor</span>
+          <span class="reason">Auto-cleared · agent gate</span>
+        </span>
+        <span class="when">4h</span>
+      </div>
+
+      <div class="row decision critical" role="listitem" style="cursor:default">
+        <span class="dot is-crit" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name" style="color:var(--bone)">Fraudster LLC</span>
+          <span class="no">INV-1003 · Held for review</span>
+        </span>
+        <span class="money amount">$100,000.00</span>
+        <span class="status">
+          <span class="actor-label">Reviewer</span>
+          <span class="state">Dana Okafor</span>
+          <span class="reason crit">Routed to AP fraud review</span>
+        </span>
+        <span class="when">2m</span>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>Galatiq · Autonomous Accounts Payable</span>
+    <span class="org">Acme Corp</span>
+  </footer>
+
+</body>
+</html>

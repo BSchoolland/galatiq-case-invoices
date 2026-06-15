@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>INV-1003 · Review · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<script>document.documentElement.className += " js-anim";</script>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="wordmark" href="index.html" aria-label="Galatiq, Accounts Payable, home">
+        <span class="wordmark__mark">Galatiq</span>
+        <span class="wordmark__desc">Accounts&nbsp;Payable</span>
+      </a>
+      <nav class="nav__links">
+        <a class="nav__link" href="index.html">Inbox</a>
+        <a class="nav__link" href="audit.html">Audit</a>
+      </nav>
+      <div class="nav__right">
+        <a class="btn-upload" href="upload.html">Upload invoice</a>
+        <div class="user">
+          <span class="user__dot">DO</span>
+          <span class="user__name">Dana Okafor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="frame">
+
+    <a class="back reveal" href="index.html"><span class="back__arr">←</span> Back to inbox</a>
+
+    <!-- HEAD -->
+    <section class="rv-head">
+      <div class="rv-tags reveal" style="animation-delay:.05s">
+        <span class="tag tag--id tabular">INV-1003</span>
+        <span class="tag__sep">/</span>
+        <span class="tag tag--review">Needs review</span>
+        <span class="tag tag--critical">Critical · Fraud suspected</span>
+      </div>
+      <h1 class="rv-title reveal" style="animation-delay:.1s">Fraudster LLC</h1>
+    </section>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero__amount tabular reveal" style="animation-delay:.16s">
+        $100,000.00<span class="cur">USD</span>
+      </div>
+      <div class="hero__note reveal" style="animation-delay:.2s">
+        <div class="big">Vendor is not in our master.</div>
+        <div class="sub">No relationship, contract, or banking details on file for this payee.</div>
+      </div>
+    </section>
+
+    <!-- BODY -->
+    <section class="rv-body">
+
+      <!-- FINDINGS + RECOMMENDATION -->
+      <div class="findings">
+        <span class="label reveal" style="animation-delay:.24s">Why it is held</span>
+
+        <div class="findings__list">
+          <div class="finding reveal" style="animation-delay:.28s">
+            <span class="finding__n">01</span>
+            <div>
+              <div class="finding__t">Unknown vendor</div>
+              <div class="finding__d">Not in our master — no relationship or banking details on file.</div>
+            </div>
+          </div>
+          <div class="finding reveal" style="animation-delay:.32s">
+            <span class="finding__n">02</span>
+            <div>
+              <div class="finding__t">Unauthorized item</div>
+              <div class="finding__d">“FakeItem ×100” matches no purchase order in the system.</div>
+            </div>
+          </div>
+          <div class="finding reveal" style="animation-delay:.36s">
+            <span class="finding__n">03</span>
+            <div>
+              <div class="finding__t">Urgency to wire immediately</div>
+              <div class="finding__d">A classic fraud pattern: pressure to pay before checks complete.</div>
+              <div class="finding__agent">Raised by the agent</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="recommend reveal" style="animation-delay:.42s">
+          <span class="label">Agent recommendation</span>
+          <p>Recommend <span class="em">HOLD</span>. Do not pay; route to AP fraud review.</p>
+        </div>
+      </div>
+
+      <!-- SIDE FACTS + TRACE -->
+      <aside class="facts">
+        <div class="facts__head reveal" style="animation-delay:.3s">
+          <span class="label label--ink">Invoice facts</span>
+        </div>
+        <div class="fact reveal" style="animation-delay:.34s">
+          <span class="fact__k">Due date</span>
+          <span class="fact__v warn">Yesterday · unparsed</span>
+        </div>
+        <div class="fact reveal" style="animation-delay:.37s">
+          <span class="fact__k">Terms</span>
+          <span class="fact__v">Immediate</span>
+        </div>
+        <div class="fact reveal" style="animation-delay:.4s">
+          <span class="fact__k">Line items</span>
+          <span class="fact__v">1</span>
+        </div>
+        <div class="fact reveal" style="animation-delay:.43s">
+          <span class="fact__k">FakeItem ×100</span>
+          <span class="fact__v tabular">$1,000.00</span>
+        </div>
+
+        <!-- collapsed trace -->
+        <details class="disclosure reveal" style="animation-delay:.46s">
+          <summary><span class="chev">›</span> View processing trace</summary>
+          <div class="trace">
+            <div class="trace__step">
+              <span class="trace__n">1</span>
+              <span class="trace__name">Ingest <span>document received</span></span>
+              <span class="trace__ms">120 ms</span>
+            </div>
+            <div class="trace__step">
+              <span class="trace__n">2</span>
+              <span class="trace__name">Extract <span>fields parsed</span></span>
+              <span class="trace__ms">1,840 ms</span>
+            </div>
+            <div class="trace__step">
+              <span class="trace__n">3</span>
+              <span class="trace__name">Validate <span>vendor + PO check</span></span>
+              <span class="trace__ms">310 ms</span>
+            </div>
+            <div class="trace__step trace__step--judge">
+              <span class="trace__n">4</span>
+              <span class="trace__name">Judge <span>fraud signals found</span></span>
+              <span class="trace__ms">2,210 ms</span>
+            </div>
+            <div class="trace__step">
+              <span class="trace__n">5</span>
+              <span class="trace__name">Gate <span>routed to human</span></span>
+              <span class="trace__ms">40 ms</span>
+            </div>
+          </div>
+        </details>
+      </aside>
+
+    </section>
+  </main>
+
+  <!-- ACTION BAR -->
+  <div class="actionbar">
+    <div class="actionbar__inner">
+      <label class="note-field">
+        <input type="text" placeholder="Reviewer note — e.g. confirmed unknown payee, escalating to fraud team" aria-label="Reviewer note" />
+      </label>
+      <button class="btn btn--guard" id="approveBtn">
+        <span class="lock">⚠</span> Approve &amp; pay
+      </button>
+      <button class="btn">Reject &amp; log</button>
+      <button class="btn btn--ghost">Request info</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Guard the wrong move: paying a six-figure suspected-fraud invoice requires explicit confirm.
+  document.getElementById('approveBtn').addEventListener('click', function (e) {
+    e.preventDefault();
+    var ok = window.confirm(
+      'Approve & pay $100,000.00 to Fraudster LLC?\n\n' +
+      'The agent recommends HOLD — this vendor is not in your master and the item matches no PO.\n\n' +
+      'Type-confirm is required for flagged payments. Proceed anyway?'
+    );
+    if (!ok) return;
+    this.textContent = 'Confirm again to release funds';
+    this.classList.add('btn');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+/* Galatiq · Accounts Payable — Mono Neon
+   Near-black canvas, paper highlights, one electric lime accent. */
+
+:root {
+  --ink:        #0b0b0c;   /* near-black canvas */
+  --ink-2:      #141416;   /* raised surface */
+  --ink-3:      #1c1c1f;   /* hover / card */
+  --line:       #2a2a2e;   /* hairline */
+  --line-2:     #38383d;   /* stronger hairline */
+  --paper:      #f4f4f2;   /* primary text */
+  --muted:      #8a8a90;   /* secondary text */
+  --muted-2:    #5b5b61;   /* tertiary text */
+  --accent:     #c6f432;   /* electric lime — the identity */
+  --accent-dim: #9cc220;
+  --danger:     #c6f432;   /* critical reads neon, not red */
+  --radius:     2px;       /* sharp edges */
+  --max:        1180px;
+  --ease:       cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* faint vertical scanline texture so surfaces aren't dead-flat */
+  background-image:
+    radial-gradient(120% 80% at 80% -10%, rgba(198,244,50,0.05), transparent 55%),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 3px);
+  background-attachment: fixed;
+}
+
+.mono { font-family: "JetBrains Mono", monospace; }
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--accent); color: var(--ink); }
+
+/* ---------- shell ---------- */
+.wrap { width: 100%; max-width: var(--max); margin: 0 auto; padding: 0 40px; }
+
+/* ---------- top nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11,11,12,0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 36px;
+  height: 70px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: 8px; }
+.brand .mark {
+  font-weight: 700; font-size: 21px; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 9px;
+}
+.brand .dot {
+  width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
+  box-shadow: 0 0 12px rgba(198,244,50,0.8);
+}
+.brand .desc {
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a {
+  font-size: 13.5px; letter-spacing: 0.02em; color: var(--muted);
+  padding: 6px 0; position: relative; transition: color 0.18s var(--ease);
+}
+.nav-links a:hover { color: var(--paper); }
+.nav-links a.active { color: var(--paper); }
+.nav-links a.active::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
+  background: var(--accent);
+}
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+
+.btn-upload {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: var(--ink);
+  font-weight: 600; font-size: 13px; letter-spacing: 0.01em;
+  padding: 10px 16px; border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+}
+.btn-upload:hover { box-shadow: 0 0 22px rgba(198,244,50,0.35); transform: translateY(-1px); }
+
+.who { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--paper); }
+.who .org { color: var(--muted); font-size: 12px; }
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--ink-3); border: 1px solid var(--line-2);
+  display: grid; place-items: center; font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+  color: var(--paper);
+}
+
+/* ---------- focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* ---------- page head ---------- */
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+
+/* ---------- entrance ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(14px); animation: rise 0.7s var(--ease) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+}
+
+/* ---------- footer ---------- */
+.foot {
+  border-top: 1px solid var(--line);
+  margin-top: 90px; padding: 30px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--muted-2);
+}
+.foot .mono { letter-spacing: 0.04em; }
+
+/* ---------- reusable status dot ---------- */
+.s-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex: none; }
+.s-dot.review  { background: var(--muted); }
+.s-dot.proc    { background: var(--paper); animation: pulse 1.6s ease-in-out infinite; }
+.s-dot.paid    { background: transparent; border: 1.5px solid var(--muted-2); }
+.s-dot.crit    { background: var(--accent); box-shadow: 0 0 10px rgba(198,244,50,0.9); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+}

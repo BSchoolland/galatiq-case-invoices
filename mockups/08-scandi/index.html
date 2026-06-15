@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inbox · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,420;9..144,460;9..144,500;9..144,600&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable — Inbox">
+    <span class="mark">Galatiq<span class="dot">.</span></span>
+    <span class="descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+  </div>
+  <div class="nav-right">
+    <a href="upload.html" class="btn btn-primary">Upload invoice</a>
+    <div class="who">
+      <span class="av">DO</span>
+      <span>
+        <span class="name">Dana Okafor</span><br />
+        <span class="org">Acme Corp</span>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <header>
+    <p class="eyebrow reveal" style="animation-delay:.05s">Acme Corp · Today</p>
+    <h1 class="page-title reveal" style="animation-delay:.12s">Inbox</h1>
+    <p class="page-lede reveal" style="animation-delay:.2s">
+      <b>5 invoices need your review.</b> The agents have paid the rest. Everything below is waiting on a person.
+    </p>
+  </header>
+
+  <section class="list reveal" style="animation-delay:.3s" aria-label="Invoices needing review">
+
+    <a class="row critical" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Fraudster LLC</span>
+        <span class="v-no tabular">INV-1003</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-critical"><span class="seed"></span>Fraud suspected</span>
+        <span class="tag crit">needs review · critical</span>
+      </span>
+      <span class="amount tabular">$100,000.00</span>
+      <span class="when">2m</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Gadgets Co.</span>
+        <span class="v-no tabular">INV-1002</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-review"><span class="seed"></span>Needs review</span>
+        <span class="tag">over budget</span>
+      </span>
+      <span class="amount tabular">$15,000.00</span>
+      <span class="when">14m</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Northwind Supply</span>
+        <span class="v-no tabular">INV-1008</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-review"><span class="seed"></span>Needs review</span>
+        <span class="tag">unknown item</span>
+      </span>
+      <span class="amount tabular">$8,420.00</span>
+      <span class="when">1h</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Orion Components</span>
+        <span class="v-no tabular">INV-1009</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-review"><span class="seed"></span>Needs review</span>
+        <span class="tag">data integrity</span>
+      </span>
+      <span class="amount tabular">$2,400.00</span>
+      <span class="when">3h</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Bluepeak Logistics</span>
+        <span class="v-no tabular">INV-1011</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-process"><span class="seed"></span>Processing</span>
+      </span>
+      <span class="amount tabular">$12,300.00</span>
+      <span class="when">just now</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Precision Parts Ltd.</span>
+        <span class="v-no tabular">INV-1004</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-paid"><span class="seed"></span>Paid · touchless</span>
+      </span>
+      <span class="amount tabular">$4,750.00</span>
+      <span class="when">4h</span>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="vendor">
+        <span class="v-name">Widgets Inc.</span>
+        <span class="v-no tabular">INV-1001</span>
+      </span>
+      <span class="status-cell">
+        <span class="chip chip-paid"><span class="seed"></span>Paid · touchless</span>
+      </span>
+      <span class="amount tabular">$5,000.00</span>
+      <span class="when">5h</span>
+    </a>
+
+    <div class="list-foot">
+      <span>Everything else has been paid touchless.</span>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

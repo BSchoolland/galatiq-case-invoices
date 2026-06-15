@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Accounts Payable — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="brutal.css" />
+<script src="brutal.js"></script>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__wordmark">galatiq</span>
+    <span class="nav__descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav__links">
+    <a class="nav__link" href="index.html" aria-current="page">Inbox</a>
+    <a class="nav__link" href="vendors.html">Vendors</a>
+    <a class="nav__link" href="audit.html">Audit</a>
+  </div>
+  <div class="nav__right">
+    <a class="nav__cta" href="upload.html">Upload invoice</a>
+    <div class="nav__user">
+      <span class="nav__user-name">Dana Okafor</span>
+      <span class="nav__user-org">Acme Corp</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== PAGE ===================== -->
+<main class="shell">
+
+  <header class="pagehead reveal">
+    <div>
+      <h1 class="pagehead__title">Inbox</h1>
+    </div>
+    <span class="regmark">DESK · DOKAFOR &nbsp;/&nbsp; QUEUE 01 &nbsp;/&nbsp; UTC 14:02</span>
+  </header>
+
+  <section class="summaryline reveal" aria-label="Summary">
+    <span class="summaryline__big"><b>5</b> invoices need your review.</span>
+    <span class="summaryline__meta">2 cleared touchless today</span>
+  </section>
+
+  <!-- ===================== LIST ===================== -->
+  <section class="list" aria-label="Invoice queue">
+
+    <a class="row row--crit row--review reveal" href="review.html" aria-label="INV-1003 Fraudster LLC, one hundred thousand dollars, critical fraud suspected">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Fraudster LLC</span>
+        <span class="row__id">INV-1003 · NOT IN VENDOR MASTER</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--crit" aria-hidden="true"></span>
+        <span class="row__status-text">Needs review · <span class="tag--crit">Fraud suspected</span></span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$100,000.00</span>
+        <span class="row__time">2m</span>
+      </div>
+    </a>
+
+    <a class="row row--review reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Gadgets Co.</span>
+        <span class="row__id">INV-1002</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--review" aria-hidden="true"></span>
+        <span class="row__status-text">Needs review · over budget</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$15,000.00</span>
+        <span class="row__time">14m</span>
+      </div>
+    </a>
+
+    <a class="row row--review reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Northwind Supply</span>
+        <span class="row__id">INV-1008</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--review" aria-hidden="true"></span>
+        <span class="row__status-text">Needs review · unknown item</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$8,420.00</span>
+        <span class="row__time">1h</span>
+      </div>
+    </a>
+
+    <a class="row row--review reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Orion Components</span>
+        <span class="row__id">INV-1009</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--review" aria-hidden="true"></span>
+        <span class="row__status-text">Needs review · data integrity</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$2,400.00</span>
+        <span class="row__time">3h</span>
+      </div>
+    </a>
+
+    <a class="row reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Bluepeak Logistics</span>
+        <span class="row__id">INV-1011</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--proc" aria-hidden="true"></span>
+        <span class="row__status-text">Processing</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$12,300.00</span>
+        <span class="row__time">just now</span>
+      </div>
+    </a>
+
+    <a class="row reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Precision Parts Ltd.</span>
+        <span class="row__id">INV-1004</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--paid" aria-hidden="true"></span>
+        <span class="row__status-text">Paid</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$4,750.00</span>
+        <span class="row__time">4h</span>
+      </div>
+    </a>
+
+    <a class="row reveal" href="review.html">
+      <span class="row__spine" aria-hidden="true"></span>
+      <div class="row__main">
+        <span class="row__vendor">Widgets Inc.</span>
+        <span class="row__id">INV-1001</span>
+      </div>
+      <div class="row__status">
+        <span class="dot dot--paid" aria-hidden="true"></span>
+        <span class="row__status-text">Paid</span>
+      </div>
+      <div class="row__right">
+        <span class="row__amount">$5,000.00</span>
+        <span class="row__time">5h</span>
+      </div>
+    </a>
+
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>Galatiq AP · System of record</span>
+  <span>Touchless clearance ON · Human-in-the-loop for held items</span>
+</footer>
+
+</body>
+</html>

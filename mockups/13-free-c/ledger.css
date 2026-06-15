@@ -1,0 +1,189 @@
+/* Galatiq · Accounts Payable — "The Ledger" broadsheet identity
+   Ivory paper, deep ink, single vermillion danger accent.
+   Didone display (Playfair) + humanist serif body (Spectral) + mono figures. */
+
+:root {
+  --paper:        #f4efe4;
+  --paper-deep:   #ece5d6;
+  --ink:          #1c1a17;
+  --ink-soft:     #4a463f;
+  --ink-faint:    #837c70;
+  --rule:         #c9c0ad;
+  --rule-soft:    #d9d2c2;
+  --vermillion:   #c7341f;
+  --vermillion-d: #9c2615;
+  --gold:         #9a7b27;
+  --green:        #4f6a3f;
+  --teal:         #3a6b6b;
+
+  --serif-disp: "Playfair Display", Georgia, serif;
+  --serif-body: "Spectral", Georgia, serif;
+  --mono: "Spline Sans Mono", "Courier New", monospace;
+
+  --maxw: 1180px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif-body);
+  font-size: 17px;
+  line-height: 1.5;
+  /* Layered paper grain: faint diagonal hatch + soft vignette */
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -10%, rgba(255,255,255,.5), transparent 60%),
+    repeating-linear-gradient(135deg, rgba(28,26,23,.015) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(45deg, rgba(28,26,23,.012) 0 2px, transparent 2px 6px);
+  background-attachment: fixed;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+::selection { background: var(--vermillion); color: var(--paper); }
+
+/* ---------- Masthead / nav ---------- */
+.masthead {
+  border-bottom: 2.5px solid var(--ink);
+  background: linear-gradient(var(--paper), var(--paper));
+}
+.masthead-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  margin-right: 6px;
+}
+.wordmark .mark {
+  font-family: var(--serif-disp);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -.5px;
+  line-height: 1;
+  color: var(--ink);
+}
+.wordmark .desc {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border-left: 1px solid var(--rule);
+  padding-left: 10px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.nav a {
+  text-decoration: none;
+  color: var(--ink-soft);
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid transparent;
+  transition: color .18s var(--ease), border-color .18s var(--ease);
+}
+.nav a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--vermillion); }
+
+.btn-upload {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+  background: var(--ink);
+  padding: 9px 16px;
+  border: 1.5px solid var(--ink);
+  transition: background .18s var(--ease), transform .18s var(--ease);
+}
+.btn-upload:hover { background: var(--vermillion); border-color: var(--vermillion); }
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--serif-body);
+  font-size: 14px;
+  color: var(--ink-soft);
+  border-left: 1px solid var(--rule);
+  padding-left: 18px;
+}
+.user .dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  display: grid; place-items: center;
+  font-family: var(--serif-disp);
+  font-size: 13px; font-weight: 700;
+}
+
+a:focus-visible, button:focus-visible, .row:focus-visible, [tabindex]:focus-visible {
+  outline: 2.5px solid var(--vermillion);
+  outline-offset: 3px;
+}
+
+/* ---------- Shell ---------- */
+.shell { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; }
+
+/* ---------- Page dateline ---------- */
+.dateline {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding: 12px 0 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ---------- Editorial figures ---------- */
+.amt { font-family: var(--mono); font-feature-settings: "tnum" 1; font-variant-numeric: tabular-nums; }
+
+/* ---------- Animations ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes inkwipe {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.reveal { opacity: 0; animation: rise .6s var(--ease) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; animation: none; }
+  * { animation-duration: .001s !important; transition: none !important; }
+}
+
+/* ---------- Status indicators (dot + color, never full column) ---------- */
+.tick { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.tick.critical { background: var(--vermillion); box-shadow: 0 0 0 3px rgba(199,52,31,.18); }
+.tick.review   { background: var(--gold); }
+.tick.processing { background: var(--teal); }
+.tick.paid     { background: var(--green); }

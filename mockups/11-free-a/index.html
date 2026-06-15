@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galatiq · Accounts Payable — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .ledger-head {
+    padding: 56px 0 30px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+  }
+  .ledger-head h1 { font-size: 46px; line-height: 1.02; }
+  .ledger-head .sub {
+    margin-top: 14px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    max-width: 40ch;
+  }
+  .ledger-head .sub b { color: var(--copper-deep); font-weight: 600; }
+  .summary-date { text-align: right; color: var(--ink-faint); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+  .summary-date .big { display:block; font-family:"Fraunces",serif; font-size: 30px; color: var(--ink); letter-spacing:-.01em; text-transform:none; }
+
+  /* Ledger list */
+  .ledger {
+    border-top: 2px solid var(--ink);
+    margin-bottom: 8px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1.6fr 1.5fr 1fr 0.7fr;
+    gap: 24px;
+    align-items: center;
+    padding: 19px 18px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: background .2s var(--ease);
+  }
+  .row::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: transparent;
+    transition: background .2s var(--ease);
+  }
+  .row:hover { background: var(--paper-2); }
+  .row:hover::before { background: var(--copper); }
+
+  .vendor { display: flex; flex-direction: column; gap: 3px; }
+  .vendor .name { font-family: "Fraunces", serif; font-size: 18px; letter-spacing: -.01em; }
+  .vendor .inv  { font-size: 11.5px; color: var(--ink-faint); letter-spacing: .06em; }
+
+  .amount {
+    text-align: right;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .when { text-align: right; font-size: 12px; color: var(--ink-faint); }
+
+  .statuscell .status { font-size: 13px; }
+  .statuscell .tag { display: block; margin-top: 3px; margin-left: 17px; }
+
+  /* The fraud row — quietly draws the eye via a paper "redaction" warmth */
+  .row.flag {
+    background:
+      linear-gradient(90deg, rgba(138,28,16,.05), rgba(138,28,16,0) 60%);
+  }
+  .row.flag::before { background: var(--crimson); }
+  .row.flag:hover { background: linear-gradient(90deg, rgba(138,28,16,.09), rgba(138,28,16,0) 60%); }
+  .row.flag .vendor .name { color: var(--crimson); }
+
+  .hint-line {
+    margin-top: 22px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: .02em;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" aria-current="page">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-solid" href="upload.html">Upload invoice</a>
+      <span class="who"><span class="dot">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <header class="ledger-head">
+    <div>
+      <span class="eyebrow rise" style="animation-delay:.02s">Acme Corp · Payables ledger</span>
+      <h1 class="rise" style="animation-delay:.06s">The Inbox</h1>
+      <p class="sub rise" style="animation-delay:.12s">
+        <b>5 invoices need your review.</b> The agents cleared the rest. Work top to bottom — the ones drawing color are waiting on you.
+      </p>
+    </div>
+    <div class="summary-date rise" style="animation-delay:.16s">
+      <span>Today</span>
+      <span class="big serif">15 Jun</span>
+    </div>
+  </header>
+
+  <section class="ledger rise" style="animation-delay:.2s" aria-label="Invoices needing attention">
+    <a class="row flag" href="review.html" aria-label="INV-1003 Fraudster LLC, $100,000.00, critical fraud suspected, 2 minutes ago">
+      <div class="vendor">
+        <span class="name">Fraudster LLC</span>
+        <span class="inv tabular">INV-1003</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph crit"></span> needs review</span>
+        <span class="tag crit">CRITICAL · fraud suspected</span>
+      </div>
+      <div class="amount tabular">$100,000.00</div>
+      <div class="when">2m</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1002 Gadgets Co, $15,000.00, over budget, 14 minutes ago">
+      <div class="vendor">
+        <span class="name">Gadgets Co.</span>
+        <span class="inv tabular">INV-1002</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph review"></span> needs review</span>
+        <span class="tag">over budget</span>
+      </div>
+      <div class="amount tabular">$15,000.00</div>
+      <div class="when">14m</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1008 Northwind Supply, $8,420.00, unknown item, 1 hour ago">
+      <div class="vendor">
+        <span class="name">Northwind Supply</span>
+        <span class="inv tabular">INV-1008</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph review"></span> needs review</span>
+        <span class="tag">unknown item</span>
+      </div>
+      <div class="amount tabular">$8,420.00</div>
+      <div class="when">1h</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1009 Orion Components, $2,400.00, data integrity, 3 hours ago">
+      <div class="vendor">
+        <span class="name">Orion Components</span>
+        <span class="inv tabular">INV-1009</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph review"></span> needs review</span>
+        <span class="tag">data integrity</span>
+      </div>
+      <div class="amount tabular">$2,400.00</div>
+      <div class="when">3h</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1011 Bluepeak Logistics, $12,300.00, processing, just now">
+      <div class="vendor">
+        <span class="name">Bluepeak Logistics</span>
+        <span class="inv tabular">INV-1011</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph proc"></span> processing</span>
+      </div>
+      <div class="amount tabular">$12,300.00</div>
+      <div class="when">just now</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1004 Precision Parts Ltd, $4,750.00, paid, 4 hours ago">
+      <div class="vendor">
+        <span class="name">Precision Parts Ltd.</span>
+        <span class="inv tabular">INV-1004</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph paid"></span> paid</span>
+      </div>
+      <div class="amount tabular">$4,750.00</div>
+      <div class="when">4h</div>
+    </a>
+
+    <a class="row" href="review.html" aria-label="INV-1001 Widgets Inc, $5,000.00, paid, 5 hours ago">
+      <div class="vendor">
+        <span class="name">Widgets Inc.</span>
+        <span class="inv tabular">INV-1001</span>
+      </div>
+      <div class="statuscell">
+        <span class="status"><span class="glyph paid"></span> paid</span>
+      </div>
+      <div class="amount tabular">$5,000.00</div>
+      <div class="when">5h</div>
+    </a>
+  </section>
+
+  <p class="hint-line rise" style="animation-delay:.28s">Touchless payments run on their own. You only see what the agents could not clear.</p>
+
+</main>
+
+<footer class="foot">
+  <span>Galatiq · Accounts Payable</span>
+  <span>Acme Corp · ledger view</span>
+</footer>
+
+</body>
+</html>

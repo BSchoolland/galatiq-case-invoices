@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galatiq · Upload an invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .stage {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 64px 0 40px;
+  }
+  .stage-inner { width: 100%; max-width: 620px; }
+
+  .stage .eyebrow { display:block; margin-bottom: 16px; }
+  .stage h1 { font-size: 40px; line-height: 1.05; margin-bottom: 14px; }
+  .stage .lede { color: var(--ink-soft); font-size: 15px; max-width: 44ch; margin: 0 auto 40px; }
+
+  .drop {
+    display: block;
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: 6px;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(154,74,31,.05), transparent 60%),
+      var(--paper-2);
+    padding: 64px 40px;
+    transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+    cursor: pointer;
+  }
+  .drop:hover, .drop.over {
+    border-color: var(--copper);
+    background:
+      radial-gradient(circle at 50% 30%, rgba(154,74,31,.1), transparent 62%),
+      var(--paper-2);
+  }
+  .drop.over { transform: scale(1.008); }
+
+  .glyph-stack {
+    width: 64px; height: 64px; margin: 0 auto 22px;
+    position: relative;
+  }
+  .glyph-stack .sheet {
+    position: absolute; inset: 0;
+    border: 1.5px solid var(--copper);
+    border-radius: 3px;
+    background: var(--paper);
+  }
+  .glyph-stack .sheet:nth-child(1) { transform: rotate(-7deg) translate(-4px,2px); opacity: .45; }
+  .glyph-stack .sheet:nth-child(2) { transform: rotate(4deg) translate(3px,-1px); opacity: .7; }
+  .glyph-stack .sheet:nth-child(3) { transform: none; }
+  .glyph-stack .arrow {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--copper); font-family: "Fraunces", serif; font-size: 26px;
+  }
+
+  .drop h2 { font-size: 22px; margin-bottom: 8px; }
+  .drop p { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 24px; }
+  .formats {
+    margin-top: 26px;
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+  }
+  .fmt {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule-strong); border-radius: 2px;
+    padding: 5px 11px;
+  }
+
+  .hint {
+    margin-top: 34px;
+    font-size: 13px; color: var(--ink-faint);
+    letter-spacing: .02em;
+  }
+  .hint a { color: var(--copper-deep); text-decoration: none; border-bottom: 1px solid var(--copper-tint); }
+  .hint a:hover { border-bottom-color: var(--copper); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-solid" href="upload.html" aria-current="page">Upload invoice</a>
+      <span class="who"><span class="dot">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section class="stage">
+    <div class="stage-inner">
+      <span class="eyebrow rise" style="animation-delay:.04s">Acme Corp · intake</span>
+      <h1 class="serif rise" style="animation-delay:.08s">Hand it to the agents.</h1>
+      <p class="lede rise" style="animation-delay:.14s">Drop an invoice and the agents take it from ingest to payment — clearing the clean ones, routing the rest to you.</p>
+
+      <label class="drop rise" style="animation-delay:.2s" id="drop" for="file" tabindex="0" role="button" aria-label="Drop an invoice to process, or browse files">
+        <div class="glyph-stack" aria-hidden="true">
+          <span class="sheet"></span><span class="sheet"></span><span class="sheet"></span>
+          <span class="arrow">↓</span>
+        </div>
+        <h2 class="serif">Drop an invoice to process.</h2>
+        <p>or</p>
+        <span class="btn btn-solid" id="browse">Browse files</span>
+        <input id="file" type="file" accept=".pdf,.csv,.json,.xml,.txt" hidden>
+        <div class="formats" aria-hidden="true">
+          <span class="fmt">PDF</span>
+          <span class="fmt">CSV</span>
+          <span class="fmt">JSON</span>
+          <span class="fmt">XML</span>
+          <span class="fmt">TXT</span>
+        </div>
+      </label>
+
+      <p class="hint rise" style="animation-delay:.28s">Processing runs in the background — watch it move through <a href="index.html">your inbox</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Galatiq · Accounts Payable</span>
+  <span>Acme Corp · intake</span>
+</footer>
+
+<script>
+  const drop = document.getElementById('drop');
+  const file = document.getElementById('file');
+  document.getElementById('browse').addEventListener('click', (e) => { e.preventDefault(); file.click(); });
+  ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } });
+</script>
+
+</body>
+</html>

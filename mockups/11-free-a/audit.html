@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galatiq · Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .audit-head { padding: 56px 0 28px; }
+  .audit-head h1 { font-size: 44px; }
+  .audit-head .sub { margin-top: 12px; color: var(--ink-soft); font-size: 14.5px; max-width: 46ch; }
+
+  .log { border-top: 2px solid var(--ink); }
+  .entry {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding: 18px 14px;
+    border-bottom: 1px solid var(--rule);
+    transition: background .18s var(--ease);
+  }
+  .entry:hover { background: var(--paper-2); }
+  .entry .ts { color: var(--ink-faint); font-size: 12px; letter-spacing: .04em; }
+  .entry .what { font-size: 14px; }
+  .entry .what b { font-weight: 600; }
+  .entry .what .who2 { color: var(--ink-faint); font-size: 11.5px; display:block; margin-top:3px; letter-spacing:.04em; }
+  .entry .verdict { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+  .verdict.paid { color: var(--moss); }
+  .verdict.hold { color: var(--crimson); }
+  .verdict.route { color: var(--copper-deep); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html" aria-current="page">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-solid" href="upload.html">Upload invoice</a>
+      <span class="who"><span class="dot">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="audit-head">
+    <span class="eyebrow rise" style="animation-delay:.02s">Acme Corp · immutable record</span>
+    <h1 class="rise" style="animation-delay:.06s">Audit</h1>
+    <p class="sub rise" style="animation-delay:.12s">Every decision the agents and your team make, in order. Append-only.</p>
+  </header>
+
+  <section class="log rise" style="animation-delay:.18s" aria-label="Audit log">
+    <div class="entry">
+      <span class="ts tabular">2m ago</span>
+      <span class="what"><b>INV-1003</b> routed to human — suspected fraud<span class="who2">agent · gate</span></span>
+      <span class="verdict route">routed</span>
+    </div>
+    <div class="entry">
+      <span class="ts tabular">14m ago</span>
+      <span class="what"><b>INV-1002</b> held — over budget vs. PO<span class="who2">agent · judge</span></span>
+      <span class="verdict hold">held</span>
+    </div>
+    <div class="entry">
+      <span class="ts tabular">4h ago</span>
+      <span class="what"><b>INV-1004</b> paid touchless — clean match<span class="who2">agent · gate</span></span>
+      <span class="verdict paid">paid</span>
+    </div>
+    <div class="entry">
+      <span class="ts tabular">5h ago</span>
+      <span class="what"><b>INV-1001</b> paid touchless — clean match<span class="who2">agent · gate</span></span>
+      <span class="verdict paid">paid</span>
+    </div>
+    <div class="entry">
+      <span class="ts tabular">Yesterday</span>
+      <span class="what"><b>INV-0998</b> approved &amp; paid<span class="who2">Dana Okafor · review</span></span>
+      <span class="verdict paid">paid</span>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Galatiq · Accounts Payable</span>
+  <span>Acme Corp · audit</span>
+</footer>
+
+</body>
+</html>

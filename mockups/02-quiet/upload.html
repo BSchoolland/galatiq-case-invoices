@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Upload · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="quiet.css" />
+<style>
+  .upload-wrap {
+    max-width: 680px; margin: 0 auto; padding-top: 8vh; text-align: center;
+  }
+  .upload-wrap .kicker {
+    font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; margin: 0 0 18px;
+  }
+  .upload-wrap h1 {
+    font-family: var(--font-disp); font-optical-sizing: auto;
+    font-weight: 400; font-size: 34px; letter-spacing: -0.015em;
+    margin: 0; line-height: 1.2; color: var(--ink);
+  }
+
+  .dropzone {
+    margin-top: 38px; padding: 64px 40px;
+    background: var(--card); border-radius: 26px;
+    box-shadow: var(--shadow-soft);
+    position: relative; overflow: hidden;
+    transition: box-shadow .3s ease, transform .3s ease;
+  }
+  /* a single soft dashed ring drawn in svg — gentler than a css border */
+  .dropzone .ring {
+    position: absolute; inset: 14px; border-radius: 20px; pointer-events: none;
+  }
+  .dropzone .ring rect { fill: none; stroke: var(--hair); stroke-width: 2;
+    stroke-dasharray: 3 9; stroke-linecap: round; rx: 20; transition: stroke .3s ease; }
+
+  .dropzone.drag { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+  .dropzone.drag .ring rect { stroke: var(--teal); }
+
+  .drop-icon {
+    width: 66px; height: 66px; margin: 0 auto 22px;
+    border-radius: 20px; background: var(--teal-wash);
+    display: grid; place-items: center; color: var(--teal);
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .dropzone.drag .drop-icon { transform: translateY(-4px) scale(1.04); }
+  .drop-icon svg { width: 30px; height: 30px; }
+
+  .dropzone h2 {
+    font-family: var(--font-disp); font-weight: 500; font-size: 23px;
+    letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink);
+  }
+  .dropzone .or { color: var(--ink-faint); font-size: 14.5px; margin: 0 0 22px; }
+
+  .browse {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 12px 22px; border-radius: 13px;
+    background: var(--teal); color: #f6faf8;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04), 0 12px 26px -16px rgba(47,83,79,.9);
+    transition: transform .18s ease, background .18s ease;
+  }
+  .browse:hover { background: var(--teal-deep); transform: translateY(-1px); }
+  .browse svg { width: 16px; height: 16px; }
+
+  .formats {
+    margin-top: 30px; display: flex; gap: 10px; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .formats span {
+    font-size: 12px; letter-spacing: .06em; font-weight: 600; color: var(--ink-faint);
+    padding: 5px 11px; border-radius: 8px; background: var(--paper-warm);
+  }
+
+  .hint {
+    margin-top: 34px; color: var(--ink-soft); font-size: 15px;
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .hint svg { width: 16px; height: 16px; color: var(--teal); flex: 0 0 auto; }
+  .hint a { color: var(--teal-deep); font-weight: 600;
+    box-shadow: inset 0 -1px 0 rgba(63,111,106,.4); }
+
+  /* gentle queued-file confirmation (mock) */
+  .queued {
+    margin-top: 26px; display: none; align-items: center; gap: 12px;
+    justify-content: center; color: var(--ink-soft); font-size: 14.5px;
+  }
+  .queued.show { display: inline-flex; animation: rise .5s ease forwards; }
+  .queued .dot { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .queued .dot { animation: none; opacity: .8; } }
+  .queued b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable — Inbox">
+    <span class="mark">Galatiq<span class="dot">.</span></span>
+    <span class="desc">Accounts Payable</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn-upload" href="upload.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+      Upload invoice
+    </a>
+    <div class="user">
+      <span class="avatar">DO</span>
+      <span class="who">Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="upload-wrap">
+    <p class="kicker reveal" style="animation-delay:.04s">Acme Corp · Accounts Payable</p>
+    <h1 class="reveal" style="animation-delay:.1s">Hand an invoice to the agents.</h1>
+
+    <div class="dropzone reveal" id="dz" style="animation-delay:.18s">
+      <svg class="ring" preserveAspectRatio="none"><rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="20"/></svg>
+      <div class="drop-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M8 8l4-4 4 4"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+      </div>
+      <h2>Drop an invoice to process.</h2>
+      <p class="or">or</p>
+      <label class="browse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>
+        Browse files
+        <input type="file" id="fileInput" hidden accept=".pdf,.csv,.json,.xml,.txt" multiple>
+      </label>
+
+      <div class="formats" aria-hidden="true">
+        <span>PDF</span><span>CSV</span><span>JSON</span><span>XML</span><span>TXT</span>
+      </div>
+
+      <div class="queued" id="queued">
+        <span class="dot s-process"></span>
+        <span><b id="fname">invoice.pdf</b> queued · moving through your inbox…</span>
+      </div>
+    </div>
+
+    <p class="hint reveal" style="animation-delay:.26s">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Processing runs in the background — watch it move through your <a href="index.html">inbox</a>.
+    </p>
+  </div>
+</main>
+
+<script>
+  const dz = document.getElementById('dz');
+  const input = document.getElementById('fileInput');
+  const queued = document.getElementById('queued');
+  const fname = document.getElementById('fname');
+
+  function show(name) {
+    fname.textContent = name || 'invoice.pdf';
+    queued.classList.add('show');
+  }
+
+  ['dragenter','dragover'].forEach(ev =>
+    dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev =>
+    dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+  dz.addEventListener('drop', e => {
+    const f = e.dataTransfer && e.dataTransfer.files[0];
+    show(f ? f.name : null);
+  });
+  input.addEventListener('change', () => {
+    if (input.files.length) show(input.files[0].name);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendors · Galatiq Accounts Payable</title>
+<script>var d=document.documentElement;d.className+=" js";setTimeout(function(){d.className=d.className.replace(" js","");},1600);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Big+Shoulders+Display:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bauhaus.css">
+</head>
+<body>
+
+<nav class="nav reveal d1">
+  <a class="mark" href="index.html" aria-label="Galatiq home">
+    <span class="glyph" aria-hidden="true"><i class="sq"></i><i class="ci"></i><i class="tr"></i><i class="bk"></i></span>
+    <span class="word"><b>Galatiq</b><span>Accounts Payable</span></span>
+  </a>
+  <span class="links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html" class="active">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </span>
+  <span class="spacer"></span>
+  <a class="btn" href="upload.html"><span class="dot"></span>Upload invoice</a>
+  <span class="who">
+    <span class="av">DO</span>
+    <span>Dana Okafor<br><span class="org">Acme Corp</span></span>
+  </span>
+</nav>
+
+<main class="shell">
+
+  <header class="head" style="grid-template-columns:1fr;padding-bottom:14px;">
+    <div>
+      <div class="kicker reveal d2"><span class="sq"></span>Master · Acme Corp</div>
+      <h1 class="reveal d2">Vendors</h1>
+      <p class="sub reveal d3">The payees the agents trust. Anyone not on this list cannot be paid touchless.</p>
+    </div>
+  </header>
+
+  <div class="rule-d reveal d3"></div>
+
+  <section class="list reveal d4" aria-label="Vendor master">
+    <div class="row" style="grid-template-columns:34px 2fr 1fr 1.4fr;cursor:default;">
+      <span class="mk paid" aria-hidden="true"></span>
+      <span class="vendor"><b>Widgets Inc.</b><span class="no tab">VEND-001 · NET-30</span></span>
+      <span class="amount tab" style="font-size:18px;">$5,000.00</span>
+      <span class="meta"><span class="tag t-paid"><span class="b"></span>On master · banking on file</span><span class="when">Last paid 5h ago</span></span>
+    </div>
+    <div class="row" style="grid-template-columns:34px 2fr 1fr 1.4fr;cursor:default;">
+      <span class="mk paid" aria-hidden="true"></span>
+      <span class="vendor"><b>Precision Parts Ltd.</b><span class="no tab">VEND-004 · NET-30</span></span>
+      <span class="amount tab" style="font-size:18px;">$4,750.00</span>
+      <span class="meta"><span class="tag t-paid"><span class="b"></span>On master · banking on file</span><span class="when">Last paid 4h ago</span></span>
+    </div>
+    <div class="row" style="grid-template-columns:34px 2fr 1fr 1.4fr;cursor:default;">
+      <span class="mk review" aria-hidden="true"></span>
+      <span class="vendor"><b>Gadgets Co.</b><span class="no tab">VEND-002 · NET-15</span></span>
+      <span class="amount tab" style="font-size:18px;">$15,000.00</span>
+      <span class="meta"><span class="tag t-review"><span class="b"></span>On master · budget watch</span><span class="when">Open: INV-1002</span></span>
+    </div>
+    <div class="row is-critical" style="grid-template-columns:34px 2fr 1fr 1.4fr;cursor:default;">
+      <span class="mk critical" aria-hidden="true"></span>
+      <span class="vendor"><b>Fraudster LLC</b><span class="no tab">No vendor ID · unverified</span></span>
+      <span class="amount tab" style="font-size:18px;color:var(--red);">$100,000.00</span>
+      <span class="meta"><span class="tag t-critical"><span class="b"></span>Not on master · blocked</span><span class="when">Open: INV-1003</span></span>
+    </div>
+  </section>
+
+  <footer class="foot reveal d5">
+    <span class="forms" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+    <span>Galatiq · Accounts Payable — autonomous invoice agents for Acme Corp</span>
+  </footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galatiq · Review INV-1003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .back {
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none; color: var(--ink-soft);
+    font-size: 12.5px; letter-spacing: .04em;
+    margin: 36px 0 26px;
+    transition: color .18s var(--ease), gap .18s var(--ease);
+  }
+  .back:hover { color: var(--copper-deep); gap: 12px; }
+
+  .doc-head {
+    border-top: 2px solid var(--crimson);
+    padding-top: 22px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 30px;
+  }
+  .doc-head .title { display:flex; flex-direction:column; gap: 9px; }
+  .doc-head h1 { font-size: 40px; line-height: 1; }
+  .doc-head h1 .vend { color: var(--crimson); }
+  .doc-head .meta { display:flex; gap: 14px; align-items:center; flex-wrap:wrap; }
+  .pill {
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 2px;
+  }
+  .pill.crit { background: var(--crimson); color: var(--paper); }
+  .pill.line { border: 1px solid var(--rule-strong); color: var(--ink-soft); }
+
+  /* Hero figure */
+  .hero {
+    margin: 26px 0 8px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 40px;
+    align-items: center;
+    background:
+      linear-gradient(90deg, rgba(138,28,16,.045), transparent 70%);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0 30px;
+  }
+  .hero .figure {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 68px;
+    line-height: .9;
+    letter-spacing: -.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero .figure .cur { font-size: 24px; color: var(--ink-faint); vertical-align: top; margin-right: 6px; }
+  .hero .figure .ccy { font-size: 18px; color: var(--ink-faint); letter-spacing: .1em; margin-left: 10px; }
+  .hero .note {
+    font-size: 14px; color: var(--ink-soft); max-width: 34ch; line-height: 1.55;
+  }
+  .hero .note b { color: var(--crimson); font-weight: 600; }
+
+  /* two-column body */
+  .body {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 56px;
+    margin-top: 38px;
+    align-items: start;
+  }
+  @media (max-width: 880px) { .body { grid-template-columns: 1fr; gap: 40px; } }
+
+  .sec-label { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 16px; }
+
+  /* Findings */
+  .findings { list-style: none; margin: 0; padding: 0; }
+  .findings li {
+    display: grid; grid-template-columns: 18px 1fr; gap: 14px;
+    padding: 16px 0; border-bottom: 1px solid var(--rule);
+    font-size: 14.5px; line-height: 1.5;
+  }
+  .findings li .marker { color: var(--crimson); font-family: "Fraunces", serif; font-size: 17px; line-height: 1.2; }
+  .findings li .agent { color: var(--ink-faint); font-size: 11.5px; letter-spacing: .04em; display:block; margin-top: 4px; }
+  .findings li b { color: var(--ink); font-weight: 600; }
+
+  .reco {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border: 1px solid var(--crimson);
+    border-left: 3px solid var(--crimson);
+    background: linear-gradient(90deg, rgba(138,28,16,.05), transparent);
+    border-radius: 2px;
+    font-size: 15px;
+  }
+  .reco .lbl { font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--crimson); display:block; margin-bottom: 7px; }
+  .reco b { color: var(--crimson); font-family: "Fraunces", serif; font-weight: 600; }
+
+  /* facts card */
+  .facts {
+    background: var(--paper-2);
+    border: 1px solid var(--rule-strong);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 24px 24px 8px;
+  }
+  .facts dl { margin: 0; }
+  .facts .pair {
+    display: flex; justify-content: space-between; gap: 16px;
+    padding: 13px 0; border-bottom: 1px solid var(--rule);
+    font-size: 13.5px;
+  }
+  .facts .pair:last-child { border-bottom: 0; }
+  .facts dt { color: var(--ink-faint); letter-spacing: .04em; }
+  .facts dd { margin: 0; text-align: right; color: var(--ink); }
+  .facts dd.warn { color: var(--crimson); }
+
+  /* action bar */
+  .actions {
+    margin-top: 30px;
+    padding: 22px 0 0;
+    border-top: 2px solid var(--ink);
+  }
+  .action-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn-danger { border-color: var(--crimson); color: var(--crimson); }
+  .btn-danger:hover { background: var(--crimson); color: var(--paper); }
+  .btn-approve {
+    border-color: var(--rule-strong);
+    color: var(--ink-faint);
+    position: relative;
+  }
+  .btn-approve:hover { background: var(--paper-2); color: var(--ink-soft); }
+  .guard-note {
+    margin-left: auto; font-size: 11.5px; color: var(--ink-faint); letter-spacing: .03em;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .guard-note .glyph.crit { box-shadow: 0 0 0 3px var(--crimson-tint); }
+
+  .note-field {
+    margin-top: 18px;
+  }
+  .note-field label { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); display:block; margin-bottom: 8px; }
+  .note-field textarea {
+    width: 100%; min-height: 72px; resize: vertical;
+    background: var(--paper);
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    padding: 11px 13px;
+    font-family: "Spline Sans Mono", monospace;
+    font-size: 13.5px; color: var(--ink); line-height: 1.5;
+  }
+  .note-field textarea::placeholder { color: var(--ink-faint); }
+  .note-field textarea:focus { outline: 2px solid var(--copper); outline-offset: 2px; border-color: var(--copper); }
+
+  /* trace disclosure */
+  .trace { margin-top: 30px; }
+  .trace summary {
+    cursor: pointer; list-style: none;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; letter-spacing: .04em; color: var(--ink-soft);
+    padding: 14px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    transition: color .18s var(--ease);
+  }
+  .trace summary:hover { color: var(--ink); }
+  .trace summary::-webkit-details-marker { display: none; }
+  .trace summary .chev { transition: transform .2s var(--ease); color: var(--copper); font-size: 15px; }
+  .trace[open] summary .chev { transform: rotate(90deg); }
+  .trace-body { padding: 22px 4px 4px; }
+  .step {
+    display: grid; grid-template-columns: 130px 1fr auto; gap: 18px; align-items: baseline;
+    padding: 10px 0; border-bottom: 1px dashed var(--rule);
+    font-size: 13px;
+  }
+  .step .stage { color: var(--copper-deep); letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }
+  .step .desc { color: var(--ink-soft); }
+  .step .ms { text-align: right; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .step.fail .stage { color: var(--crimson); }
+  .step.fail .desc { color: var(--crimson); }
+
+  /* confirm modal */
+  dialog#confirm {
+    border: 1px solid var(--crimson);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 0;
+    max-width: 440px;
+    box-shadow: 0 30px 80px -30px rgba(33,29,23,.7);
+  }
+  dialog#confirm::backdrop { background: rgba(33,29,23,.42); }
+  .modal-in { padding: 28px 28px 24px; }
+  .modal-in h2 { font-size: 24px; color: var(--crimson); margin-bottom: 12px; }
+  .modal-in p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0 0 22px; }
+  .modal-actions { display:flex; gap: 10px; justify-content: flex-end; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-solid" href="upload.html">Upload invoice</a>
+      <span class="who"><span class="dot">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <a class="back" href="index.html">&larr; Back to the inbox</a>
+
+  <header class="doc-head rise" style="animation-delay:.04s">
+    <div class="title">
+      <span class="eyebrow">Invoice under review</span>
+      <h1>INV-1003 · <span class="vend serif">Fraudster LLC</span></h1>
+    </div>
+    <div class="meta">
+      <span class="pill crit">Critical · fraud suspected</span>
+      <span class="pill line">needs review</span>
+    </div>
+  </header>
+
+  <section class="hero rise" style="animation-delay:.1s" aria-label="Amount and key risk">
+    <div class="figure tabular"><span class="cur">$</span>100,000.00<span class="ccy">USD</span></div>
+    <p class="note">Requested as an <b>immediate wire</b>. The vendor is <b>not in our master</b> — no relationship, no banking details on file.</p>
+  </section>
+
+  <div class="body">
+
+    <div class="main-col">
+      <h2 class="sec-label rise" style="animation-delay:.16s">Why it is held</h2>
+      <ul class="findings rise" style="animation-delay:.2s">
+        <li>
+          <span class="marker">§</span>
+          <span><b>Unknown vendor</b> — not in our master; no relationship or banking details on file.</span>
+        </li>
+        <li>
+          <span class="marker">§</span>
+          <span><b>Unauthorized item</b> — “FakeItem x100” matches no purchase order.</span>
+        </li>
+        <li>
+          <span class="marker">§</span>
+          <span><b>Urgency to wire immediately</b> — a classic fraud pattern.
+            <span class="agent">Raised by the agent</span>
+          </span>
+        </li>
+      </ul>
+
+      <div class="reco rise" style="animation-delay:.26s">
+        <span class="lbl">Agent recommendation</span>
+        <b>Recommend HOLD.</b> Do not pay; route to AP fraud review.
+      </div>
+
+      <div class="actions rise" style="animation-delay:.32s">
+        <div class="action-row">
+          <button class="btn btn-danger" type="button">Reject &amp; log</button>
+          <button class="btn btn-ghost" type="button">Request info</button>
+          <button class="btn btn-approve" type="button" id="approveBtn" aria-describedby="guardNote">Approve &amp; Pay</button>
+          <span class="guard-note" id="guardNote"><span class="glyph crit"></span> Approving is the wrong move — confirmation required.</span>
+        </div>
+
+        <div class="note-field">
+          <label for="reviewerNote">Reviewer note</label>
+          <textarea id="reviewerNote" placeholder="Add context for the audit trail…"></textarea>
+        </div>
+      </div>
+
+      <details class="trace rise" style="animation-delay:.36s">
+        <summary><span class="chev">›</span> View processing trace <span style="color:var(--ink-faint); margin-left:auto; font-size:11px;">ingest → extract → validate → judge → gate</span></summary>
+        <div class="trace-body">
+          <div class="step"><span class="stage">Ingest</span><span class="desc">Received PDF · 1 page · parsed header</span><span class="ms">42 ms</span></div>
+          <div class="step"><span class="stage">Extract</span><span class="desc">LLM read 1 line item, terms, totals</span><span class="ms">1,180 ms</span></div>
+          <div class="step fail"><span class="stage">Validate</span><span class="desc">Vendor absent from master · due date unparseable</span><span class="ms">96 ms</span></div>
+          <div class="step fail"><span class="stage">Judge</span><span class="desc">Fraud signals: unknown payee + wire urgency + no PO</span><span class="ms">2,310 ms</span></div>
+          <div class="step fail"><span class="stage">Gate</span><span class="desc">Touchless blocked → routed to human review</span><span class="ms">8 ms</span></div>
+        </div>
+      </details>
+    </div>
+
+    <aside>
+      <h2 class="sec-label rise" style="animation-delay:.18s">On file</h2>
+      <div class="facts rise" style="animation-delay:.22s">
+        <dl>
+          <div class="pair"><dt>Vendor</dt><dd class="warn">Not in master</dd></div>
+          <div class="pair"><dt>Amount</dt><dd class="tabular">$100,000.00</dd></div>
+          <div class="pair"><dt>Due</dt><dd class="warn">“yesterday” · unparsed</dd></div>
+          <div class="pair"><dt>Terms</dt><dd>Immediate</dd></div>
+          <div class="pair"><dt>Line item</dt><dd class="tabular">FakeItem ×100 @ $1,000.00</dd></div>
+        </dl>
+      </div>
+    </aside>
+
+  </div>
+
+</main>
+
+<dialog id="confirm">
+  <form method="dialog" class="modal-in">
+    <h2 class="serif">Approve a $100,000 wire?</h2>
+    <p>The agent flagged this as <b>suspected fraud</b> — unknown vendor, no PO, immediate-wire urgency. Approving pays it touchless. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" value="cancel" autofocus>Cancel — keep on hold</button>
+      <button class="btn btn-danger" value="confirm">I understand, approve anyway</button>
+    </div>
+  </form>
+</dialog>
+
+<footer class="foot">
+  <span>Galatiq · Accounts Payable</span>
+  <span>INV-1003 · routed to human</span>
+</footer>
+
+<script>
+  // Guard the dangerous action behind an explicit confirm.
+  const dlg = document.getElementById('confirm');
+  document.getElementById('approveBtn').addEventListener('click', () => {
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+    else alert('Confirmation required to approve a flagged invoice.');
+  });
+</script>
+
+</body>
+</html>

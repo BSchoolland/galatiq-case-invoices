@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq AP — Design Studies, Round 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f4f3ef; --panel:#fbfaf7; --ink:#16150f; --muted:#76746a; --line:#e2e0d8;
+    --accent:#cf3a2b; --font:'Hanken Grotesk', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--font);
+    -webkit-font-smoothing:antialiased; letter-spacing:-.01em;}
+  .wrap{max-width:1280px; margin:0 auto; padding:64px 40px 100px;}
+
+  header{max-width:760px;}
+  .eyebrow{font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin:0 0 16px;}
+  h1{font-size:clamp(34px,5vw,56px); font-weight:800; line-height:1.02; margin:0; letter-spacing:-.03em;}
+  .lede{font-size:18px; line-height:1.6; color:var(--muted); margin:20px 0 0;}
+  .lede b{color:var(--ink); font-weight:600;}
+
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin:64px 0 26px; padding-bottom:14px; border-bottom:1px solid var(--line);}
+  .sec-head h2{font-size:15px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin:0;}
+  .sec-head span{font-size:14px; color:var(--muted);}
+
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:640px){.grid{grid-template-columns:1fr;}}
+
+  .card{display:flex; flex-direction:column; text-decoration:none; color:inherit; background:var(--panel);
+    border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(22,21,15,.03);
+    transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s, border-color .4s;
+    opacity:0; animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;}
+  .card:hover{transform:translateY(-4px); border-color:#cbcabf; box-shadow:0 22px 44px -26px rgba(22,21,15,.4);}
+  .card:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+
+  .shot{position:relative; height:210px; overflow:hidden; background:#eceae3; border-bottom:1px solid var(--line);}
+  .shot img{width:100%; display:block; object-fit:cover; object-position:top center; transition:object-position 2.2s ease;}
+  .card:hover .shot img{object-position:bottom center;}
+  .badge{position:absolute; top:10px; left:10px; font-size:11px; font-weight:700; letter-spacing:.08em;
+    color:#fff; background:rgba(22,21,15,.82); padding:3px 8px; border-radius:6px;}
+  .open{position:absolute; top:10px; right:10px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:#fff; background:var(--accent); padding:4px 9px; border-radius:6px; opacity:0; transform:translateY(-4px); transition:.3s;}
+  .card:hover .open{opacity:1; transform:none;}
+
+  .body{padding:16px 18px 20px;}
+  .name{font-size:19px; font-weight:700; margin:0; letter-spacing:-.02em;}
+  .desc{font-size:13.5px; line-height:1.5; color:var(--muted); margin:6px 0 0;}
+
+  .free-note{font-size:14px; line-height:1.6; color:var(--muted); margin:0 0 26px; max-width:760px;}
+  .free-note b{color:var(--ink); font-weight:600;}
+
+  footer{margin-top:72px; padding-top:24px; border-top:1px solid var(--line); font-size:13px; line-height:1.8; color:var(--muted);}
+  footer b{color:var(--ink); font-weight:600;}
+
+  @keyframes rise{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none; opacity:1;} .shot img,.card,.open{transition:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Galatiq · Accounts Payable — Design Studies, Round 2</p>
+    <h1>Thirteen multi-page identities. One calm AP console.</h1>
+    <p class="lede">Each is a real navigable mini-app — <b>Inbox → Review → Upload</b> — rendering the same invoices and the same <b>$100,000 Fraudster LLC</b> case, built under a strict <b>less-is-more</b> mandate. Click any study to open its inbox; the nav and rows work. Hover a card to scroll its preview.</p>
+  </header>
+
+  <div class="sec-head"><h2>Assigned aesthetics</h2><span>10 directions, branched away from editorial</span></div>
+  <div class="grid">
+    <a class="card" href="01-swiss/index.html" style="animation-delay:.04s"><div class="shot"><span class="badge">01 · SWISS</span><span class="open">Open ↗</span><img src="_thumbs/01-swiss.png" alt="Swiss"></div><div class="body"><p class="name">Swiss</p><p class="desc">International Typographic — strict grid, signal red, vast whitespace. The most rigorous.</p></div></a>
+    <a class="card" href="02-quiet/index.html" style="animation-delay:.08s"><div class="shot"><span class="badge">02 · QUIET</span><span class="open">Open ↗</span><img src="_thumbs/02-quiet.png" alt="Quiet"></div><div class="body"><p class="name">Quiet</p><p class="desc">Calm fintech — borderless, muted, soft. Expensive through restraint; a deep exhale.</p></div></a>
+    <a class="card" href="03-brutal/index.html" style="animation-delay:.12s"><div class="shot"><span class="badge">03 · BRUTALIST</span><span class="open">Open ↗</span><img src="_thumbs/03-brutal.png" alt="Brutalist"></div><div class="body"><p class="name">Brutalist</p><p class="desc">Stark hard rules + monospace data, safety orange. System-of-record — spacious, not dense.</p></div></a>
+    <a class="card" href="04-console/index.html" style="animation-delay:.16s"><div class="shot"><span class="badge">04 · CONSOLE</span><span class="open">Open ↗</span><img src="_thumbs/04-console.png" alt="Console"></div><div class="body"><p class="name">Console</p><p class="desc">Neo-terminal done clean — warm-dark, monospace, phosphor amber, keyboard hints. Nods to the CLI.</p></div></a>
+    <a class="card" href="05-glass/index.html" style="animation-delay:.2s"><div class="shot"><span class="badge">05 · GLASS</span><span class="open">Open ↗</span><img src="_thumbs/05-glass.png" alt="Glass"></div><div class="body"><p class="name">Glass</p><p class="desc">Tasteful glassmorphism — frosted panels, soft depth, serene. “Decisions, made calmly.”</p></div></a>
+    <a class="card" href="06-bauhaus/index.html" style="animation-delay:.24s"><div class="shot"><span class="badge">06 · BAUHAUS</span><span class="open">Open ↗</span><img src="_thumbs/06-bauhaus.png" alt="Bauhaus"></div><div class="body"><p class="name">Bauhaus</p><p class="desc">Geometric — Big Shoulders display, primaries as accents, status rendered as pure forms.</p></div></a>
+    <a class="card" href="07-deco/index.html" style="animation-delay:.28s"><div class="shot"><span class="badge">07 · DECO</span><span class="open">Open ↗</span><img src="_thumbs/07-deco.png" alt="Deco"></div><div class="body"><p class="name">Deco</p><p class="desc">Art-deco luxe — ink + gold, fine line motifs. Money handled with private-bank gravitas.</p></div></a>
+    <a class="card" href="08-scandi/index.html" style="animation-delay:.32s"><div class="shot"><span class="badge">08 · SCANDI</span><span class="open">Open ↗</span><img src="_thumbs/08-scandi.png" alt="Scandi"></div><div class="body"><p class="name">Scandi</p><p class="desc">Scandinavian muted — sand, sage, clay. Humanist, gently rounded, serene to the point of calm.</p></div></a>
+    <a class="card" href="09-mono-neon/index.html" style="animation-delay:.36s"><div class="shot"><span class="badge">09 · MONO + NEON</span><span class="open">Open ↗</span><img src="_thumbs/09-mono-neon.png" alt="Mono + Neon"></div><div class="body"><p class="name">Mono&nbsp;+&nbsp;Neon</p><p class="desc">High-contrast monochrome + one electric lime, used surgically. Sharp, confident, modern.</p></div></a>
+    <a class="card" href="10-retro/index.html" style="animation-delay:.4s"><div class="shot"><span class="badge">10 · RETRO-WARM</span><span class="open">Open ↗</span><img src="_thumbs/10-retro.png" alt="Retro-warm"></div><div class="body"><p class="name">Retro-warm</p><p class="desc">70s sienna / mustard / cream, rounded geometric. Warm and human — still credible for money.</p></div></a>
+  </div>
+
+  <div class="sec-head"><h2>Free choice</h2><span>3 designs, zero aesthetic direction — the model’s own taste</span></div>
+  <p class="free-note">Given only the functional brief and the design skill — <b>no assigned aesthetic</b>, and a nudge to diverge — all three independently landed on <b>warm editorial / serif</b>: the same family you rejected in round 1. A useful signal about where the model defaults when unconstrained.</p>
+  <div class="grid">
+    <a class="card" href="11-free-a/index.html" style="animation-delay:.06s"><div class="shot"><span class="badge">11 · FREE A</span><span class="open">Open ↗</span><img src="_thumbs/11-free-a.png" alt="Free A"></div><div class="body"><p class="name">Free A</p><p class="desc">Unconstrained → warm editorial, tan paper + brown ink. Quiet and restrained.</p></div></a>
+    <a class="card" href="12-free-b/index.html" style="animation-delay:.1s"><div class="shot"><span class="badge">12 · FREE B</span><span class="open">Open ↗</span><img src="_thumbs/12-free-b.png" alt="Free B"></div><div class="body"><p class="name">Free B</p><p class="desc">Unconstrained → warm editorial, oxblood serif. “Money awaiting a decision.”</p></div></a>
+    <a class="card" href="13-free-c/index.html" style="animation-delay:.14s"><div class="shot"><span class="badge">13 · FREE C</span><span class="open">Open ↗</span><img src="_thumbs/13-free-c.png" alt="Free C"></div><div class="body"><p class="name">Free C</p><p class="desc">Unconstrained → warm editorial, red-accent serif on cream. Ledger-flavored.</p></div></a>
+  </div>
+
+  <footer>
+    <p><b>What these are</b> — standalone, no-build, multi-page mockups (hardcoded mock data) that open straight from <code>file://</code>. Allowed to use frameworks/Tailwind via CDN.<br/>
+    <b>How they were made</b> — 13 directions, each built then run through an adversarial clutter/navigation/slop critique and refined.<br/>
+    Pick a direction (or pieces across several) and I’ll build the winner out for real against the live API.</p>
+  </footer>
+
+</div>
+</body>
+</html>

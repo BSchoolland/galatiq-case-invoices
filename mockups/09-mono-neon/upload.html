@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .stage {
+    min-height: calc(100vh - 70px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 60px 0 90px;
+  }
+  .stage .eyebrow { margin-bottom: 22px; }
+  .stage h1 { font-size: clamp(34px, 5vw, 56px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; margin: 0 0 14px; max-width: 18ch; }
+  .stage h1 .accent { color: var(--accent); }
+  .stage .lede { color: var(--muted); font-size: 15px; max-width: 46ch; margin: 0 0 44px; }
+
+  .drop {
+    width: min(640px, 90vw); padding: 64px 40px;
+    border: 1.5px dashed var(--line-2); border-radius: 4px;
+    background:
+      radial-gradient(120% 120% at 50% 0%, rgba(198,244,50,0.04), transparent 60%),
+      var(--ink-2);
+    display: flex; flex-direction: column; align-items: center; gap: 22px;
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .drop.over { border-color: var(--accent); transform: scale(1.01); box-shadow: 0 0 50px rgba(198,244,50,0.12); }
+  .drop .glyph {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--accent);
+    border: 1.5px solid var(--accent); background: rgba(198,244,50,0.05);
+  }
+  .drop .big { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
+  .drop .or { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted-2); text-transform: uppercase; }
+
+  .browse {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: var(--accent); color: var(--ink); font-weight: 600; font-size: 14px;
+    padding: 12px 22px; border-radius: var(--radius); border: none; cursor: pointer; font-family: inherit;
+    transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease);
+  }
+  .browse:hover { box-shadow: 0 0 26px rgba(198,244,50,0.4); transform: translateY(-1px); }
+
+  .formats { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .formats span {
+    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.1em;
+    color: var(--muted); border: 1px solid var(--line); padding: 5px 11px; border-radius: var(--radius);
+  }
+
+  .hint {
+    margin-top: 40px; display: inline-flex; align-items: center; gap: 10px;
+    color: var(--muted); font-size: 13.5px;
+  }
+  .hint .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hint .pulse { animation: pulse 1.6s ease-in-out infinite; }
+  }
+
+  /* queued confirmation */
+  .queued { display: none; flex-direction: column; align-items: center; gap: 10px; }
+  .queued.show { display: flex; }
+  .queued .file { font-family: "JetBrains Mono", monospace; font-size: 13px; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark"><span class="dot"></span>Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html">Audit</a>
+    </nav>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Upload invoice
+      </a>
+      <div class="who">
+        <span class="avatar">DO</span>
+        <span>Dana Okafor <span class="org">· Acme Corp</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stage">
+    <div class="eyebrow reveal">Upload</div>
+    <h1 class="reveal" style="animation-delay:.05s">Drop an invoice <span class="accent">to process.</span></h1>
+    <p class="lede reveal" style="animation-delay:.1s">An agent will read it, validate the vendor and the lines, and pay it touchless if it clears.</p>
+
+    <div class="drop reveal" id="drop" style="animation-delay:.15s" role="button" tabindex="0"
+         aria-label="Drop an invoice or browse to upload">
+      <div class="active-state" id="idle">
+        <div class="glyph" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+        </div>
+        <div class="big">Drop an invoice to process</div>
+        <div class="or">or</div>
+        <button class="browse" type="button" id="browse">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 7h5l2 2h11v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Browse files
+        </button>
+      </div>
+      <div class="queued" id="queued">
+        <div class="glyph" aria-hidden="true"><span class="pulse" style="width:18px;height:18px;border-radius:0;background:var(--accent);"></span></div>
+        <div class="big">Queued for processing</div>
+        <div class="file" id="fname">invoice.pdf</div>
+      </div>
+      <input type="file" id="file" accept=".pdf,.csv,.json,.xml,.txt" hidden>
+    </div>
+
+    <div class="formats reveal" style="animation-delay:.2s" aria-label="Accepted formats">
+      <span>PDF</span><span>CSV</span><span>JSON</span><span>XML</span><span>TXT</span>
+    </div>
+
+    <div class="hint reveal" style="animation-delay:.25s">
+      <span class="pulse" aria-hidden="true"></span>
+      Processing runs in the background — watch it move through your <a href="index.html" style="color:var(--paper);text-decoration:underline;text-underline-offset:3px;">inbox</a>.
+    </div>
+  </section>
+</main>
+
+<script>
+  var drop = document.getElementById('drop');
+  var input = document.getElementById('file');
+  document.getElementById('browse').addEventListener('click', function(e){ e.stopPropagation(); input.click(); });
+  drop.addEventListener('click', function(){ input.click(); });
+  drop.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); input.click(); }});
+
+  ['dragenter','dragover'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('over'); });
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('over'); });
+  });
+  drop.addEventListener('drop', function(e){
+    if (e.dataTransfer.files.length) showQueued(e.dataTransfer.files[0].name);
+  });
+  input.addEventListener('change', function(){
+    if (input.files.length) showQueued(input.files[0].name);
+  });
+  function showQueued(name){
+    document.getElementById('fname').textContent = name;
+    document.getElementById('idle').style.display = 'none';
+    document.getElementById('queued').classList.add('show');
+  }
+</script>
+</body>
+</html>

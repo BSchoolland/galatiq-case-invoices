@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Upload · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<script>document.documentElement.className += " js-anim";</script>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="wordmark" href="index.html" aria-label="Galatiq, Accounts Payable, home">
+        <span class="wordmark__mark">Galatiq</span>
+        <span class="wordmark__desc">Accounts&nbsp;Payable</span>
+      </a>
+      <nav class="nav__links">
+        <a class="nav__link" href="index.html">Inbox</a>
+        <a class="nav__link" href="audit.html">Audit</a>
+      </nav>
+      <div class="nav__right">
+        <a class="btn-upload" href="upload.html">Upload invoice</a>
+        <div class="user">
+          <span class="user__dot">DO</span>
+          <span class="user__name">Dana Okafor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="upload-wrap">
+    <div class="upload-inner">
+
+      <div class="head__index reveal">
+        <span class="num">03</span>
+        <span class="label">Upload · Acme Corp</span>
+      </div>
+      <h1 class="head__title reveal" style="animation-delay:.05s; font-size:var(--step-3);">New invoice.</h1>
+
+      <!-- DROPZONE -->
+      <label class="dropzone reveal" id="dropzone" style="animation-delay:.12s">
+        <span class="dropzone__mark" aria-hidden="true"></span>
+        <span class="dropzone__title">Drop an invoice to process.</span>
+        <span class="dropzone__browse">
+          <span class="browse-btn">Browse files</span>
+        </span>
+        <input type="file" id="fileInput" hidden
+               accept=".pdf,.csv,.json,.xml,.txt" />
+      </label>
+
+      <!-- FORMATS -->
+      <div class="formats reveal" style="animation-delay:.18s">
+        <span class="format">PDF</span>
+        <span class="format">CSV</span>
+        <span class="format">JSON</span>
+        <span class="format">XML</span>
+        <span class="format">TXT</span>
+      </div>
+
+      <!-- ONE HINT -->
+      <p class="upload-hint reveal" style="animation-delay:.24s">
+        <span class="dot"></span>
+        Processing runs in the background — watch it move through your inbox.
+      </p>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+  var dz = document.getElementById('dropzone');
+  var input = document.getElementById('fileInput');
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('is-over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.remove('is-over'); });
+  });
+  dz.addEventListener('drop', function (e) {
+    if (e.dataTransfer && e.dataTransfer.files.length) routeToInbox();
+  });
+  input.addEventListener('change', function () { if (input.files.length) routeToInbox(); });
+
+  function routeToInbox() {
+    var t = dz.querySelector('.dropzone__title');
+    t.textContent = 'Received — sending to the agents…';
+    setTimeout(function () { window.location.href = 'index.html'; }, 900);
+  }
+</script>
+</body>
+</html>

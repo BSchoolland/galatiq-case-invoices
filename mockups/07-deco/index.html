@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Accounts Payable — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="deco.css" />
+<script>document.documentElement.className += " anim";</script>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galat<b>i</b>q</span>
+      <span class="descriptor">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" aria-current="page">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <a class="btn-upload" href="upload.html">Upload Invoice</a>
+    <div class="user">
+      <span>Dana Okafor</span>
+      <span class="monogram" aria-hidden="true">DO</span>
+    </div>
+  </nav>
+  <div class="nav-rule"><div class="double"></div></div>
+
+  <main class="shell">
+
+    <header class="inbox-head">
+      <div class="rise d1">
+        <p class="kicker">Acme Corp · The Desk</p>
+        <h1 class="page-title">Inbox</h1>
+      </div>
+      <p class="summary-line rise d2"><b>5</b> invoices need your review.</p>
+    </header>
+
+    <div class="ledger" role="list">
+
+      <a class="row critical rise d2" role="listitem" href="review.html" aria-label="INV-1003 Fraudster LLC, $100,000.00, needs review, critical, fraud suspected, 2 minutes ago">
+        <span class="dot is-crit" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Fraudster LLC</span>
+          <span class="no">INV-1003</span>
+        </span>
+        <span class="money amount">$100,000.00</span>
+        <span class="status">
+          <span class="state">Needs review</span>
+          <span class="reason crit">Critical — fraud suspected</span>
+        </span>
+        <span class="when">2m</span>
+      </a>
+
+      <a class="row rise d3" role="listitem" href="review.html" aria-label="INV-1002 Gadgets Co., $15,000.00, needs review, over budget, 14 minutes ago">
+        <span class="dot is-review" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Gadgets Co.</span>
+          <span class="no">INV-1002</span>
+        </span>
+        <span class="money amount">$15,000.00</span>
+        <span class="status">
+          <span class="state">Needs review</span>
+          <span class="reason">Over budget</span>
+        </span>
+        <span class="when">14m</span>
+      </a>
+
+      <a class="row rise d4" role="listitem" href="review.html" aria-label="INV-1008 Northwind Supply, $8,420.00, needs review, unknown item, 1 hour ago">
+        <span class="dot is-review" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Northwind Supply</span>
+          <span class="no">INV-1008</span>
+        </span>
+        <span class="money amount">$8,420.00</span>
+        <span class="status">
+          <span class="state">Needs review</span>
+          <span class="reason">Unknown item</span>
+        </span>
+        <span class="when">1h</span>
+      </a>
+
+      <a class="row rise d5" role="listitem" href="review.html" aria-label="INV-1009 Orion Components, $2,400.00, needs review, data integrity, 3 hours ago">
+        <span class="dot is-review" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Orion Components</span>
+          <span class="no">INV-1009</span>
+        </span>
+        <span class="money amount">$2,400.00</span>
+        <span class="status">
+          <span class="state">Needs review</span>
+          <span class="reason">Data integrity</span>
+        </span>
+        <span class="when">3h</span>
+      </a>
+
+      <a class="row rise d6" role="listitem" href="review.html" aria-label="INV-1011 Bluepeak Logistics, $12,300.00, processing, just now">
+        <span class="dot is-processing" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Bluepeak Logistics</span>
+          <span class="no">INV-1011</span>
+        </span>
+        <span class="money amount">$12,300.00</span>
+        <span class="status">
+          <span class="state">Processing</span>
+          <span class="reason">Agents at work</span>
+        </span>
+        <span class="when">now</span>
+      </a>
+
+      <a class="row rise d7" role="listitem" href="review.html" aria-label="INV-1004 Precision Parts Ltd., $4,750.00, paid, 4 hours ago">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Precision Parts Ltd.</span>
+          <span class="no">INV-1004</span>
+        </span>
+        <span class="money amount">$4,750.00</span>
+        <span class="status">
+          <span class="state">Paid</span>
+          <span class="reason">Touchless</span>
+        </span>
+        <span class="when">4h</span>
+      </a>
+
+      <a class="row rise d8" role="listitem" href="review.html" aria-label="INV-1001 Widgets Inc., $5,000.00, paid, 5 hours ago">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Widgets Inc.</span>
+          <span class="no">INV-1001</span>
+        </span>
+        <span class="money amount">$5,000.00</span>
+        <span class="status">
+          <span class="state">Paid</span>
+          <span class="reason">Touchless</span>
+        </span>
+        <span class="when">5h</span>
+      </a>
+
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>Galatiq · Autonomous Accounts Payable</span>
+    <span class="org">Acme Corp</span>
+  </footer>
+
+</body>
+</html>

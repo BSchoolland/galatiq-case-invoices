@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Vendor Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="deco.css" />
+<script>document.documentElement.className += " anim";</script>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galat<b>i</b>q</span>
+      <span class="descriptor">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html" aria-current="page">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <a class="btn-upload" href="upload.html">Upload Invoice</a>
+    <div class="user">
+      <span>Dana Okafor</span>
+      <span class="monogram" aria-hidden="true">DO</span>
+    </div>
+  </nav>
+  <div class="nav-rule"><div class="double"></div></div>
+
+  <main class="shell">
+
+    <header class="inbox-head">
+      <div class="rise d1">
+        <p class="kicker">Acme Corp · The Master</p>
+        <h1 class="page-title">Vendors</h1>
+      </div>
+      <p class="summary-line rise d2"><b>12</b> vendors on file · banking verified.</p>
+    </header>
+
+    <div class="ledger rise d2" role="list">
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Widgets Inc.</span>
+          <span class="no">USD · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Precision Parts Ltd.</span>
+          <span class="no">USD · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Gadgets Co.</span>
+          <span class="no">USD · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Summit Manufacturing Co.</span>
+          <span class="no">USD · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">TechParts International</span>
+          <span class="no">EUR · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row" role="listitem">
+        <span class="dot is-paid" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Global Supply Chain Partners</span>
+          <span class="no">USD · onboarded</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">On file</span>
+          <span class="reason">Banking details verified</span>
+        </span>
+        <span class="when">Active</span>
+      </div>
+
+      <div class="row vendor-row critical" role="listitem">
+        <span class="dot is-crit" aria-hidden="true"></span>
+        <span class="vendor">
+          <span class="name">Fraudster LLC</span>
+          <span class="no">Appeared on INV-1003</span>
+        </span>
+        <span class="status status-wide">
+          <span class="state">Not on file</span>
+          <span class="reason crit">No relationship · no banking details</span>
+        </span>
+        <span class="when">Unknown</span>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="foot">
+    <span>Galatiq · Autonomous Accounts Payable</span>
+    <span class="org">Acme Corp</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · AP — Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="console.css" />
+<style>
+  .audit-wrap { padding: clamp(48px,8vh,92px) 0 120px; }
+  .audit-head .line0 { font-size:12px; color:var(--ink-faint); letter-spacing:.16em; text-transform:uppercase; margin-bottom:18px; }
+  .audit-head h1 { font-size:clamp(24px,3vw,34px); font-weight:700; margin:0 0 14px; letter-spacing:-.01em; }
+  .audit-head .sub { color:var(--ink-dim); font-size:13px; margin:0 0 8px; }
+  .log { border-top:1px solid var(--line); margin-top:30px; }
+  .logline {
+    display:grid; grid-template-columns: 84px 92px 1fr auto; gap:20px;
+    align-items:baseline; padding:16px 6px; border-bottom:1px solid var(--line-soft);
+    font-size:13px;
+  }
+  .logline .ts { color:var(--ink-faint); font-variant-numeric:tabular-nums; }
+  .logline .verb { letter-spacing:.04em; }
+  .logline .verb.paid   { color:var(--ok); }
+  .logline .verb.held   { color:var(--warn); }
+  .logline .verb.reject { color:var(--crit); }
+  .logline .what { color:var(--ink); }
+  .logline .what .by { color:var(--ink-faint); }
+  .logline .amt { text-align:right; color:var(--ink-dim); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  @media (max-width:860px){ .logline{ grid-template-columns:1fr auto; } .logline .ts,.logline .verb{ grid-column:auto; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="prompt">&gt;_</span>
+      <span class="word">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html" aria-current="page">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">+ Upload invoice</a>
+      <span class="who"><span class="dot" aria-hidden="true"></span>Dana Okafor<span class="org">· Acme Corp</span></span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="shell audit-wrap">
+    <header class="audit-head">
+      <div class="line0 reveal" style="animation-delay:.02s">acme-corp / accounts-payable / audit</div>
+      <h1 class="reveal" style="animation-delay:.08s">Decision log</h1>
+      <p class="sub reveal" style="animation-delay:.14s">Every payment decision — agent or human — is written here, append-only.<span class="blink" aria-hidden="true"> _</span></p>
+    </header>
+
+    <div class="log" role="list" aria-label="Decision log">
+      <div class="logline reveal" role="listitem" style="animation-delay:.20s">
+        <span class="ts">14:02:09</span>
+        <span class="verb held">HELD</span>
+        <span class="what">INV-1003 · Fraudster LLC <span class="by">— routed to fraud review by agent</span></span>
+        <span class="amt tnum">$100,000.00</span>
+      </div>
+      <div class="logline reveal" role="listitem" style="animation-delay:.25s">
+        <span class="ts">13:48:31</span>
+        <span class="verb held">HELD</span>
+        <span class="what">INV-1002 · Gadgets Co. <span class="by">— over budget, awaiting review</span></span>
+        <span class="amt tnum">$15,000.00</span>
+      </div>
+      <div class="logline reveal" role="listitem" style="animation-delay:.30s">
+        <span class="ts">13:11:54</span>
+        <span class="verb paid">PAID</span>
+        <span class="what">INV-1004 · Precision Parts Ltd. <span class="by">— touchless, PO matched</span></span>
+        <span class="amt tnum">$4,750.00</span>
+      </div>
+      <div class="logline reveal" role="listitem" style="animation-delay:.35s">
+        <span class="ts">12:57:02</span>
+        <span class="verb reject">REJECTED</span>
+        <span class="what">INV-0998 · Stray Vendor Co. <span class="by">— duplicate, voided by Dana Okafor</span></span>
+        <span class="amt tnum">$3,120.00</span>
+      </div>
+      <div class="logline reveal" role="listitem" style="animation-delay:.40s">
+        <span class="ts">12:30:18</span>
+        <span class="verb paid">PAID</span>
+        <span class="what">INV-1001 · Widgets Inc. <span class="by">— touchless, within terms</span></span>
+        <span class="amt tnum">$5,000.00</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="khint" aria-hidden="true">
+  <span><kbd>Esc</kbd> inbox</span>
+</div>
+
+<script>
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) return;
+    if (e.key === "Escape") window.location.href = "index.html";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · AP — Review INV-1003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="console.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="prompt">&gt;_</span>
+      <span class="word">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">+ Upload invoice</a>
+      <span class="who"><span class="dot" aria-hidden="true"></span>Dana Okafor<span class="org">· Acme Corp</span></span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="shell review-wrap">
+
+    <a class="crumb reveal" href="index.html" style="animation-delay:.02s">&larr; back to inbox</a>
+
+    <header class="rv-head reveal" style="animation-delay:.08s">
+      <div class="rv-id">
+        <span class="id">INV-1003</span>
+        <span class="vend">Fraudster LLC</span>
+        <span class="rv-status">needs review</span>
+      </div>
+      <span class="crit-flag">CRITICAL · fraud suspected</span>
+    </header>
+
+    <section class="hero reveal" style="animation-delay:.14s" aria-label="Amount and vendor master status">
+      <div class="amount-block">
+        <div class="label">Amount requested</div>
+        <div class="amount tnum">$100,000.00<span class="cur">USD</span></div>
+      </div>
+      <div class="vmaster">
+        <div class="label">Vendor master</div>
+        <div class="v"><span class="mark" aria-hidden="true">✕</span> Not in our master</div>
+        <div class="note">No relationship or banking details on file.</div>
+      </div>
+    </section>
+
+    <section class="section reveal" style="animation-delay:.20s">
+      <h2>Why it is held</h2>
+      <ul class="findings">
+        <li>
+          <span class="b" aria-hidden="true">▹</span>
+          <div>
+            <span class="ftitle">Unknown vendor.</span>
+            <span class="fbody"> Not in our master — no relationship or banking details on file.</span>
+          </div>
+        </li>
+        <li>
+          <span class="b" aria-hidden="true">▹</span>
+          <div>
+            <span class="ftitle">Unauthorized item.</span>
+            <span class="fbody"> “FakeItem x100” matches no purchase order.</span>
+          </div>
+        </li>
+        <li>
+          <span class="b" aria-hidden="true">▹</span>
+          <div>
+            <span class="ftitle">Urgency to wire immediately.</span>
+            <span class="fbody"> A classic fraud pattern.</span>
+            <span class="fsrc">raised by the agent</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section reveal" style="animation-delay:.26s">
+      <h2>Agent recommendation</h2>
+      <div class="reco">
+        <span class="tag-rec">HOLD</span>
+        <span class="txt">Do not pay; route to AP fraud review.</span>
+      </div>
+    </section>
+
+    <section class="section reveal" style="animation-delay:.32s">
+      <h2>Facts</h2>
+      <div class="facts">
+        <div class="f">
+          <div class="k">Due</div>
+          <div class="vv warnv">yesterday <span style="color:var(--ink-faint)">(unparsed)</span></div>
+        </div>
+        <div class="f">
+          <div class="k">Terms</div>
+          <div class="vv">Immediate</div>
+        </div>
+        <div class="f">
+          <div class="k">Line items</div>
+          <div class="vv">1</div>
+        </div>
+        <div class="f">
+          <div class="k">Item</div>
+          <div class="vv">FakeItem ×100 @ <span class="tnum">$1,000.00</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal" style="animation-delay:.38s" aria-label="Reviewer actions">
+      <div class="actions">
+        <button class="act guarded" type="button" data-confirm="Approve & pay $100,000.00 to an UNKNOWN vendor flagged for fraud? This cannot be undone.">Approve &amp; Pay</button>
+        <button class="act primary" type="button">Reject &amp; log</button>
+        <button class="act" type="button">Request info</button>
+        <label class="act-note">
+          <input type="text" placeholder="Reviewer note…" aria-label="Reviewer note" />
+        </label>
+        <p class="guard-note">Approve &amp; Pay is guarded — the agent recommends HOLD on this invoice.</p>
+      </div>
+    </section>
+
+    <details class="disc reveal" style="animation-delay:.44s">
+      <summary>
+        <span class="chev" aria-hidden="true">▸</span>
+        View processing trace
+        <span class="hint">5 stages · 1.81s</span>
+      </summary>
+      <div class="trace" role="region" aria-label="Processing trace">
+        <div class="tline">
+          <span class="dotcol" aria-hidden="true">●</span>
+          <span class="step">ingest</span>
+          <span class="desc">received fraudster-llc.pdf · 1 page · 8.2 KB</span>
+          <span class="ms tnum">112 ms</span>
+        </div>
+        <div class="tline">
+          <span class="dotcol" aria-hidden="true">●</span>
+          <span class="step">extract</span>
+          <span class="desc">parsed header + 1 line item; due date unparseable</span>
+          <span class="ms tnum">964 ms</span>
+        </div>
+        <div class="tline fail">
+          <span class="dotcol" aria-hidden="true">✕</span>
+          <span class="step">validate</span>
+          <span class="desc">vendor not in master · no PO match for line item</span>
+          <span class="ms tnum">203 ms</span>
+        </div>
+        <div class="tline fail">
+          <span class="dotcol" aria-hidden="true">✕</span>
+          <span class="step">judge</span>
+          <span class="desc">fraud signals: unknown vendor, unauthorized item, wire urgency</span>
+          <span class="ms tnum">486 ms</span>
+        </div>
+        <div class="tline fail">
+          <span class="dotcol" aria-hidden="true">✕</span>
+          <span class="step">gate</span>
+          <span class="desc">touchless pay blocked → routed to human review (Dana Okafor)</span>
+          <span class="ms tnum">41 ms</span>
+        </div>
+      </div>
+    </details>
+
+  </div>
+</main>
+
+<div class="khint" aria-hidden="true">
+  <span><kbd>Esc</kbd> inbox</span>
+  <span><kbd>T</kbd> trace</span>
+</div>
+
+<script>
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) {
+      if (e.key === "Escape") e.target.blur();
+      return;
+    }
+    var k = e.key.toLowerCase();
+    if (e.key === "Escape") window.location.href = "index.html";
+    if (k === "t") {
+      var d = document.querySelector(".disc");
+      d.open = !d.open;
+      if (d.open) d.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
+
+  // Guard the wrong move: Approve & Pay requires explicit confirmation.
+  document.querySelectorAll(".act.guarded").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var ok = window.confirm(btn.dataset.confirm);
+      if (!ok) return;
+      window.alert("Held. Approval requires a second AP approver for flagged vendors.");
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Accounts Payable — Visual Identity Studies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f3ecdd; --paper-2:#efe7d6; --ink:#1c1813; --muted:#6f6452;
+    --line:#d8ccb4; --line-2:#c9bb9e; --oxblood:#7a2b2b; --gold:#9a7b33;
+    --mono:'Spline Sans Mono', ui-monospace, monospace;
+    --serif:'Fraunces', Georgia, serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--serif); font-optical-sizing:auto;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(154,123,51,.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(122,43,43,.06), transparent 55%);
+  }
+  .grain{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;}
+  .wrap{position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:56px 40px 96px;}
+
+  header.masthead{text-align:center; border-bottom:1px solid var(--line-2); padding-bottom:30px;}
+  .kicker{font-family:var(--mono); font-size:11px; letter-spacing:.32em; text-transform:uppercase; color:var(--oxblood); margin:0 0 18px;}
+  .rule-top{height:1px; background:var(--line-2); max-width:120px; margin:0 auto 22px;}
+  h1.title{font-family:var(--serif); font-weight:400; font-size:clamp(40px,6vw,76px); line-height:.98; margin:0; letter-spacing:-.01em;}
+  h1.title .amp{font-style:italic; color:var(--oxblood);}
+  .dek{font-size:18px; line-height:1.55; color:var(--muted); max-width:660px; margin:20px auto 0; font-style:italic;}
+  .meta-row{display:flex; gap:26px; justify-content:center; flex-wrap:wrap; margin-top:26px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);}
+  .meta-row b{color:var(--ink); font-weight:500;}
+
+  .note{margin:34px auto 8px; max-width:820px; text-align:center; font-size:14.5px; line-height:1.6; color:var(--muted);}
+  .note b{color:var(--ink); font-weight:500;}
+
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:34px; margin-top:44px;}
+  @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+
+  .card{display:block; text-decoration:none; color:inherit; position:relative;
+    border:1px solid var(--line-2); background:var(--paper-2);
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 18px 40px -28px rgba(28,24,19,.55);
+    transition:transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s, border-color .45s;
+    opacity:0; animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards;}
+  .card:hover{transform:translateY(-5px); border-color:var(--oxblood);
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 30px 60px -30px rgba(28,24,19,.6);}
+  .card:focus-visible{outline:2px solid var(--oxblood); outline-offset:3px;}
+  .c1{animation-delay:.05s;} .c2{animation-delay:.14s;} .c3{animation-delay:.23s;}
+  .c4{animation-delay:.32s;} .c5{animation-delay:.41s;}
+
+  .shot{position:relative; height:300px; overflow:hidden; border-bottom:1px solid var(--line-2); background:#e9e0cd;}
+  .shot img{width:100%; display:block; object-fit:cover; object-position:top center;
+    transition:object-position 2.6s ease;}
+  .card:hover .shot img{object-position:bottom center;}
+  .num{position:absolute; top:12px; left:14px; z-index:2; font-family:var(--mono); font-size:11px;
+    letter-spacing:.18em; color:#fff; background:rgba(28,24,19,.78); padding:4px 9px; border-radius:1px;}
+  .open{position:absolute; top:12px; right:14px; z-index:2; font-family:var(--mono); font-size:10.5px;
+    letter-spacing:.16em; text-transform:uppercase; color:#fff; background:var(--oxblood);
+    padding:5px 10px; opacity:0; transform:translateY(-4px); transition:.35s;}
+  .card:hover .open{opacity:1; transform:none;}
+
+  .body{padding:22px 24px 26px;}
+  .name{font-family:var(--serif); font-size:27px; font-weight:500; margin:0; letter-spacing:-.005em;}
+  .name em{font-style:italic; color:var(--oxblood); font-weight:400;}
+  .oneliner{margin:8px 0 0; font-size:15px; line-height:1.5; color:var(--ink);}
+  .sig{margin:14px 0 0; padding-top:13px; border-top:1px dashed var(--line-2);
+    font-family:var(--mono); font-size:11.5px; line-height:1.55; letter-spacing:.02em; color:var(--muted);}
+  .sig b{color:var(--gold); font-weight:500;}
+  .palette{display:flex; gap:6px; margin-top:14px;}
+  .sw{width:18px; height:18px; border-radius:50%; border:1px solid rgba(28,24,19,.18);}
+
+  footer{margin-top:64px; padding-top:26px; border-top:1px solid var(--line-2);
+    font-family:var(--mono); font-size:11.5px; line-height:1.8; letter-spacing:.04em; color:var(--muted); text-align:center;}
+  footer b{color:var(--ink);}
+
+  @keyframes rise{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none; opacity:1;} .shot img,.card,.open{transition:none;}}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">Galatiq · Accounts Payable — Visual Identity Studies</p>
+    <div class="rule-top"></div>
+    <h1 class="title">Five ways to look <span class="amp">like money.</span></h1>
+    <p class="dek">Five complete app-shell identities for the AP review console — all rendering the same invoices, the same $100,000 fraud case, the same audit trail. So you compare the design, not the data.</p>
+    <div class="meta-row">
+      <span><b>Mood</b> · warm &amp; editorial</span>
+      <span><b>Surface</b> · nav · inbox · review · upload</span>
+      <span><b>Built</b> · 5 directions, critiqued &amp; refined</span>
+    </div>
+  </header>
+
+  <p class="note">Click any study to open it full-screen. Each is a self-contained page with live micro-interactions — hover the inbox rows, the CRITICAL alarm, and the guarded <b>Approve &amp; Pay</b>. The hero of every screen is <b>INV-1003 — Fraudster LLC</b>: an unknown vendor billing $100,000 for an unauthorized item, with wire-transfer urgency. The agents held it; here a human decides.</p>
+
+  <div class="grid">
+
+    <a class="card c1" href="01-ledger.html">
+      <div class="shot"><span class="num">01 · LEDGER</span><span class="open">Open ↗</span><img src="thumbs/01-ledger.png" alt="Ledger design preview" loading="lazy" /></div>
+      <div class="body">
+        <h2 class="name">The <em>Ledger</em></h2>
+        <p class="oneliner">A 19th-century counting-house day-book, modernized. Cream paper, all-serif, hairline-ruled rows, oldstyle figures.</p>
+        <p class="sig"><b>Signature ·</b> the inbox reads as a ruled register with a running held balance; the case file carries a rotated <b>HOLD</b> overstamp and numbered-footnote findings.</p>
+        <div class="palette"><span class="sw" style="background:#f3ecdd"></span><span class="sw" style="background:#1c1813"></span><span class="sw" style="background:#7a2b2b"></span><span class="sw" style="background:#9a7b33"></span></div>
+      </div>
+    </a>
+
+    <a class="card c2" href="02-atelier.html">
+      <div class="shot"><span class="num">02 · ATELIER</span><span class="open">Open ↗</span><img src="thumbs/02-atelier.png" alt="Atelier design preview" loading="lazy" /></div>
+      <div class="body">
+        <h2 class="name">The <em>Atelier</em></h2>
+        <p class="oneliner">A Didone magazine spread. Bone paper, towering high-contrast serif, generous air, one electric vermilion.</p>
+        <p class="sig"><b>Signature ·</b> the cover-line — “The $100,000 invoice from a vendor we have never met” — and the amount set as a giant <b>magazine headline</b>.</p>
+        <div class="palette"><span class="sw" style="background:#faf8f3"></span><span class="sw" style="background:#16140f"></span><span class="sw" style="background:#e0431d"></span><span class="sw" style="background:#caa24a"></span></div>
+      </div>
+    </a>
+
+    <a class="card c3" href="03-manila.html">
+      <div class="shot"><span class="num">03 · MANILA</span><span class="open">Open ↗</span><img src="thumbs/03-manila.png" alt="Manila design preview" loading="lazy" /></div>
+      <div class="body">
+        <h2 class="name">The <em>Manila</em></h2>
+        <p class="oneliner">A physical filing system, digitized. Warm kraft folders on a desk, humanist type, rubber-stamp status.</p>
+        <p class="sig"><b>Signature ·</b> status rendered as slightly-rotated ink-bled <b>rubber stamps</b>; the fraud case is an opened manila file marked <b>HOLD</b>.</p>
+        <div class="palette"><span class="sw" style="background:#e7dcc1"></span><span class="sw" style="background:#2a221a"></span><span class="sw" style="background:#3a5a40"></span><span class="sw" style="background:#b23a2e"></span></div>
+      </div>
+    </a>
+
+    <a class="card c4" href="04-archive.html">
+      <div class="shot"><span class="num">04 · ARCHIVE</span><span class="open">Open ↗</span><img src="thumbs/04-archive.png" alt="Archive design preview" loading="lazy" /></div>
+      <div class="body">
+        <h2 class="name">The <em>Archive</em></h2>
+        <p class="oneliner">Swiss-editorial structure meets a monospace ledger. Paper white, slab serif headlines, every datum on a visible grid.</p>
+        <p class="sig"><b>Signature ·</b> the agent trace and findings as an immaculate <b>monospace ledger</b>, finding codes as mono tags, amber the system accent.</p>
+        <div class="palette"><span class="sw" style="background:#f4f2ec"></span><span class="sw" style="background:#191712"></span><span class="sw" style="background:#cf8a1a"></span><span class="sw" style="background:#9a2b22"></span></div>
+      </div>
+    </a>
+
+    <a class="card c5" href="05-dusk.html">
+      <div class="shot"><span class="num">05 · DUSK</span><span class="open">Open ↗</span><img src="thumbs/05-dusk.png" alt="Dusk design preview" loading="lazy" /></div>
+      <div class="body">
+        <h2 class="name">The <em>Dusk</em></h2>
+        <p class="oneliner">Warm editorial, after dark — done right. Candlelit espresso, cream serif, honey-gold glow. No cold dev-tool blue.</p>
+        <p class="sig"><b>Signature ·</b> the CRITICAL fraud row <b>smoulders like an ember</b> against the dark; gold hairlines, a luxurious-but-serious night shift.</p>
+        <div class="palette"><span class="sw" style="background:#221b16"></span><span class="sw" style="background:#ece2cf"></span><span class="sw" style="background:#e0a455"></span><span class="sw" style="background:#d2603f"></span></div>
+      </div>
+    </a>
+
+  </div>
+
+  <footer>
+    <p><b>What these are</b> — standalone design explorations with hardcoded mock data, decoupled from the backend so we can choose an identity fast.<br/>
+    <b>What they're built on</b> — the real domain: the status machine, review categories &amp; alarm levels, findings, and the per-invoice audit trace.<br/>
+    Once you pick a direction, we wire the chosen identity into the live FastAPI app (and add the human-decision endpoint the review screen needs).</p>
+  </footer>
+
+</div>
+</body>
+</html>

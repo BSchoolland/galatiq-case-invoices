@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galatiq · Accounts Payable — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .lede {
+    padding: 46px 0 34px;
+    border-bottom: 1px solid var(--rule);
+    max-width: 720px;
+  }
+  .lede .kicker {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--vermillion); margin: 0 0 14px;
+  }
+  .lede h1 {
+    font-family: var(--serif-disp);
+    font-weight: 500;
+    font-size: 46px;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -.5px;
+  }
+  .lede h1 b { font-weight: 800; }
+  .lede p {
+    font-size: 16px; color: var(--ink-soft);
+    margin: 16px 0 0; max-width: 560px; font-weight: 300;
+  }
+
+  .ledger-head {
+    display: grid;
+    grid-template-columns: 1fr 150px 90px;
+    gap: 24px;
+    align-items: end;
+    padding: 22px 0 9px;
+    font-family: var(--mono);
+    font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 2px solid var(--ink);
+  }
+  .ledger-head .r { text-align: right; }
+
+  .ledger { list-style: none; margin: 0 0 80px; padding: 0; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 150px 90px;
+    gap: 24px;
+    align-items: center;
+    padding: 19px 14px 19px 18px;
+    margin: 0 -14px 0 -18px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+    transition: background .16s var(--ease);
+  }
+  .row::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: -1px; width: 3px;
+    background: transparent; transition: background .16s var(--ease);
+  }
+  .row:hover { background: rgba(255,255,255,.42); }
+  .row:hover::before { background: var(--ink); }
+
+  .who { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .who .vendor {
+    font-family: var(--serif-disp);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.05;
+    letter-spacing: -.2px;
+  }
+  .who .meta {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+    letter-spacing: .5px; flex-wrap: wrap;
+  }
+  .who .no { color: var(--ink-soft); }
+  .who .reason { display: inline-flex; align-items: center; gap: 7px; }
+  .who .reason .lbl { color: var(--ink-soft); text-transform: none; letter-spacing: .3px; font-size: 11.5px; }
+
+  .amount { text-align: right; font-size: 20px; font-weight: 500; letter-spacing: -.3px; }
+  .age { text-align: right; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); }
+
+  /* Critical row quietly draws the eye */
+  .row.is-critical { background: linear-gradient(90deg, rgba(199,52,31,.07), rgba(199,52,31,0) 62%); }
+  .row.is-critical::before { background: var(--vermillion); }
+  .row.is-critical:hover { background: linear-gradient(90deg, rgba(199,52,31,.12), rgba(199,52,31,.02) 62%); }
+  .row.is-critical .vendor { color: var(--vermillion-d); }
+  .row.is-critical .amount { color: var(--vermillion-d); font-weight: 600; }
+  .row.is-critical .reason .lbl { color: var(--vermillion-d); font-weight: 500; }
+  .row.is-critical .flag {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--paper); background: var(--vermillion); padding: 2px 6px;
+  }
+
+  .row.is-paid .vendor, .row.is-paid .amount { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html" aria-current="page">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a class="btn-upload" href="upload.html">Upload invoice</a>
+    </nav>
+    <div class="user"><span class="dot">DO</span> Dana Okafor</div>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="dateline">
+    <span>Acme Corp · Accounts Payable Desk</span>
+    <span>Mon, 15 June 2026</span>
+  </div>
+
+  <section class="lede reveal" style="animation-delay:.05s">
+    <p class="kicker">The Ledger · Daily Edition</p>
+    <h1><b>5 invoices</b> need<br>your review.</h1>
+    <p>Agents cleared the rest overnight. What remains could not be paid touchlessly — read down the column, settle each one.</p>
+  </section>
+
+  <div class="ledger-head reveal" style="animation-delay:.12s">
+    <span>Vendor · Invoice · Hold</span>
+    <span class="r">Amount</span>
+    <span class="r">Filed</span>
+  </div>
+
+  <ul class="ledger">
+    <li class="reveal" style="animation-delay:.16s">
+      <a class="row is-critical" href="review.html">
+        <span class="who">
+          <span class="vendor">Fraudster LLC</span>
+          <span class="meta">
+            <span class="no">INV-1003</span>
+            <span class="reason"><span class="tick critical"></span><span class="lbl">needs review · fraud suspected</span></span>
+            <span class="flag">Critical</span>
+          </span>
+        </span>
+        <span class="amount amt">$100,000.00</span>
+        <span class="age">2m</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.20s">
+      <a class="row" href="review.html">
+        <span class="who">
+          <span class="vendor">Gadgets Co.</span>
+          <span class="meta">
+            <span class="no">INV-1002</span>
+            <span class="reason"><span class="tick review"></span><span class="lbl">needs review · over budget</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$15,000.00</span>
+        <span class="age">14m</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.24s">
+      <a class="row" href="review.html">
+        <span class="who">
+          <span class="vendor">Northwind Supply</span>
+          <span class="meta">
+            <span class="no">INV-1008</span>
+            <span class="reason"><span class="tick review"></span><span class="lbl">needs review · unknown item</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$8,420.00</span>
+        <span class="age">1h</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.28s">
+      <a class="row" href="review.html">
+        <span class="who">
+          <span class="vendor">Orion Components</span>
+          <span class="meta">
+            <span class="no">INV-1009</span>
+            <span class="reason"><span class="tick review"></span><span class="lbl">needs review · data integrity</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$2,400.00</span>
+        <span class="age">3h</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.32s">
+      <a class="row" href="review.html">
+        <span class="who">
+          <span class="vendor">Bluepeak Logistics</span>
+          <span class="meta">
+            <span class="no">INV-1011</span>
+            <span class="reason"><span class="tick processing"></span><span class="lbl">processing</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$12,300.00</span>
+        <span class="age">just now</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.36s">
+      <a class="row is-paid" href="review.html">
+        <span class="who">
+          <span class="vendor">Precision Parts Ltd.</span>
+          <span class="meta">
+            <span class="no">INV-1004</span>
+            <span class="reason"><span class="tick paid"></span><span class="lbl">paid · touchless</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$4,750.00</span>
+        <span class="age">4h</span>
+      </a>
+    </li>
+    <li class="reveal" style="animation-delay:.40s">
+      <a class="row is-paid" href="review.html">
+        <span class="who">
+          <span class="vendor">Widgets Inc.</span>
+          <span class="meta">
+            <span class="no">INV-1001</span>
+            <span class="reason"><span class="tick paid"></span><span class="lbl">paid · touchless</span></span>
+          </span>
+        </span>
+        <span class="amount amt">$5,000.00</span>
+        <span class="age">5h</span>
+      </a>
+    </li>
+  </ul>
+</main>
+
+</body>
+</html>

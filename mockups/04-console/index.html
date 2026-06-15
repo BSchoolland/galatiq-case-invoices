@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Accounts Payable — Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="console.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="prompt">&gt;_</span>
+      <span class="word">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" aria-current="page">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">+ Upload invoice</a>
+      <span class="who"><span class="dot" aria-hidden="true"></span>Dana Okafor<span class="org">· Acme Corp</span></span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="shell">
+    <header class="inbox-head">
+      <div class="line0 reveal" style="animation-delay:.02s">acme-corp / accounts-payable / inbox</div>
+      <h1 class="reveal" style="animation-delay:.08s"><span class="num">5</span> invoices need your review</h1>
+      <p class="sub reveal" style="animation-delay:.14s">Agents cleared the rest. These could not be paid touchless.<span class="blink" aria-hidden="true"> _</span></p>
+    </header>
+
+    <div class="list" role="list" aria-label="Invoice inbox">
+
+      <a class="row is-crit reveal" role="listitem" href="review.html" style="animation-delay:.20s" aria-label="INV-1003, Fraudster LLC, $100,000.00, critical, fraud suspected, 2 minutes ago">
+        <div class="vend">
+          <span class="name">Fraudster LLC</span>
+          <span class="id">INV-1003</span>
+        </div>
+        <div class="amt tnum">$100,000.00</div>
+        <div class="stat">
+          <span class="sind s-crit"><span class="glyph" aria-hidden="true"></span>needs review</span>
+          <span class="tag">CRITICAL · fraud suspected</span>
+        </div>
+        <div class="when">2m</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.25s" aria-label="INV-1002, Gadgets Co., $15,000.00, needs review, over budget, 14 minutes ago">
+        <div class="vend">
+          <span class="name">Gadgets Co.</span>
+          <span class="id">INV-1002</span>
+        </div>
+        <div class="amt tnum">$15,000.00</div>
+        <div class="stat">
+          <span class="sind s-review"><span class="glyph" aria-hidden="true"></span>needs review</span>
+          <span class="tag">over budget</span>
+        </div>
+        <div class="when">14m</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.30s" aria-label="INV-1008, Northwind Supply, $8,420.00, needs review, unknown item, 1 hour ago">
+        <div class="vend">
+          <span class="name">Northwind Supply</span>
+          <span class="id">INV-1008</span>
+        </div>
+        <div class="amt tnum">$8,420.00</div>
+        <div class="stat">
+          <span class="sind s-review"><span class="glyph" aria-hidden="true"></span>needs review</span>
+          <span class="tag">unknown item</span>
+        </div>
+        <div class="when">1h</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.35s" aria-label="INV-1009, Orion Components, $2,400.00, needs review, data integrity, 3 hours ago">
+        <div class="vend">
+          <span class="name">Orion Components</span>
+          <span class="id">INV-1009</span>
+        </div>
+        <div class="amt tnum">$2,400.00</div>
+        <div class="stat">
+          <span class="sind s-review"><span class="glyph" aria-hidden="true"></span>needs review</span>
+          <span class="tag">data integrity</span>
+        </div>
+        <div class="when">3h</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.40s" aria-label="INV-1011, Bluepeak Logistics, $12,300.00, processing, just now">
+        <div class="vend">
+          <span class="name">Bluepeak Logistics</span>
+          <span class="id">INV-1011</span>
+        </div>
+        <div class="amt tnum">$12,300.00</div>
+        <div class="stat">
+          <span class="sind s-proc"><span class="glyph" aria-hidden="true"></span>processing</span>
+        </div>
+        <div class="when">just now</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.45s" aria-label="INV-1004, Precision Parts Ltd., $4,750.00, paid, 4 hours ago">
+        <div class="vend">
+          <span class="name">Precision Parts Ltd.</span>
+          <span class="id">INV-1004</span>
+        </div>
+        <div class="amt tnum">$4,750.00</div>
+        <div class="stat">
+          <span class="sind s-paid"><span class="glyph" aria-hidden="true"></span>paid</span>
+        </div>
+        <div class="when">4h</div>
+      </a>
+
+      <a class="row reveal" role="listitem" href="review.html" style="animation-delay:.50s" aria-label="INV-1001, Widgets Inc., $5,000.00, paid, 5 hours ago">
+        <div class="vend">
+          <span class="name">Widgets Inc.</span>
+          <span class="id">INV-1001</span>
+        </div>
+        <div class="amt tnum">$5,000.00</div>
+        <div class="stat">
+          <span class="sind s-paid"><span class="glyph" aria-hidden="true"></span>paid</span>
+        </div>
+        <div class="when">5h</div>
+      </a>
+
+    </div>
+  </div>
+</main>
+
+<div class="khint" aria-hidden="true">
+  <span><kbd>R</kbd> review</span>
+  <span><kbd>U</kbd> upload</span>
+</div>
+
+<script>
+  // Keyboard affordances — nods to the CLI that shares this product's API.
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) return;
+    var k = e.key.toLowerCase();
+    if (k === "r") window.location.href = "review.html";
+    if (k === "u") window.location.href = "upload.html";
+  });
+</script>
+</body>
+</html>

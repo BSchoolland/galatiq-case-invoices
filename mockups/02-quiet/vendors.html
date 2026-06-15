@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vendors · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="quiet.css" />
+<style>
+  .v-head { padding: 40px 4px 26px; max-width: 720px; }
+  .v-head .kicker { font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600; margin: 0 0 18px; }
+  .v-head h1 { font-family: var(--font-disp); font-optical-sizing: auto; font-weight: 400;
+    font-size: 36px; letter-spacing: -0.015em; margin: 0; line-height: 1.18; }
+  .v-head .sub { margin: 12px 0 0; color: var(--ink-soft); font-size: 16px; }
+
+  .vlist { background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow-soft); padding: 8px; margin-top: 8px; }
+  .vlist .label { padding: 12px 18px 10px; font-size: 12.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 600; }
+  .vrow { display: grid; grid-template-columns: 1fr auto auto; align-items: center;
+    gap: 24px; padding: 17px 18px; border-radius: var(--radius-sm);
+    transition: background .2s ease; }
+  .vrow + .vrow { box-shadow: inset 0 1px 0 var(--hair); }
+  .vrow:hover { background: var(--paper-warm); }
+  .vrow .vleft { display: flex; align-items: center; gap: 15px; }
+  .vrow .vmark { width: 38px; height: 38px; border-radius: 11px; background: var(--paper-warm);
+    color: var(--ink-soft); display: grid; place-items: center;
+    font-family: var(--font-disp); font-weight: 500; font-size: 16px; }
+  .vrow .vname { font-size: 16px; font-weight: 600; }
+  .vrow .vmeta { font-size: 13px; color: var(--ink-faint); margin-top: 2px; }
+  .vrow .vstate { display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13.5px; font-weight: 500; color: var(--ink-soft); }
+  .vrow .vspend { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15.5px;
+    text-align: right; min-width: 120px; }
+  .vrow.flagged .vmark { background: rgba(181,84,75,.1); color: var(--dot-critical); }
+  .vrow.flagged .vstate { color: var(--dot-critical); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable — Inbox">
+    <span class="mark">Galatiq<span class="dot">.</span></span>
+    <span class="desc">Accounts Payable</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html" class="active">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </div>
+  <div class="nav-right">
+    <a class="btn-upload" href="upload.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+      Upload invoice
+    </a>
+    <div class="user">
+      <span class="avatar">DO</span>
+      <span class="who">Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <header class="v-head reveal" style="animation-delay:.05s">
+    <p class="kicker">Acme Corp · Accounts Payable</p>
+    <h1>The vendors we trust to pay.</h1>
+    <p class="sub">Known relationships with banking on file. One name asked to join today — it did not belong.</p>
+  </header>
+
+  <section class="vlist reveal" style="animation-delay:.16s" aria-label="Vendors">
+    <div class="label">Vendor master · 5 active</div>
+
+    <div class="vrow flagged">
+      <div class="vleft">
+        <div class="vmark">F</div>
+        <div><div class="vname">Fraudster LLC</div><div class="vmeta">First seen 2m ago · INV-1003</div></div>
+      </div>
+      <span class="vstate"><span class="dot s-critical"></span> Not in master</span>
+      <span class="vspend num">$0.00</span>
+    </div>
+
+    <div class="vrow">
+      <div class="vleft">
+        <div class="vmark">W</div>
+        <div><div class="vname">Widgets Inc.</div><div class="vmeta">Net-30 · banking verified</div></div>
+      </div>
+      <span class="vstate"><span class="dot s-paid"></span> Trusted</span>
+      <span class="vspend num">$214,500.00</span>
+    </div>
+
+    <div class="vrow">
+      <div class="vleft">
+        <div class="vmark">P</div>
+        <div><div class="vname">Precision Parts Ltd.</div><div class="vmeta">Net-15 · banking verified</div></div>
+      </div>
+      <span class="vstate"><span class="dot s-paid"></span> Trusted</span>
+      <span class="vspend num">$98,200.00</span>
+    </div>
+
+    <div class="vrow">
+      <div class="vleft">
+        <div class="vmark">O</div>
+        <div><div class="vname">Orion Components</div><div class="vmeta">Net-30 · banking verified</div></div>
+      </div>
+      <span class="vstate"><span class="dot s-paid"></span> Trusted</span>
+      <span class="vspend num">$61,740.00</span>
+    </div>
+
+    <div class="vrow">
+      <div class="vleft">
+        <div class="vmark">N</div>
+        <div><div class="vname">Northwind Supply</div><div class="vmeta">Net-45 · review pending item</div></div>
+      </div>
+      <span class="vstate"><span class="dot s-review"></span> Watch</span>
+      <span class="vspend num">$33,910.00</span>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

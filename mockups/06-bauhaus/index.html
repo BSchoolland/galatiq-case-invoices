@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbox · Galatiq Accounts Payable</title>
+<script>var d=document.documentElement;d.className+=" js";setTimeout(function(){d.className=d.className.replace(" js","");},1600);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Big+Shoulders+Display:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bauhaus.css">
+</head>
+<body>
+
+<nav class="nav reveal d1">
+  <a class="mark" href="index.html" aria-label="Galatiq home">
+    <span class="glyph" aria-hidden="true"><i class="sq"></i><i class="ci"></i><i class="tr"></i><i class="bk"></i></span>
+    <span class="word"><b>Galatiq</b><span>Accounts Payable</span></span>
+  </a>
+  <span class="links">
+    <a href="index.html" class="active">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </span>
+  <span class="spacer"></span>
+  <a class="btn" href="upload.html"><span class="dot"></span>Upload invoice</a>
+  <span class="who">
+    <span class="av">DO</span>
+    <span>Dana Okafor<br><span class="org">Acme Corp</span></span>
+  </span>
+</nav>
+
+<main class="shell">
+
+  <header class="head">
+    <div>
+      <div class="kicker reveal d2"><span class="sq"></span>Decision queue</div>
+      <h1 class="reveal d2">The<br>Inbox</h1>
+      <p class="sub reveal d3">Agents pay the clean invoices touchless. What you see below is only what they could not clear — five invoices need your review.</p>
+    </div>
+    <div class="countdial reveal d3" title="5 of 7 awaiting a human">
+      <span class="ct"><b>5</b><em>need you</em></span>
+    </div>
+  </header>
+
+  <div class="rule-d reveal d3"></div>
+
+  <section class="list" aria-label="Invoices needing review">
+
+    <a class="row is-critical reveal d4" href="review.html">
+      <span class="mk critical" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Fraudster LLC</b>
+        <span class="no tab">INV-1003</span>
+      </span>
+      <span class="amount tab">$100,000.00</span>
+      <span class="meta">
+        <span class="tag t-critical"><span class="b"></span>Critical · fraud suspected</span>
+        <span class="when">2m ago</span>
+      </span>
+    </a>
+
+    <a class="row reveal d4" href="review.html">
+      <span class="mk review" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Gadgets Co.</b>
+        <span class="no tab">INV-1002</span>
+      </span>
+      <span class="amount tab">$15,000.00</span>
+      <span class="meta">
+        <span class="tag t-review"><span class="b"></span>Needs review · over budget</span>
+        <span class="when">14m ago</span>
+      </span>
+    </a>
+
+    <a class="row reveal d5" href="review.html">
+      <span class="mk review" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Northwind Supply</b>
+        <span class="no tab">INV-1008</span>
+      </span>
+      <span class="amount tab">$8,420.00</span>
+      <span class="meta">
+        <span class="tag t-review"><span class="b"></span>Needs review · unknown item</span>
+        <span class="when">1h ago</span>
+      </span>
+    </a>
+
+    <a class="row reveal d5" href="review.html">
+      <span class="mk review" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Orion Components</b>
+        <span class="no tab">INV-1009</span>
+      </span>
+      <span class="amount tab">$2,400.00</span>
+      <span class="meta">
+        <span class="tag t-review"><span class="b"></span>Needs review · data integrity</span>
+        <span class="when">3h ago</span>
+      </span>
+    </a>
+
+    <a class="row reveal d6" href="review.html">
+      <span class="mk processing" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Bluepeak Logistics</b>
+        <span class="no tab">INV-1011</span>
+      </span>
+      <span class="amount tab">$12,300.00</span>
+      <span class="meta">
+        <span class="tag t-proc"><span class="b"></span>Processing</span>
+        <span class="when">just now</span>
+      </span>
+    </a>
+
+    <a class="row reveal d6" href="review.html">
+      <span class="mk paid" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Precision Parts Ltd.</b>
+        <span class="no tab">INV-1004</span>
+      </span>
+      <span class="amount tab">$4,750.00</span>
+      <span class="meta">
+        <span class="tag t-paid"><span class="b"></span>Paid · touchless</span>
+        <span class="when">4h ago</span>
+      </span>
+    </a>
+
+    <a class="row reveal d7" href="review.html">
+      <span class="mk paid" aria-hidden="true"></span>
+      <span class="vendor">
+        <b>Widgets Inc.</b>
+        <span class="no tab">INV-1001</span>
+      </span>
+      <span class="amount tab">$5,000.00</span>
+      <span class="meta">
+        <span class="tag t-paid"><span class="b"></span>Paid · touchless</span>
+        <span class="when">5h ago</span>
+      </span>
+    </a>
+
+  </section>
+
+  <footer class="foot reveal d8">
+    <span class="forms" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+    <span>Galatiq · Accounts Payable — autonomous invoice agents for Acme Corp</span>
+  </footer>
+
+</main>
+</body>
+</html>

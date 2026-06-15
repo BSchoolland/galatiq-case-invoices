@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · Review — INV-1003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="deco.css" />
+<script>document.documentElement.className += " anim";</script>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galat<b>i</b>q</span>
+      <span class="descriptor">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <a class="btn-upload" href="upload.html">Upload Invoice</a>
+    <div class="user">
+      <span>Dana Okafor</span>
+      <span class="monogram" aria-hidden="true">DO</span>
+    </div>
+  </nav>
+  <div class="nav-rule"><div class="double"></div></div>
+
+  <main class="shell">
+
+    <a class="back rise d1" href="index.html"><span class="chev">‹</span> Back to Inbox</a>
+
+    <header class="rise d1">
+      <div class="detail-head">
+        <span class="inv-no">INV-1003</span>
+        <h1>Fraudster LLC</h1>
+        <span class="tag">Needs review</span>
+        <span class="tag crit">Critical</span>
+      </div>
+      <p class="subhead">Fraud suspected — this payment is held pending your decision.</p>
+    </header>
+
+    <!-- HERO: the amount, framed like an engraving -->
+    <section class="hero rise d2" aria-label="Invoice amount">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <p class="hero-label">Amount Requested</p>
+      <div class="hero-amount amount"><span class="ccy">$</span>100,000<span style="font-size:.5em">.00</span></div>
+      <p class="hero-note">Payable to a vendor that is <b>not in our master</b> — no relationship, no banking details on file.</p>
+    </section>
+
+    <div class="flourish rise d3"><span class="glyph">◆ ◆ ◆</span></div>
+    <p class="section-label rise d3">Why It Is Held</p>
+
+    <section class="findings rise d3">
+      <div class="finding">
+        <span class="num">I</span>
+        <div class="body">
+          <p class="t">Unknown vendor</p>
+          <p class="d">Not in our master; no relationship or banking details on file.</p>
+        </div>
+      </div>
+      <div class="finding">
+        <span class="num">II</span>
+        <div class="body">
+          <p class="t">Unauthorized item</p>
+          <p class="d">“FakeItem × 100” matches no purchase order.</p>
+        </div>
+      </div>
+      <div class="finding">
+        <span class="num">III</span>
+        <div class="body">
+          <p class="t">Urgency to wire immediately</p>
+          <p class="d">A classic fraud pattern.</p>
+          <p class="src">Raised by the agent</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="recommend rise d4">
+      <p class="label">Agent Recommendation</p>
+      <p class="verdict"><b>Recommend HOLD.</b> Do not pay; route to AP fraud review.</p>
+    </section>
+
+    <section class="facts rise d4" aria-label="Invoice facts">
+      <div class="fact">
+        <div class="k">Due</div>
+        <div class="v">Yesterday <small>could not parse</small></div>
+      </div>
+      <div class="fact">
+        <div class="k">Terms</div>
+        <div class="v">Immediate</div>
+      </div>
+      <div class="fact">
+        <div class="k">Line items</div>
+        <div class="v">1 <small>FakeItem × 100 @ $1,000.00</small></div>
+      </div>
+    </section>
+
+    <div class="actions rise d5">
+      <button class="act primary" type="button" id="approve">Approve &amp; Pay</button>
+      <button class="act danger" type="button">Reject &amp; Log</button>
+      <button class="act" type="button">Request Info</button>
+    </div>
+
+    <div class="note-field rise d5">
+      <label for="note">Reviewer note</label>
+      <textarea id="note" placeholder="Add a note for the audit trail…"></textarea>
+    </div>
+
+    <!-- processing trace lives behind a disclosure, collapsed -->
+    <details class="trace rise d6">
+      <summary><span class="caret">›</span> View processing trace</summary>
+      <div class="trace-body">
+        <div class="step">
+          <span class="pip"></span>
+          <span class="lab">Ingest <small>received via inbound mail · parsed PDF</small></span>
+          <span class="ms">120 ms</span>
+        </div>
+        <div class="step">
+          <span class="pip"></span>
+          <span class="lab">Extract <small>vendor, amount, 1 line item, terms</small></span>
+          <span class="ms">1,840 ms</span>
+        </div>
+        <div class="step">
+          <span class="pip"></span>
+          <span class="lab">Validate <small>vendor master miss · no matching PO · due date unparseable</small></span>
+          <span class="ms">310 ms</span>
+        </div>
+        <div class="step">
+          <span class="pip"></span>
+          <span class="lab">Judge <small>3 findings · urgency-to-wire flagged as fraud pattern</small></span>
+          <span class="ms">2,210 ms</span>
+        </div>
+        <div class="step gate">
+          <span class="pip"></span>
+          <span class="lab">Gate <small>HOLD — routed to human review</small></span>
+          <span class="ms">40 ms</span>
+        </div>
+      </div>
+    </details>
+
+  </main>
+
+  <footer class="foot">
+    <span>Galatiq · Autonomous Accounts Payable</span>
+    <span class="org">Acme Corp</span>
+  </footer>
+
+  <script>
+    // Approve & Pay is the wrong move on a flagged fraud — guard it.
+    document.getElementById('approve').addEventListener('click', function () {
+      var ok = window.confirm(
+        'This invoice is flagged CRITICAL — fraud suspected.\n\n' +
+        'The vendor is not in our master and the agent recommends HOLD.\n\n' +
+        'Approving wires $100,000.00 to Fraudster LLC. Are you sure?'
+      );
+      if (ok) {
+        window.alert('Second confirmation required. Approving a held fraud-flagged payment needs a co-signer.');
+      }
+    });
+  </script>
+
+</body>
+</html>

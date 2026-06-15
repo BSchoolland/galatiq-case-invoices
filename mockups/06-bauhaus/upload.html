@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload · Galatiq Accounts Payable</title>
+<script>var d=document.documentElement;d.className+=" js";setTimeout(function(){d.className=d.className.replace(" js","");},1600);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Big+Shoulders+Display:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bauhaus.css">
+</head>
+<body>
+
+<nav class="nav reveal d1">
+  <a class="mark" href="index.html" aria-label="Galatiq home">
+    <span class="glyph" aria-hidden="true"><i class="sq"></i><i class="ci"></i><i class="tr"></i><i class="bk"></i></span>
+    <span class="word"><b>Galatiq</b><span>Accounts Payable</span></span>
+  </a>
+  <span class="links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </span>
+  <span class="spacer"></span>
+  <a class="btn" href="upload.html"><span class="dot"></span>Upload invoice</a>
+  <span class="who">
+    <span class="av">DO</span>
+    <span>Dana Okafor<br><span class="org">Acme Corp</span></span>
+  </span>
+</nav>
+
+<main class="shell">
+
+  <header class="head" style="grid-template-columns:1fr;padding-bottom:14px;">
+    <div>
+      <div class="kicker reveal d2"><span class="sq"></span>Intake</div>
+      <h1 class="reveal d2">Upload</h1>
+    </div>
+  </header>
+
+  <div class="up-wrap">
+    <div class="dropzone reveal d3" id="dz">
+      <span class="forms-deco" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+      <span class="bigci" aria-hidden="true"><span class="pin"></span></span>
+      <h2>Drop an invoice<br>to process.</h2>
+      <div class="browse">
+        <button class="btn" type="button" id="browse"><span class="dot"></span>Browse files</button>
+        <input type="file" id="file" hidden accept=".pdf,.csv,.json,.xml,.txt">
+      </div>
+      <div class="formats" aria-label="Accepted formats">
+        <span class="fmt">PDF</span>
+        <span class="fmt">CSV</span>
+        <span class="fmt">JSON</span>
+        <span class="fmt">XML</span>
+        <span class="fmt">TXT</span>
+      </div>
+      <p class="hint reveal d4"><span class="ci" aria-hidden="true"></span>Processing runs in the background — watch it move through your inbox.</p>
+    </div>
+  </div>
+
+  <footer class="foot reveal d5">
+    <span class="forms" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+    <span>Galatiq · Accounts Payable — autonomous invoice agents for Acme Corp</span>
+  </footer>
+
+</main>
+
+<script>
+  (function () {
+    var dz = document.getElementById('dz');
+    var browse = document.getElementById('browse');
+    var file = document.getElementById('file');
+    browse.addEventListener('click', function () { file.click(); });
+    ['dragenter','dragover'].forEach(function (e) {
+      dz.addEventListener(e, function (ev) { ev.preventDefault(); dz.classList.add('drag'); });
+    });
+    ['dragleave','drop'].forEach(function (e) {
+      dz.addEventListener(e, function (ev) { ev.preventDefault(); dz.classList.remove('drag'); });
+    });
+    dz.addEventListener('drop', function (ev) {
+      var n = ev.dataTransfer && ev.dataTransfer.files ? ev.dataTransfer.files.length : 0;
+      if (n) alert(n + ' file(s) queued for processing (mock). Head to the inbox to watch them move.');
+    });
+    file.addEventListener('change', function () {
+      if (file.files.length) alert('“' + file.files[0].name + '” queued for processing (mock). Head to the inbox to watch it move.');
+    });
+  })();
+</script>
+</body>
+</html>

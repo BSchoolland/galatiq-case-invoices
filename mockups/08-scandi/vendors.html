@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vendors · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,420;9..144,460;9..144,500;9..144,600&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable — Inbox">
+    <span class="mark">Galatiq<span class="dot">.</span></span>
+    <span class="descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html" class="active">Vendors</a>
+  </div>
+  <div class="nav-right">
+    <a href="upload.html" class="btn btn-primary">Upload invoice</a>
+    <div class="who">
+      <span class="av">DO</span>
+      <span>
+        <span class="name">Dana Okafor</span><br />
+        <span class="org">Acme Corp</span>
+      </span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <header>
+    <p class="eyebrow reveal" style="animation-delay:.05s">Acme Corp</p>
+    <h1 class="page-title reveal" style="animation-delay:.12s">Vendors</h1>
+    <p class="page-lede reveal" style="animation-delay:.2s">The master file the agents check every invoice against.</p>
+  </header>
+
+  <section class="list reveal" style="animation-delay:.3s" aria-label="Vendor master">
+    <div class="row" style="cursor:default">
+      <span class="vendor"><span class="v-name">Widgets Inc.</span><span class="v-no">Net 30 · banking on file</span></span>
+      <span class="status-cell"><span class="chip chip-paid"><span class="seed"></span>Trusted</span></span>
+      <span class="amount tabular">$5,000.00</span>
+      <span class="when">last paid 5h</span>
+    </div>
+    <div class="row" style="cursor:default">
+      <span class="vendor"><span class="v-name">Precision Parts Ltd.</span><span class="v-no">Net 30 · banking on file</span></span>
+      <span class="status-cell"><span class="chip chip-paid"><span class="seed"></span>Trusted</span></span>
+      <span class="amount tabular">$4,750.00</span>
+      <span class="when">last paid 4h</span>
+    </div>
+    <div class="row" style="cursor:default">
+      <span class="vendor"><span class="v-name">Gadgets Co.</span><span class="v-no">Net 45 · banking on file</span></span>
+      <span class="status-cell"><span class="chip chip-review"><span class="seed"></span>Under review</span></span>
+      <span class="amount tabular">$15,000.00</span>
+      <span class="when">14m</span>
+    </div>
+    <div class="row" style="cursor:default">
+      <span class="vendor"><span class="v-name">Northwind Supply</span><span class="v-no">Net 30 · banking on file</span></span>
+      <span class="status-cell"><span class="chip chip-paid"><span class="seed"></span>Trusted</span></span>
+      <span class="amount tabular">$8,420.00</span>
+      <span class="when">1h</span>
+    </div>
+    <a class="row critical" href="review.html">
+      <span class="vendor"><span class="v-name">Fraudster LLC</span><span class="v-no">No record — not in master</span></span>
+      <span class="status-cell"><span class="chip chip-critical"><span class="seed"></span>Unknown</span><span class="tag crit">flagged on INV-1003</span></span>
+      <span class="amount tabular">$100,000.00</span>
+      <span class="when">2m</span>
+    </a>
+
+    <div class="list-foot">
+      <span>4 trusted vendors · 1 unknown</span>
+      <span>Unknown vendors always route to a person</span>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

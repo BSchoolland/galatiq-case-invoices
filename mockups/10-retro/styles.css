@@ -1,0 +1,211 @@
+/* ========================================================================
+   Galatiq · Accounts Payable — "Retro-Future Warm" visual identity
+   70s-inspired: burnt sienna, mustard, cream, soft brown ink.
+   Shared across index.html / review.html / upload.html
+   ======================================================================== */
+
+:root {
+  /* Palette */
+  --cream:        #f3e9d6;  /* base page */
+  --cream-2:      #f7f0e2;  /* lifted panel */
+  --cream-3:      #fbf6ea;  /* highest panel */
+  --sienna:       #b5532e;  /* primary accent */
+  --sienna-deep:  #97401f;  /* pressed / deep */
+  --mustard:      #d6a13c;  /* secondary accent */
+  --mustard-deep: #b9822a;
+  --olive:        #7d7a3a;  /* tertiary warm */
+  --ink:          #4a352a;  /* soft brown ink (text) */
+  --ink-soft:     #836a59;  /* muted brown */
+  --ink-faint:    #a9937f;  /* faint labels */
+  --line:         #e3d4ba;  /* hairlines on cream */
+  --line-soft:    #ece0c9;
+
+  /* Status hues (kept inside the warm family) */
+  --critical:     #a8341f;  /* fraud / critical */
+  --critical-bg:  #f3d9cc;
+  --warn:         #b9822a;  /* over budget / review */
+  --warn-bg:      #f4e6c6;
+  --process:      #7d7a3a;  /* processing */
+  --process-bg:   #e9e6c4;
+  --paid:         #5c6e4a;  /* paid / settled */
+  --paid-bg:      #dfe6cf;
+
+  /* Type */
+  --display: "Frijole", "Bagel Fat One", cursive;     /* groovy header accent */
+  --face:    "Quicksand", "Varela Round", sans-serif;  /* warm rounded geometric sans */
+  --mono:    "Spline Sans Mono", ui-monospace, monospace;
+
+  /* Geometry */
+  --r-lg: 26px;
+  --r-md: 18px;
+  --r-sm: 11px;
+  --pad:  clamp(20px, 4vw, 56px);
+  --maxw: 1180px;
+
+  --shadow-soft: 0 1px 0 rgba(255,255,255,.55) inset,
+                 0 18px 38px -22px rgba(74,53,42,.42);
+  --shadow-lift: 0 1px 0 rgba(255,255,255,.6) inset,
+                 0 26px 54px -26px rgba(74,53,42,.5);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--face);
+  font-weight: 500;
+  color: var(--ink);
+  background-color: var(--cream);
+  /* warm woven texture — concentric sunbursts + grain, all in palette */
+  background-image:
+    radial-gradient(120% 90% at 92% -8%, rgba(214,161,60,.20), transparent 46%),
+    radial-gradient(110% 80% at -6% 108%, rgba(181,83,46,.14), transparent 50%),
+    repeating-linear-gradient(0deg, rgba(74,53,42,.025) 0 2px, transparent 2px 5px);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  letter-spacing: .005em;
+}
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--mustard); color: var(--ink); }
+
+/* tabular money */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+/* ---------------------------------------------------------------- layout */
+.shell { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+
+/* ------------------------------------------------------------------- nav */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(243,233,214,.82);
+  backdrop-filter: blur(9px) saturate(1.1);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: 16px var(--pad);
+  display: flex; align-items: center; gap: 26px;
+}
+.wordmark { display: flex; align-items: baseline; gap: 10px; margin-right: 6px; }
+.wordmark .mark {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--sienna);
+  letter-spacing: .02em;
+  line-height: 1;
+}
+.wordmark .desc {
+  font-size: 11px; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.nav-links { display: flex; gap: 6px; align-items: center; }
+.nav-links a {
+  font-size: 14px; font-weight: 600; color: var(--ink-soft);
+  padding: 8px 14px; border-radius: 999px;
+  transition: color .18s, background .18s;
+}
+.nav-links a:hover { color: var(--sienna); background: rgba(181,83,46,.08); }
+.nav-links a.active { color: var(--sienna); background: rgba(181,83,46,.12); }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+.btn-upload {
+  font-family: var(--face); font-weight: 700; font-size: 14px;
+  color: var(--cream-3);
+  background: var(--sienna);
+  border: none; border-radius: 999px;
+  padding: 10px 20px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 10px 22px -12px rgba(151,64,31,.9);
+  transition: transform .15s, background .18s, box-shadow .18s;
+}
+.btn-upload:hover { background: var(--sienna-deep); transform: translateY(-1px); }
+.btn-upload:active { transform: translateY(0); }
+
+.whoami {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 13px; font-weight: 600; color: var(--ink);
+}
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--mustard);
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 700; color: var(--ink);
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 3px var(--mustard-deep);
+}
+.org-pill {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft); padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--cream-3);
+}
+
+/* generic focus ring */
+:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ----------------------------------------------------------- status dot */
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; display: inline-block; }
+.dot.critical { background: var(--critical); box-shadow: 0 0 0 4px var(--critical-bg); }
+.dot.warn     { background: var(--warn);     box-shadow: 0 0 0 4px var(--warn-bg); }
+.dot.process  { background: var(--process);  box-shadow: 0 0 0 4px var(--process-bg); }
+.dot.paid     { background: var(--paid);     box-shadow: 0 0 0 4px var(--paid-bg); }
+
+/* status word */
+.status-word { font-weight: 700; font-size: 13px; }
+.status-word.critical { color: var(--critical); }
+.status-word.warn     { color: var(--mustard-deep); }
+.status-word.process  { color: var(--process); }
+.status-word.paid     { color: var(--paid); }
+
+/* warm tag */
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; letter-spacing: .01em;
+  padding: 3px 10px; border-radius: 999px;
+}
+.tag.critical { color: var(--critical); background: var(--critical-bg); }
+.tag.warn     { color: var(--mustard-deep); background: var(--warn-bg); }
+.tag.process  { color: var(--process); background: var(--process-bg); }
+.tag.paid     { color: var(--paid); background: var(--paid-bg); }
+
+/* ------------------------------------------------------- entrance anim */
+/* Content's resting state is always visible (opacity:1). The reveal uses NO
+   fill mode, so the invisible start frame is never persisted: during the
+   stagger delay and after the run the element shows its visible resting state.
+   A missed keyframe, slow paint, throttled tab, or reduced-motion can never
+   leave content stuck blank. */
+.rise { opacity: 1; }
+
+@keyframes rise {
+  0%  { opacity: 0; transform: translateY(12px); }
+  1%  { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise { animation: rise .6s cubic-bezier(.2,.7,.3,1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* footer */
+.foot {
+  max-width: var(--maxw); margin: 0 auto; padding: 40px var(--pad) 56px;
+  color: var(--ink-faint); font-size: 12px; font-weight: 600;
+  letter-spacing: .04em; display: flex; justify-content: space-between; gap: 16px;
+}
+.foot .sun {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, var(--mustard), var(--sienna));
+  display: inline-block; vertical-align: -2px; margin-right: 7px;
+}

@@ -1,0 +1,198 @@
+/* Galatiq · Accounts Payable — QUIET / CALM fintech
+   Warm near-white ground, soft ink, one muted slate-teal accent.
+   Separation by space and weight, almost never by lines. */
+
+:root {
+  --paper:      #fafaf8;
+  --paper-warm: #f4f2ec;   /* faintly warmer recessed surface */
+  --card:       #ffffff;
+  --ink:        #23211e;
+  --ink-soft:   #5b574f;   /* secondary text */
+  --ink-faint:  #908a7e;   /* tertiary / meta */
+  --hair:       #e9e6dd;   /* the rare, almost-invisible hairline */
+
+  --teal:       #3f6f6a;   /* the one accent */
+  --teal-deep:  #2f534f;
+  --teal-wash:  #eef3f1;   /* accent at ~6% for soft fills */
+
+  /* status dots — soft, desaturated, never loud */
+  --dot-critical: #b5544b;   /* clay-red, muted */
+  --dot-review:   #b07a5c;   /* warm clay */
+  --dot-process:  #6f8f8a;   /* muted teal */
+  --dot-paid:     #8a9a86;   /* sage, the calmest */
+
+  --radius:     18px;
+  --radius-sm:  12px;
+
+  --shadow-soft: 0 1px 2px rgba(35,33,30,.03),
+                 0 8px 28px -16px rgba(35,33,30,.14);
+  --shadow-lift: 0 2px 4px rgba(35,33,30,.04),
+                 0 18px 50px -24px rgba(35,33,30,.22);
+
+  --font-text: "Hanken Grotesk", ui-sans-serif, sans-serif;
+  --font-disp: "Fraunces", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 700px at 78% -8%, #ffffff 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(900px 600px at 8% 108%, var(--paper-warm) 0%, rgba(244,242,236,0) 55%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: -0.002em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+/* faint paper grain — barely there, adds warmth not noise */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- shell ---------- */
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 48px 96px;
+}
+
+/* ---------- top nav ---------- */
+.nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 30px 48px 26px;
+}
+
+.brand { display: flex; align-items: baseline; gap: 11px; margin-right: 38px; }
+.brand .mark {
+  font-family: var(--font-disp);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  color: var(--ink);
+}
+.brand .mark .dot { color: var(--teal); }
+.brand .desc {
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-links a {
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  transition: color .2s ease, background .2s ease;
+}
+.nav-links a:hover { color: var(--ink); background: rgba(63,111,106,.07); }
+.nav-links a.active { color: var(--teal-deep); }
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; bottom: 1px;
+  height: 2px; border-radius: 2px;
+  background: var(--teal);
+  opacity: .85;
+}
+
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+
+.btn-upload {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--teal);
+  color: #f6faf8;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: .005em;
+  box-shadow: 0 1px 1px rgba(0,0,0,.04), 0 10px 22px -14px rgba(47,83,79,.9);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn-upload:hover { background: var(--teal-deep); transform: translateY(-1px);
+  box-shadow: 0 2px 3px rgba(0,0,0,.05), 0 16px 30px -16px rgba(47,83,79,.85); }
+.btn-upload svg { width: 15px; height: 15px; }
+
+.user { display: flex; align-items: center; gap: 10px; }
+.user .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(140deg, #cdb9a6, #b07a5c);
+  color: #fff; font-size: 12.5px; font-weight: 600;
+  display: grid; place-items: center;
+  letter-spacing: .02em;
+}
+.user .who { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+
+/* ---------- generic dot ---------- */
+.dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  flex: 0 0 auto;
+}
+.dot.s-critical { background: var(--dot-critical); box-shadow: 0 0 0 4px rgba(181,84,75,.13); }
+.dot.s-review   { background: var(--dot-review); }
+.dot.s-process  { background: var(--dot-process); }
+.dot.s-paid     { background: var(--dot-paid); }
+
+/* ---------- focus ---------- */
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- page-load reveal ----------
+   Content is visible at rest; the entrance only animates while it plays.
+   If the animation never composites (headless capture, dropped first
+   paint), nothing is ever stranded invisible. */
+@keyframes rise {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.reveal { animation: rise .55s cubic-bezier(.22,.61,.36,1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; }
+  * { scroll-behavior: auto !important; }
+  .btn-upload:hover { transform: none; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .nav { flex-wrap: wrap; gap: 12px; padding: 22px 24px; }
+  .shell { padding: 0 24px 72px; }
+  .nav-right { width: 100%; margin-left: 0; justify-content: space-between; }
+  .desc { display: none; }
+}

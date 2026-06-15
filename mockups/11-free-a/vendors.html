@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Galatiq · Vendors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .v-head { padding: 56px 0 28px; }
+  .v-head h1 { font-size: 44px; }
+  .v-head .sub { margin-top: 12px; color: var(--ink-soft); font-size: 14.5px; max-width: 46ch; }
+
+  .master { border-top: 2px solid var(--ink); }
+  .vrow {
+    display: grid; grid-template-columns: 1.4fr 1fr auto; gap: 24px; align-items: center;
+    padding: 18px 14px; border-bottom: 1px solid var(--rule);
+    transition: background .18s var(--ease);
+  }
+  .vrow:hover { background: var(--paper-2); }
+  .vrow .vn { font-family: "Fraunces", serif; font-size: 18px; }
+  .vrow .terms { color: var(--ink-faint); font-size: 12.5px; letter-spacing: .04em; }
+  .vrow .state { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; display:flex; align-items:center; gap:8px; }
+  .state.on  { color: var(--moss); }
+  .state.off { color: var(--ink-faint); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html" aria-current="page">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn btn-solid" href="upload.html">Upload invoice</a>
+      <span class="who"><span class="dot">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <header class="v-head">
+    <span class="eyebrow rise" style="animation-delay:.02s">Acme Corp · vendor master</span>
+    <h1 class="rise" style="animation-delay:.06s">Vendors</h1>
+    <p class="sub rise" style="animation-delay:.12s">The known payees. The agents pay touchless only against this list — anything off it lands in your inbox.</p>
+  </header>
+
+  <section class="master rise" style="animation-delay:.18s" aria-label="Vendor master">
+    <div class="vrow">
+      <span class="vn">Widgets Inc.</span>
+      <span class="terms tabular">Net 30 · banking on file</span>
+      <span class="state on"><span class="glyph paid"></span> active</span>
+    </div>
+    <div class="vrow">
+      <span class="vn">Precision Parts Ltd.</span>
+      <span class="terms tabular">Net 45 · banking on file</span>
+      <span class="state on"><span class="glyph paid"></span> active</span>
+    </div>
+    <div class="vrow">
+      <span class="vn">Northwind Supply</span>
+      <span class="terms tabular">Net 30 · banking on file</span>
+      <span class="state on"><span class="glyph paid"></span> active</span>
+    </div>
+    <div class="vrow">
+      <span class="vn">Orion Components</span>
+      <span class="terms tabular">Net 15 · banking on file</span>
+      <span class="state on"><span class="glyph paid"></span> active</span>
+    </div>
+    <div class="vrow">
+      <span class="vn">Bluepeak Logistics</span>
+      <span class="terms tabular">Net 30 · pending review</span>
+      <span class="state off"><span class="glyph proc"></span> onboarding</span>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Galatiq · Accounts Payable</span>
+  <span>Acme Corp · vendor master</span>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .tl { padding: 14px 30px 24px; max-width: 720px; }
+  .ev { display: grid; grid-template-columns: 18px 1fr auto; gap: 18px; padding: 20px 0; position: relative; }
+  .ev + .ev { border-top: 1px solid var(--glass-edge); }
+  .ev .node { width: 11px; height: 11px; border-radius: 50%; margin-top: 5px; }
+  .ev .node.good { background: var(--good); box-shadow: 0 0 0 4px rgba(63,143,110,0.16); }
+  .ev .node.crit { background: var(--crit); box-shadow: 0 0 0 4px var(--crit-glow); }
+  .ev .node.aqua { background: var(--aqua); box-shadow: 0 0 0 4px var(--aqua-glow); }
+  .ev .what { font-size: 14.5px; color: var(--ink); }
+  .ev .what b { font-weight: 600; }
+  .ev .meta { font-size: 12.5px; color: var(--ink-faint); margin-top: 3px; }
+  .ev .meta .actor { color: var(--ink-soft); }
+  .ev .when { font-size: 12px; color: var(--ink-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ev .amt { font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="atmos"><span></span><span></span><span></span></div>
+
+<div class="shell">
+  <nav class="nav reveal">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html" class="active">Audit</a>
+    </div>
+    <span class="spacer"></span>
+    <a class="btn-upload" href="upload.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+      Upload invoice
+    </a>
+    <div class="who">
+      <span class="avatar">DO</span>
+      <div>
+        <div class="name">Dana Okafor</div>
+        <div class="org">Acme Corp</div>
+      </div>
+    </div>
+  </nav>
+
+  <header class="reveal" style="animation-delay:.04s">
+    <p class="eyebrow">Audit</p>
+    <h1 class="page-h">Every decision, <em>on the record</em>.</h1>
+  </header>
+
+  <section class="panel tl reveal" style="animation-delay:.09s">
+    <div class="ev">
+      <span class="node aqua"></span>
+      <div>
+        <div class="what"><b>INV-1003</b> held for review — Fraudster LLC</div>
+        <div class="meta">Gate · 3 fraud signals · <span class="actor">Galatiq agent</span></div>
+      </div>
+      <div class="when">2m ago<br><span class="amt">$100,000.00</span></div>
+    </div>
+    <div class="ev">
+      <span class="node aqua"></span>
+      <div>
+        <div class="what"><b>INV-1011</b> entered processing — Bluepeak Logistics</div>
+        <div class="meta">Ingest · <span class="actor">Galatiq agent</span></div>
+      </div>
+      <div class="when">just now<br><span class="amt">$12,300.00</span></div>
+    </div>
+    <div class="ev">
+      <span class="node good"></span>
+      <div>
+        <div class="what"><b>INV-1004</b> paid touchless — Precision Parts Ltd.</div>
+        <div class="meta">Matched PO-4471 · <span class="actor">Galatiq agent</span></div>
+      </div>
+      <div class="when">4h ago<br><span class="amt">$4,750.00</span></div>
+    </div>
+    <div class="ev">
+      <span class="node good"></span>
+      <div>
+        <div class="what"><b>INV-1001</b> paid touchless — Widgets Inc.</div>
+        <div class="meta">Matched PO-4460 · <span class="actor">Galatiq agent</span></div>
+      </div>
+      <div class="when">5h ago<br><span class="amt">$5,000.00</span></div>
+    </div>
+    <div class="ev">
+      <span class="node good"></span>
+      <div>
+        <div class="what"><b>INV-0998</b> approved &amp; paid — Northwind Supply</div>
+        <div class="meta">Manual review · <span class="actor">Dana Okafor</span></div>
+      </div>
+      <div class="when">1d ago<br><span class="amt">$3,120.00</span></div>
+    </div>
+    <div class="ev">
+      <span class="node crit"></span>
+      <div>
+        <div class="what"><b>INV-0991</b> rejected &amp; logged — Quik Cash Vendors</div>
+        <div class="meta">Fraud confirmed · <span class="actor">Dana Okafor</span></div>
+      </div>
+      <div class="when">2d ago<br><span class="amt">$42,000.00</span></div>
+    </div>
+  </section>
+
+  <p class="foot reveal" style="animation-delay:.13s">
+    <span class="mark">Galatiq</span> · immutable record · exportable for SOX review.
+  </p>
+</div>
+</body>
+</html>

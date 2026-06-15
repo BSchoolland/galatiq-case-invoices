@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INV-1003 · Review · Galatiq Accounts Payable</title>
+<script>var d=document.documentElement;d.className+=" js";setTimeout(function(){d.className=d.className.replace(" js","");},1600);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Big+Shoulders+Display:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bauhaus.css">
+</head>
+<body>
+
+<nav class="nav reveal d1">
+  <a class="mark" href="index.html" aria-label="Galatiq home">
+    <span class="glyph" aria-hidden="true"><i class="sq"></i><i class="ci"></i><i class="tr"></i><i class="bk"></i></span>
+    <span class="word"><b>Galatiq</b><span>Accounts Payable</span></span>
+  </a>
+  <span class="links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+    <a href="audit.html">Audit</a>
+  </span>
+  <span class="spacer"></span>
+  <a class="btn" href="upload.html"><span class="dot"></span>Upload invoice</a>
+  <span class="who">
+    <span class="av">DO</span>
+    <span>Dana Okafor<br><span class="org">Acme Corp</span></span>
+  </span>
+</nav>
+
+<main class="shell">
+
+  <a class="back reveal d2" href="index.html"><span class="arr">←</span>Back to inbox</a>
+
+  <header class="rhead reveal d2">
+    <div>
+      <div class="idline">
+        <span class="id tab">INV-1003</span>
+        <span class="dot" aria-hidden="true"></span>
+        <span class="vend">Fraudster LLC</span>
+      </div>
+      <h1>Fraud<br>suspected</h1>
+      <div class="statline">
+        <span style="font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);">Status · Needs review</span>
+      </div>
+    </div>
+    <div class="crit-badge"><span class="ci" aria-hidden="true"></span>Critical</div>
+  </header>
+
+  <section class="hero reveal d3" aria-label="Amount and vendor status">
+    <div class="amt">
+      <span class="lbl">Amount requested</span>
+      <span class="big tab">$100,000.00</span>
+      <span class="cur">USD</span>
+    </div>
+    <div class="vend-state">
+      <div class="flag">
+        <span class="ic" aria-hidden="true">!</span>
+        <span>
+          <b>Vendor is not in our master.</b>
+          <p>No relationship, contract, or banking details on file for “Fraudster LLC.” A first-time payee asking for six figures.</p>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="rbody">
+
+    <div class="rcol-main">
+      <div class="panel reveal d4">
+        <div class="ptitle red"><span class="sq"></span>Why it is held</div>
+        <ul class="findings">
+          <li>
+            <span class="num">01</span>
+            <span>
+              <b>Unknown vendor</b>
+              <p>Not in our master — no relationship or banking details on file.</p>
+            </span>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <span>
+              <b>Unauthorized item</b>
+              <p>“FakeItem ×100” matches no open purchase order.</p>
+            </span>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <span>
+              <b>Urgency to wire immediately</b>
+              <p>A classic fraud pattern.</p>
+              <span class="by">Raised by the agent</span>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="rec reveal d4">
+        <span class="ic" aria-hidden="true">⊘</span>
+        <span class="txt">
+          <b>Agent recommendation</b>
+          <span>Recommend HOLD. Do not pay; route to AP fraud review.</span>
+        </span>
+      </div>
+
+      <div class="actions reveal d5">
+        <div class="btns">
+          <button class="act primary danger" id="approveBtn" type="button"><span class="sq"></span>Approve &amp; Pay</button>
+          <button class="act reject" type="button"><span class="sq"></span>Reject &amp; log</button>
+          <button class="act info" type="button"><span class="sq"></span>Request info</button>
+        </div>
+        <div class="guard" id="guard" hidden>
+          <span class="tr" aria-hidden="true"></span>
+          <span><b>Hold up.</b> The agent recommends HOLD on a $100,000 payment to an unknown vendor. Click “Approve &amp; Pay” again within 5s to override, or reject.</span>
+        </div>
+        <div class="note">
+          <label for="rn">Reviewer note</label>
+          <textarea id="rn" placeholder="Add context for the audit trail…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <aside class="rcol-side">
+      <div class="panel reveal d5">
+        <div class="ptitle ink"><span class="sq"></span>The facts</div>
+        <div class="facts">
+          <div class="fr"><span class="k">Invoice</span><span class="v tab">INV-1003</span></div>
+          <div class="fr"><span class="k">Due date</span><span class="v warn">Yesterday · could not parse</span></div>
+          <div class="fr"><span class="k">Terms</span><span class="v">Immediate</span></div>
+          <div class="fr fr-stack">
+            <span class="k">Line items</span>
+            <span class="v">1</span>
+            <span class="sub tab">FakeItem ×100 · $1,000.00 ea</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <details class="disc reveal d6">
+    <summary class="disc-btn">
+      <span class="ic" aria-hidden="true"></span>
+      View processing trace
+      <span class="chev" aria-hidden="true">›</span>
+    </summary>
+    <div class="trace">
+      <div class="tr-row">
+        <span class="st ok" aria-hidden="true"></span>
+        <span class="stage">Ingest</span>
+        <span class="desc">Received PDF, normalized to document model</span>
+        <span class="ms tab">120 ms</span>
+      </div>
+      <div class="tr-row">
+        <span class="st ok" aria-hidden="true"></span>
+        <span class="stage">Extract</span>
+        <span class="desc">LLM read vendor, amount, 1 line item</span>
+        <span class="ms tab">2,340 ms</span>
+      </div>
+      <div class="tr-row">
+        <span class="st warn" aria-hidden="true"></span>
+        <span class="stage">Validate</span>
+        <span class="desc">Vendor master miss · PO match failed · date unparseable</span>
+        <span class="ms tab">85 ms</span>
+      </div>
+      <div class="tr-row">
+        <span class="st warn" aria-hidden="true"></span>
+        <span class="stage">Judge</span>
+        <span class="desc">Risk model flagged urgency + unknown payee → fraud</span>
+        <span class="ms tab">1,910 ms</span>
+      </div>
+      <div class="tr-row">
+        <span class="st stop" aria-hidden="true"></span>
+        <span class="stage">Gate</span>
+        <span class="desc">Auto-pay blocked · routed to human review</span>
+        <span class="ms tab">12 ms</span>
+      </div>
+    </div>
+  </details>
+
+  <footer class="foot reveal d7">
+    <span class="forms" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+    <span>Galatiq · Accounts Payable — autonomous invoice agents for Acme Corp</span>
+  </footer>
+
+</main>
+
+<script>
+  // Guard the wrong move: Approve & Pay requires an explicit second confirm.
+  (function () {
+    var btn = document.getElementById('approveBtn');
+    var guard = document.getElementById('guard');
+    var armed = false, timer = null;
+    btn.addEventListener('click', function () {
+      if (!armed) {
+        armed = true;
+        guard.hidden = false;
+        btn.textContent = '';
+        var sq = document.createElement('span'); sq.className = 'sq'; btn.appendChild(sq);
+        btn.appendChild(document.createTextNode('Confirm override'));
+        timer = setTimeout(function () {
+          armed = false; guard.hidden = true;
+          btn.textContent = '';
+          var s = document.createElement('span'); s.className = 'sq'; btn.appendChild(s);
+          btn.appendChild(document.createTextNode('Approve & Pay'));
+        }, 5000);
+        return;
+      }
+      clearTimeout(timer);
+      armed = false; guard.hidden = true;
+      btn.textContent = '';
+      var s = document.createElement('span'); s.className = 'sq'; btn.appendChild(s);
+      btn.appendChild(document.createTextNode('Approve & Pay'));
+      alert('Override recorded against your sign-in (mock). In production this would demand a second approver and a written justification.');
+    });
+  })();
+</script>
+</body>
+</html>

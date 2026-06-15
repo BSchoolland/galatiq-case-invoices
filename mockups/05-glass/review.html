@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Review INV-1003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .back {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 13px; color: var(--ink-soft); margin-bottom: 22px;
+    transition: gap 0.18s ease, color 0.18s ease;
+  }
+  .back:hover { gap: 11px; color: var(--aqua-deep); }
+  .back svg { width: 15px; height: 15px; }
+
+  .layout { display: grid; grid-template-columns: 1.55fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 940px) { .layout { grid-template-columns: 1fr; } }
+
+  /* Header strip */
+  .head-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
+  .invno { font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+  .head-vendor {
+    font-family: var(--font-display); font-weight: 380;
+    font-size: clamp(30px, 3.6vw, 42px); letter-spacing: -0.02em;
+    margin: 4px 0 0; color: var(--crit);
+  }
+  .head-sub { font-family: var(--font-edit); font-style: italic; font-size: 17px; color: var(--ink-soft); margin: 8px 0 0; }
+
+  /* Hero amount */
+  .hero { padding: 30px 32px; margin-top: 22px; }
+  .hero .amt {
+    font-family: var(--font-display); font-weight: 360;
+    font-size: clamp(44px, 6vw, 68px); line-height: 1; letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .hero .ccy { font-size: 0.36em; color: var(--ink-faint); font-weight: 400; vertical-align: 0.55em; margin-left: 8px; letter-spacing: 0.04em; }
+  .hero .vendor-flag {
+    display: inline-flex; align-items: center; gap: 9px;
+    margin-top: 18px; padding: 8px 14px; border-radius: 999px;
+    background: var(--crit-glow); color: var(--crit); font-size: 13px; font-weight: 500;
+  }
+  .hero .vendor-flag svg { width: 15px; height: 15px; }
+
+  .section-label {
+    font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--aqua-deep); font-weight: 600; margin: 30px 0 14px;
+  }
+
+  /* Findings */
+  .findings { padding: 8px 10px; }
+  .finding {
+    display: grid; grid-template-columns: auto 1fr; gap: 14px;
+    padding: 16px 16px; align-items: start;
+  }
+  .finding + .finding { border-top: 1px solid var(--glass-edge); }
+  .finding .ico {
+    width: 30px; height: 30px; border-radius: 9px; flex: none;
+    display: grid; place-items: center; color: var(--crit);
+    background: var(--crit-glow);
+  }
+  .finding .ico svg { width: 16px; height: 16px; }
+  .finding .t { font-size: 14.5px; font-weight: 500; color: var(--ink); }
+  .finding .d { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+  .finding .by { font-size: 11px; color: var(--ink-faint); font-style: italic; font-family: var(--font-edit); }
+
+  /* Recommendation */
+  .reco {
+    display: flex; align-items: center; gap: 14px;
+    margin-top: 18px; padding: 18px 22px;
+    border-left: 3px solid var(--crit);
+    background: linear-gradient(100deg, var(--crit-glow), transparent 80%);
+  }
+  .reco .rt { font-family: var(--font-edit); font-size: 16px; color: var(--ink); }
+  .reco .rt b { color: var(--crit); font-weight: 600; }
+
+  /* Facts (sidebar) */
+  .facts { padding: 22px 24px; }
+  .fact { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; font-size: 13.5px; }
+  .fact + .fact { border-top: 1px solid var(--glass-edge); }
+  .fact .k { color: var(--ink-faint); }
+  .fact .v { color: var(--ink); font-weight: 500; text-align: right; }
+  .fact .v.flag { color: var(--crit); }
+
+  /* Action bar */
+  .actions { padding: 22px 24px; margin-top: 24px; }
+  .act-h { font-size: 11.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; margin-bottom: 16px; }
+  .note {
+    width: 100%; resize: vertical; min-height: 64px;
+    font-family: var(--font-text); font-size: 13.5px; color: var(--ink);
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--glass-edge); background: rgba(255,255,255,0.55);
+    margin-bottom: 16px;
+  }
+  .note::placeholder { color: var(--ink-faint); }
+  .note:focus-visible { background: rgba(255,255,255,0.85); }
+
+  .btn-row { display: flex; flex-direction: column; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 12px 16px; border-radius: var(--radius-sm);
+    font-family: var(--font-text); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: 1px solid transparent; width: 100%;
+    transition: transform 0.15s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-reject { background: linear-gradient(135deg, var(--crit), #a83a35); color: #fff; box-shadow: 0 12px 26px -12px rgba(194,69,63,0.6); }
+  .btn-info { background: rgba(255,255,255,0.6); color: var(--ink); border-color: var(--glass-edge); }
+  .btn-info:hover { background: rgba(255,255,255,0.85); }
+
+  /* Guarded approve — disclosure that reveals the confirm */
+  .guard { border: 1px dashed rgba(194,69,63,0.4); border-radius: var(--radius-sm); overflow: hidden; }
+  .guard > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 12px 16px; font-size: 13.5px; font-weight: 500; color: var(--ink-soft);
+  }
+  .guard > summary::-webkit-details-marker { display: none; }
+  .guard > summary:hover { color: var(--ink); background: rgba(255,255,255,0.4); }
+  .guard[open] > summary { color: var(--crit); }
+  .guard .guard-body { padding: 0 14px 14px; }
+  .guard .warn-line {
+    display: flex; gap: 9px; align-items: flex-start;
+    font-size: 12.5px; color: var(--crit); margin: 4px 0 12px; line-height: 1.45;
+  }
+  .guard .warn-line svg { width: 16px; height: 16px; flex: none; margin-top: 1px; }
+  .btn-approve {
+    background: rgba(255,255,255,0.7); color: var(--crit);
+    border: 1.5px solid var(--crit); box-shadow: none;
+  }
+  .btn-approve:hover { background: var(--crit); color: #fff; }
+
+  /* Trace disclosure */
+  .trace { margin-top: 24px; padding: 6px 6px; }
+  .trace > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; gap: 11px;
+    padding: 16px 18px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500; color: var(--ink-soft);
+    transition: background 0.18s ease;
+  }
+  .trace > summary::-webkit-details-marker { display: none; }
+  .trace > summary:hover { background: rgba(255,255,255,0.5); color: var(--ink); }
+  .trace > summary .chev { transition: transform 0.2s ease; margin-left: auto; width: 16px; height: 16px; color: var(--ink-faint); }
+  .trace[open] > summary .chev { transform: rotate(90deg); }
+  .trace > summary .mono { font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  .steps { padding: 6px 22px 18px; }
+  .step { display: grid; grid-template-columns: 22px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; position: relative; }
+  .step + .step { border-top: 1px solid var(--glass-edge); }
+  .step .node { width: 11px; height: 11px; border-radius: 50%; background: var(--aqua); box-shadow: 0 0 0 4px var(--aqua-glow); }
+  .step.held .node { background: var(--crit); box-shadow: 0 0 0 4px var(--crit-glow); }
+  .step .sn { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .step .sd { font-size: 12px; color: var(--ink-faint); margin-top: 1px; }
+  .step .ms { font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div class="atmos"><span></span><span></span><span></span></div>
+
+<div class="shell">
+  <nav class="nav reveal">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <span class="spacer"></span>
+    <a class="btn-upload" href="upload.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+      Upload invoice
+    </a>
+    <div class="who">
+      <span class="avatar">DO</span>
+      <div>
+        <div class="name">Dana Okafor</div>
+        <div class="org">Acme Corp</div>
+      </div>
+    </div>
+  </nav>
+
+  <a class="back reveal" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+    Back to inbox
+  </a>
+
+  <header class="reveal" style="animation-delay:.04s">
+    <div class="head-row">
+      <span class="invno">INV-1003</span>
+      <span class="dot crit"></span>
+      <span class="tag crit">CRITICAL · needs review</span>
+    </div>
+    <h1 class="head-vendor">Fraudster LLC</h1>
+    <p class="head-sub">Fraud suspected — flagged before any payment was made.</p>
+  </header>
+
+  <div class="layout">
+    <div>
+      <!-- Hero -->
+      <section class="panel hero reveal" style="animation-delay:.08s">
+        <div class="amt money">$100,000.00<span class="ccy">USD</span></div>
+        <span class="vendor-flag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          Vendor is <b>&nbsp;not&nbsp;</b> in our master file.
+        </span>
+      </section>
+
+      <!-- Why held -->
+      <p class="section-label">Why it is held</p>
+      <section class="panel findings reveal" style="animation-delay:.11s">
+        <div class="finding">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 11h-6"/></svg>
+          </span>
+          <div>
+            <div class="t">Unknown vendor</div>
+            <div class="d">Not in our master — no relationship or banking details on file.</div>
+          </div>
+        </div>
+        <div class="finding">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+          </span>
+          <div>
+            <div class="t">Unauthorized item</div>
+            <div class="d">“FakeItem x100” matches no purchase order.</div>
+          </div>
+        </div>
+        <div class="finding">
+          <span class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></svg>
+          </span>
+          <div>
+            <div class="t">Urgency to wire immediately</div>
+            <div class="d">A classic fraud pattern. <span class="by">— raised by the agent</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recommendation -->
+      <div class="reco reveal" style="animation-delay:.13s">
+        <span class="dot crit"></span>
+        <span class="rt"><b>Recommend HOLD.</b> Do not pay; route to AP fraud review.</span>
+      </div>
+
+      <!-- Trace, collapsed -->
+      <details class="panel trace reveal" style="animation-delay:.11s">
+        <summary>
+          View processing trace
+          <span class="mono">5 stages · 1.34s</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </summary>
+        <div class="steps">
+          <div class="step">
+            <span class="node"></span>
+            <div><div class="sn">Ingest</div><div class="sd">Parsed PDF · 1 page · text layer present</div></div>
+            <span class="ms">120 ms</span>
+          </div>
+          <div class="step">
+            <span class="node"></span>
+            <div><div class="sn">Extract</div><div class="sd">Vendor, amount, terms, 1 line item</div></div>
+            <span class="ms">410 ms</span>
+          </div>
+          <div class="step">
+            <span class="node"></span>
+            <div><div class="sn">Validate</div><div class="sd">Vendor not found in master · due date unparseable</div></div>
+            <span class="ms">290 ms</span>
+          </div>
+          <div class="step">
+            <span class="node"></span>
+            <div><div class="sn">Judge</div><div class="sd">3 fraud signals · confidence 0.94</div></div>
+            <span class="ms">480 ms</span>
+          </div>
+          <div class="step held">
+            <span class="node"></span>
+            <div><div class="sn">Gate</div><div class="sd">HELD — routed to human review</div></div>
+            <span class="ms">40 ms</span>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Sidebar -->
+    <aside>
+      <section class="panel facts reveal" style="animation-delay:.08s">
+        <p class="act-h" style="margin-bottom:14px">At a glance</p>
+        <div class="fact"><span class="k">Due date</span><span class="v flag">yesterday — could not parse</span></div>
+        <div class="fact"><span class="k">Terms</span><span class="v">Immediate</span></div>
+        <div class="fact"><span class="k">Line items</span><span class="v">1 · FakeItem ×100</span></div>
+      </section>
+
+      <section class="panel actions reveal" style="animation-delay:.15s">
+        <p class="act-h">Your decision</p>
+        <textarea class="note" placeholder="Reviewer note (optional)…"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-reject">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            Reject &amp; log
+          </button>
+          <button class="btn btn-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Request info
+          </button>
+
+          <details class="guard">
+            <summary>Approve &amp; Pay</summary>
+            <div class="guard-body">
+              <div class="warn-line">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+                Paying releases <b>&nbsp;$100,000&nbsp;</b> to an unverified vendor flagged for fraud. This cannot be undone.
+              </div>
+              <button class="btn btn-approve">Confirm — pay $100,000.00 anyway</button>
+            </div>
+          </details>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <p class="foot reveal" style="animation-delay:.08s">
+    <span class="mark">Galatiq</span> · this decision is logged to the audit trail.
+  </p>
+</div>
+</body>
+</html>

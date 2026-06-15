@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit · Galatiq Accounts Payable</title>
+<script>var d=document.documentElement;d.className+=" js";setTimeout(function(){d.className=d.className.replace(" js","");},1600);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Big+Shoulders+Display:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="bauhaus.css">
+</head>
+<body>
+
+<nav class="nav reveal d1">
+  <a class="mark" href="index.html" aria-label="Galatiq home">
+    <span class="glyph" aria-hidden="true"><i class="sq"></i><i class="ci"></i><i class="tr"></i><i class="bk"></i></span>
+    <span class="word"><b>Galatiq</b><span>Accounts Payable</span></span>
+  </a>
+  <span class="links">
+    <a href="index.html">Inbox</a>
+    <a href="vendors.html">Vendors</a>
+    <a href="audit.html" class="active">Audit</a>
+  </span>
+  <span class="spacer"></span>
+  <a class="btn" href="upload.html"><span class="dot"></span>Upload invoice</a>
+  <span class="who">
+    <span class="av">DO</span>
+    <span>Dana Okafor<br><span class="org">Acme Corp</span></span>
+  </span>
+</nav>
+
+<main class="shell">
+
+  <header class="head" style="grid-template-columns:1fr;padding-bottom:14px;">
+    <div>
+      <div class="kicker reveal d2"><span class="sq"></span>Trail · Today</div>
+      <h1 class="reveal d2">Audit</h1>
+      <p class="sub reveal d3">Every decision the agents and the team make, in order. Read-only.</p>
+    </div>
+  </header>
+
+  <div class="rule-d reveal d3"></div>
+
+  <div class="timeline reveal d4">
+    <div class="tl-item">
+      <span class="node r" aria-hidden="true"></span>
+      <span class="t">2m ago · agent</span>
+      <b>INV-1003 held for fraud review</b>
+      <p>Auto-pay blocked on a $100,000.00 request from “Fraudster LLC” — unknown vendor, no matching PO, urgency to wire. Routed to Dana Okafor.</p>
+    </div>
+    <div class="tl-item">
+      <span class="node y" aria-hidden="true"></span>
+      <span class="t">14m ago · agent</span>
+      <b>INV-1002 flagged over budget</b>
+      <p>Gadgets Co. invoice for $15,000.00 exceeds the approved line budget. Routed for human review.</p>
+    </div>
+    <div class="tl-item">
+      <span class="node b" aria-hidden="true"></span>
+      <span class="t">4h ago · agent</span>
+      <b>INV-1004 paid touchless</b>
+      <p>Precision Parts Ltd. — $4,750.00 matched PO and vendor master cleanly. Paid without human review.</p>
+    </div>
+  </div>
+
+  <footer class="foot reveal d5">
+    <span class="forms" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="b"></i></span>
+    <span>Galatiq · Accounts Payable — autonomous invoice agents for Acme Corp</span>
+  </footer>
+
+</main>
+</body>
+</html>

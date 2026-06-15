@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Accounts Payable — Dusk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Spline+Sans:wght@300..700&family=Spline+Sans+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     DUSK — warm editorial, after dark.
+     "The night shift at the counting house."
+     ============================================================ */
+
+  :root{
+    /* Canvas — warm espresso, never cold slate */
+    --espresso-0:#17110c;   /* deepest, vignette pit */
+    --espresso-1:#1d1712;   /* page ground */
+    --espresso-2:#221a14;   /* base elevation */
+    --espresso-3:#281f17;   /* card */
+    --espresso-4:#30251b;   /* raised */
+    --espresso-5:#3a2d20;   /* hover / rule fill */
+
+    /* Ink — cream / parchment */
+    --ink:#ece2cf;
+    --ink-soft:#d6c9b2;
+    --ink-mute:#a89881;
+    --ink-faint:#7e6f5c;
+    --ink-ghost:#5d5141;
+
+    /* Accent — candle-glow honey/amber-gold */
+    --gold:#e0a455;
+    --gold-bright:#f2bf73;
+    --gold-deep:#b97f37;
+    --gold-line:rgba(224,164,85,.30);
+    --gold-line-soft:rgba(224,164,85,.14);
+    --gold-glow:rgba(224,164,85,.22);
+
+    /* Ember — terracotta, the smolder of CRITICAL */
+    --ember:#d2603f;
+    --ember-bright:#e87b52;
+    --ember-deep:#9b3f24;
+    --ember-glow:rgba(210,96,63,.30);
+
+    /* Functional warm hues */
+    --paid:#9bb487;        /* warm sage, settled */
+    --paid-deep:#5f7a4c;
+    --proc:#d9b15a;        /* working amber */
+    --hold:#e0a455;
+
+    --r-lg:14px;
+    --r-md:10px;
+    --r-sm:7px;
+
+    --shadow-warm:0 18px 50px -22px rgba(0,0,0,.85), 0 4px 14px -8px rgba(0,0,0,.6);
+    --serif:"Fraunces", Georgia, serif;
+    --sans:"Spline Sans", "Helvetica Neue", sans-serif;
+    --mono:"Spline Sans Mono", ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--espresso-1);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    letter-spacing:.01em;
+    position:relative;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* warm vignette + candle pools of light */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background:
+      radial-gradient(1100px 720px at 78% -8%, rgba(224,164,85,.10), transparent 60%),
+      radial-gradient(900px 600px at 12% 6%, rgba(210,96,63,.06), transparent 60%),
+      radial-gradient(1400px 1000px at 50% 120%, rgba(0,0,0,.55), transparent 70%),
+      linear-gradient(180deg, var(--espresso-1) 0%, var(--espresso-0) 100%);
+  }
+  /* faint film grain */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .shell{position:relative;z-index:2;}
+
+  ::selection{background:var(--gold-glow);color:var(--ink);}
+
+  a{color:inherit;text-decoration:none;}
+
+  /* tabular lining figures for money/data */
+  .num{font-variant-numeric:tabular-nums lining-nums;font-family:var(--mono);letter-spacing:0;}
+
+  /* ============================================================
+     PAGE-LOAD ORCHESTRATION
+     ============================================================ */
+  @keyframes rise{
+    from{opacity:0;transform:translateY(16px);}
+    to{opacity:1;transform:none;}
+  }
+  @keyframes glow-in{
+    from{opacity:0;filter:brightness(.4);}
+    to{opacity:1;filter:none;}
+  }
+  .reveal{opacity:0;animation:rise .82s cubic-bezier(.2,.7,.2,1) forwards;}
+  .d1{animation-delay:.05s;} .d2{animation-delay:.16s;}
+  .d3{animation-delay:.30s;} .d4{animation-delay:.44s;}
+  .d5{animation-delay:.58s;} .d6{animation-delay:.72s;}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{animation:none;opacity:1;}
+    *{animation-duration:.001s !important;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ============================================================
+     TOP BAR
+     ============================================================ */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    display:flex;align-items:center;gap:28px;
+    padding:0 38px;height:74px;
+    background:linear-gradient(180deg, rgba(34,26,20,.92), rgba(29,23,18,.84));
+    backdrop-filter:blur(14px) saturate(120%);
+    border-bottom:1px solid var(--gold-line-soft);
+    box-shadow:0 1px 0 rgba(0,0,0,.4), 0 14px 30px -26px rgba(0,0,0,.9);
+  }
+  .brand{display:flex;align-items:baseline;gap:13px;}
+  .brand .flame{
+    width:26px;height:26px;flex:none;align-self:center;
+    filter:drop-shadow(0 0 8px var(--gold-glow));
+  }
+  .wordmark{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:25px;
+    letter-spacing:.005em;
+    color:var(--ink);
+    font-optical-sizing:auto;
+  }
+  .wordmark .q{color:var(--gold);}
+  .descriptor{
+    font-family:var(--sans);
+    font-weight:300;
+    font-size:11px;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    padding-left:13px;
+    margin-left:2px;
+    border-left:1px solid var(--gold-line);
+    align-self:center;
+  }
+
+  .nav{display:flex;gap:6px;margin-left:14px;}
+  .nav a{
+    position:relative;
+    font-size:13.5px;font-weight:400;
+    color:var(--ink-mute);
+    padding:9px 15px;border-radius:var(--r-sm);
+    letter-spacing:.02em;
+    transition:color .2s, background .2s;
+  }
+  .nav a:hover{color:var(--ink);background:rgba(224,164,85,.07);}
+  .nav a.active{color:var(--ink);}
+  .nav a.active::after{
+    content:"";position:absolute;left:15px;right:15px;bottom:-1px;height:2px;
+    background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright),var(--gold-deep));
+    border-radius:2px;
+    box-shadow:0 0 10px var(--gold-glow);
+  }
+  .nav a:focus-visible,.btn:focus-visible,.icon-btn:focus-visible,
+  .row:focus-visible,.act:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--gold);outline-offset:2px;
+  }
+
+  .spacer{flex:1;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--sans);font-size:13.5px;font-weight:500;
+    cursor:pointer;border:none;
+    padding:11px 18px;border-radius:var(--r-md);
+    letter-spacing:.015em;
+    transition:transform .15s, box-shadow .25s, filter .2s;
+  }
+  .btn-gold{
+    color:#2a1d0e;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    box-shadow:0 0 0 1px rgba(224,164,85,.5) inset, 0 8px 22px -8px var(--gold-glow), 0 0 22px -6px var(--gold-glow);
+    font-weight:600;
+  }
+  .btn-gold:hover{transform:translateY(-1px);filter:brightness(1.06);
+    box-shadow:0 0 0 1px rgba(242,191,115,.7) inset, 0 12px 30px -8px var(--gold-glow), 0 0 32px -4px var(--gold-glow);}
+
+  .user{display:flex;align-items:center;gap:11px;padding-left:6px;}
+  .avatar{
+    width:36px;height:36px;border-radius:50%;flex:none;
+    display:grid;place-items:center;
+    font-family:var(--serif);font-weight:600;font-size:15px;color:#2a1d0e;
+    background:radial-gradient(circle at 32% 28%, var(--gold-bright), var(--gold-deep));
+    box-shadow:0 0 0 1px rgba(224,164,85,.45), 0 0 14px -3px var(--gold-glow);
+  }
+  .user .meta{line-height:1.25;text-align:right;}
+  .user .meta b{font-weight:500;font-size:13px;color:var(--ink);}
+  .user .meta span{font-size:11px;color:var(--ink-faint);letter-spacing:.04em;}
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  .page{
+    max-width:1480px;margin:0 auto;padding:42px 38px 90px;
+  }
+  .eyebrow{
+    font-family:var(--sans);font-weight:300;
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--gold);
+    display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  }
+  .eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold-line),transparent);}
+
+  .h-lead{
+    font-family:var(--serif);
+    font-weight:340;font-optical-sizing:auto;
+    font-size:40px;line-height:1.05;letter-spacing:-.01em;
+    color:var(--ink);margin:0 0 8px;
+  }
+  .h-lead em{font-style:italic;color:var(--gold-bright);}
+  .lede{
+    max-width:62ch;color:var(--ink-mute);font-weight:300;
+    font-size:14.5px;line-height:1.6;margin:0;
+  }
+
+  /* ---------- KPI STRIP ---------- */
+  .kpis{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    gap:0;margin:30px 0 8px;
+    background:linear-gradient(180deg,var(--espresso-3),var(--espresso-2));
+    border:1px solid var(--gold-line-soft);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-warm);
+    overflow:hidden;
+  }
+  .kpi{
+    padding:20px 24px;position:relative;
+    border-right:1px solid rgba(224,164,85,.10);
+  }
+  .kpi:last-child{border-right:none;}
+  .kpi:hover{background:rgba(224,164,85,.05);}
+  .kpi .label{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:400;margin-bottom:11px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .kpi .val{
+    font-family:var(--serif);font-optical-sizing:auto;
+    font-weight:380;font-size:28px;line-height:1;color:var(--ink-soft);
+    font-variant-numeric:lining-nums tabular-nums;
+  }
+  /* loudest tile: needs-review count in gold */
+  .kpi.accent .val{color:var(--gold-bright);font-weight:500;}
+  /* the money in suspense — the brand's loudest figure */
+  .kpi.held{background:linear-gradient(180deg, rgba(224,164,85,.07), rgba(210,96,63,.04));}
+  .kpi.held .label{color:var(--gold);}
+  .kpi.held .val{
+    color:var(--gold-bright);font-weight:560;font-size:36px;letter-spacing:-.01em;
+    text-shadow:0 0 26px rgba(224,164,85,.28);
+  }
+  .kpi.held .sub{color:var(--ink-mute);}
+  /* settled / steady-state figures recede into cream */
+  .kpi.calm .val{color:var(--ink-mute);font-weight:340;}
+  .kpi .sub{font-size:11.5px;color:var(--ink-faint);margin-top:7px;letter-spacing:.02em;}
+  .dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .dot.gold{background:var(--gold);box-shadow:0 0 8px var(--gold-glow);}
+  .dot.sage{background:var(--paid);}
+  .dot.amber{background:var(--proc);}
+  @keyframes pulse-dot{0%,100%{opacity:.4;transform:scale(.8);}50%{opacity:1;transform:scale(1.15);}}
+  .dot.live{background:var(--proc);animation:pulse-dot 1.6s ease-in-out infinite;box-shadow:0 0 8px rgba(217,177,90,.6);}
+
+  /* ---------- MAIN GRID ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:minmax(0,1.05fr) minmax(0,1.32fr);
+    gap:26px;margin-top:34px;align-items:start;
+  }
+  @media (max-width:1180px){.grid{grid-template-columns:1fr;}}
+
+  .panel{
+    background:linear-gradient(180deg,var(--espresso-3),var(--espresso-2));
+    border:1px solid var(--gold-line-soft);
+    border-radius:var(--r-lg);
+    box-shadow:var(--shadow-warm);
+    overflow:hidden;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:18px 22px 16px;
+    border-bottom:1px solid var(--gold-line-soft);
+  }
+  .panel-title{
+    font-family:var(--serif);font-optical-sizing:auto;
+    font-weight:420;font-size:19px;color:var(--ink);letter-spacing:.005em;
+    display:flex;align-items:baseline;gap:11px;
+  }
+  .panel-title small{
+    font-family:var(--sans);font-weight:300;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);
+  }
+
+  /* ============================================================
+     INBOX / QUEUE TABLE
+     ============================================================ */
+  .table{width:100%;border-collapse:collapse;}
+  .table thead th{
+    font-family:var(--serif);font-optical-sizing:auto;font-weight:500;
+    font-size:13px;letter-spacing:.10em;font-variant:small-caps;
+    color:var(--ink-faint);text-align:left;
+    padding:12px 12px;
+    border-bottom:1px solid var(--gold-line-soft);
+    background:var(--espresso-2);
+  }
+  .table thead th.r,.table td.r{text-align:right;}
+  .table tbody td{
+    padding:13px 12px;border-bottom:1px solid rgba(224,164,85,.07);
+    vertical-align:middle;font-size:13.5px;
+  }
+  .table tbody tr:last-child td{border-bottom:none;}
+  .row{cursor:pointer;transition:background .18s,box-shadow .18s;position:relative;}
+  .row:hover{background:rgba(224,164,85,.055);}
+  /* clicked-but-not-open row: a gold left-hairline + faint warm wash, distinct from the ember selected state */
+  .row.is-focus:not(.selected){
+    background:rgba(224,164,85,.07);
+    box-shadow:inset 3px 0 0 var(--gold);
+  }
+  .row.is-focus:not(.selected) .inv-id{color:var(--gold-bright);}
+  .row td:first-child{padding-left:22px;}
+  .row td:last-child{padding-right:22px;}
+
+  .inv-id{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--ink-soft);letter-spacing:0;}
+  .vendor{color:var(--ink);font-weight:400;}
+  .vendor.unknown{color:var(--ember-bright);}
+  .recv{color:var(--ink-faint);font-size:12px;letter-spacing:.02em;}
+  .amt{font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;color:var(--ink);font-weight:500;letter-spacing:0;}
+
+  .muted-row td{opacity:.5;}
+  .muted-row .amt{text-decoration:line-through;text-decoration-color:var(--ink-ghost);}
+
+  /* ---- STATUS CHIPS (engraved) ---- */
+  /* status chips, engraved: a thin top-hairline catches the light, an inset shadow
+     presses the body into the warm ground — letterpress, not a generic tinted pill */
+  .chip{
+    position:relative;
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:10.5px;font-weight:500;letter-spacing:.10em;text-transform:uppercase;
+    padding:5px 10px 5px 9px;border-radius:5px;white-space:nowrap;
+    border:1px solid transparent;
+    box-shadow:inset 0 1px 0 rgba(255,238,210,.06), inset 0 -3px 7px -4px rgba(0,0,0,.6);
+  }
+  .chip::before{
+    content:"";position:absolute;left:7px;right:7px;top:0;height:1px;border-radius:1px;
+    background:linear-gradient(90deg,transparent,currentColor,transparent);opacity:.5;
+  }
+  .chip .tick{width:6px;height:6px;border-radius:50%;flex:none;}
+  .chip.review{color:var(--gold-bright);background:rgba(224,164,85,.10);border-color:var(--gold-line);}
+  .chip.review .tick{background:var(--gold);box-shadow:0 0 6px var(--gold-glow);}
+  .chip.paid{color:var(--paid);background:rgba(155,180,135,.10);border-color:rgba(155,180,135,.26);}
+  .chip.paid .tick{background:var(--paid);}
+  .chip.processing{color:var(--proc);background:rgba(217,177,90,.10);border-color:rgba(217,177,90,.26);}
+  .chip.processing .tick{background:var(--proc);animation:pulse-dot 1.6s ease-in-out infinite;}
+  .chip.superseded{color:var(--ink-faint);background:rgba(125,111,92,.12);border-color:rgba(125,111,92,.22);}
+  .chip.superseded::before{opacity:.28;}
+  .chip.superseded .tick{background:var(--ink-faint);}
+
+  /* ---- ALARM STAMPS ---- */
+  .alarm{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    font-family:var(--sans);
+  }
+  .alarm .bar{display:inline-flex;align-items:flex-end;gap:2px;height:17px;}
+  .alarm .bar i{width:3px;border-radius:1px;background:currentColor;opacity:.28;display:block;align-self:flex-end;}
+  .alarm .bar i.on{opacity:1;}
+  .alarm.critical{color:var(--ember-bright);}
+  .alarm.high{color:#e0925b;}
+  .alarm.medium{color:var(--gold);}
+  .alarm.low{color:var(--ink-mute);}
+  .alarm.none{color:var(--ink-ghost);font-weight:300;letter-spacing:.06em;}
+  .alarm i.b1{height:8px;} .alarm i.b2{height:11px;} .alarm i.b3{height:14px;} .alarm i.b4{height:17px;}
+
+  @keyframes ember-pulse{
+    0%,100%{box-shadow:inset 3px 0 0 var(--ember), inset 0 0 30px -8px rgba(210,96,63,.30); }
+    50%{box-shadow:inset 3px 0 0 var(--ember-bright), inset 0 0 40px -4px rgba(210,96,63,.50); }
+  }
+  @keyframes ember-text{0%,100%{text-shadow:0 0 10px rgba(210,96,63,.45);}50%{text-shadow:0 0 18px rgba(210,96,63,.75);}}
+
+  /* the ember row */
+  .row.selected{
+    background:
+      linear-gradient(90deg, rgba(210,96,63,.16), rgba(210,96,63,.05) 42%, transparent 78%);
+    animation:ember-pulse 3.4s ease-in-out infinite;
+  }
+  .row.selected td:first-child{padding-left:22px;}
+  .row.selected .inv-id{color:var(--ember-bright);}
+  .row.selected .alarm.critical{animation:ember-text 3.4s ease-in-out infinite;}
+  .flag{font-size:12.5px;color:var(--ink-mute);letter-spacing:.01em;}
+  .row.selected .flag{color:#e6b59a;}
+  .flag.proc{color:var(--proc);font-style:italic;}
+
+  /* ============================================================
+     REVIEW DETAIL
+     ============================================================ */
+  .review{position:relative;}
+  .review::before{
+    content:"";position:absolute;inset:0;border-radius:var(--r-lg);pointer-events:none;
+    box-shadow:inset 0 0 0 1px rgba(210,96,63,.20), inset 0 0 60px -30px rgba(210,96,63,.4);
+  }
+  .rev-head{
+    padding:22px 26px 20px;
+    border-bottom:1px solid var(--gold-line-soft);
+    background:linear-gradient(180deg, rgba(210,96,63,.08), transparent);
+    position:relative;
+  }
+  .rev-eyebrow{
+    font-size:10.5px;letter-spacing:.20em;text-transform:uppercase;
+    color:var(--ember-bright);font-weight:500;margin-bottom:10px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .rev-eyebrow .embdot{width:8px;height:8px;border-radius:50%;background:var(--ember);
+    box-shadow:0 0 10px var(--ember-bright),0 0 22px var(--ember-glow);
+    animation:pulse-dot 2.2s ease-in-out infinite;}
+  .rev-title{
+    font-family:var(--serif);font-optical-sizing:auto;
+    font-weight:380;font-size:32px;line-height:1.06;color:var(--ink);
+    margin:0 0 4px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  }
+  .rev-title .id{font-family:var(--mono);font-weight:500;font-size:24px;color:var(--ember-bright);letter-spacing:0;}
+  .rev-title .v{font-style:italic;}
+  .rev-sub{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;}
+
+  .rev-amount{
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    padding:20px 26px;border-bottom:1px solid var(--gold-line-soft);
+  }
+  .rev-amount .big{
+    font-family:var(--mono);font-variant-numeric:tabular-nums lining-nums;
+    font-weight:600;font-size:38px;color:var(--ink);letter-spacing:-.01em;
+    text-shadow:0 0 24px rgba(0,0,0,.4);
+  }
+  .rev-amount .cur{font-family:var(--sans);font-size:13px;color:var(--ink-faint);letter-spacing:.18em;font-weight:300;}
+
+  .factgrid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--gold-line-soft);
+    border-bottom:1px solid var(--gold-line-soft);
+  }
+  .fact{background:var(--espresso-2);padding:15px 20px;}
+  .fact .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-ghost);margin-bottom:7px;}
+  .fact .v{font-size:14px;color:var(--ink);font-weight:400;}
+  .fact .v.warn{color:var(--ember-bright);}
+  .fact .v.warn small{display:block;font-size:11px;color:var(--ink-faint);font-style:italic;margin-top:2px;letter-spacing:.01em;}
+
+  .section{padding:22px 26px;border-bottom:1px solid var(--gold-line-soft);}
+  .section:last-child{border-bottom:none;}
+  .sec-label{
+    font-family:var(--sans);font-weight:300;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:16px;
+    display:flex;align-items:center;gap:11px;
+  }
+  .sec-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold-line-soft),transparent);}
+  .sec-label .count{color:var(--ink-faint);font-weight:400;letter-spacing:.1em;}
+
+  /* vendor not found */
+  .vendor-flag{
+    display:flex;align-items:flex-start;gap:13px;
+    padding:14px 16px;border-radius:var(--r-md);
+    background:linear-gradient(180deg, rgba(210,96,63,.10), rgba(210,96,63,.03));
+    border:1px solid rgba(210,96,63,.28);
+  }
+  .vendor-flag svg{flex:none;margin-top:1px;}
+  .vendor-flag b{font-family:var(--serif);font-weight:500;font-size:17px;color:var(--ember-bright);font-style:italic;}
+  .vendor-flag .nf{font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ember-bright);border:1px solid rgba(210,96,63,.4);border-radius:4px;padding:2px 7px;margin-left:9px;}
+  .vendor-flag p{margin:5px 0 0;font-size:13px;color:var(--ink-mute);}
+
+  /* line items */
+  .li{width:100%;border-collapse:collapse;}
+  .li th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-ghost);
+    text-align:left;padding:8px 12px;font-weight:400;border-bottom:1px solid var(--gold-line-soft);}
+  .li th.r,.li td.r{text-align:right;}
+  .li td{padding:13px 12px;font-size:13.5px;color:var(--ink);border-bottom:1px solid rgba(224,164,85,.06);}
+  .li td:first-child,.li th:first-child{padding-left:4px;}
+  .li td:last-child,.li th:last-child{padding-right:4px;}
+  .li .item{font-weight:500;color:var(--ink);}
+  .li .liflag{
+    display:inline-flex;align-items:center;gap:6px;margin-top:6px;
+    font-size:11px;color:var(--ember-bright);letter-spacing:.02em;
+  }
+  .li .num{color:var(--ink-soft);}
+  .li tfoot td{padding:13px 12px;font-size:13.5px;border-top:1px solid var(--gold-line);}
+  .li tfoot .tot{font-family:var(--mono);font-weight:600;color:var(--ember-bright);font-size:15px;}
+  .li tfoot .totlabel{color:var(--ink-faint);letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;}
+
+  /* findings */
+  .finding{
+    display:grid;grid-template-columns:auto 1fr;gap:14px;
+    padding:14px 0;border-bottom:1px solid rgba(224,164,85,.07);
+  }
+  .finding:last-child{border-bottom:none;}
+  .finding .sev{
+    display:inline-flex;flex-direction:column;align-items:flex-start;gap:6px;
+    min-width:128px;
+  }
+  .sevtag{
+    font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    padding:3px 9px;border-radius:4px;white-space:nowrap;
+  }
+  .sevtag.error{color:#fbe3d6;background:rgba(210,96,63,.22);border:1px solid rgba(210,96,63,.5);
+    box-shadow:0 0 14px -6px var(--ember-glow);}
+  .sevtag.warning{color:#f3dcae;background:rgba(224,164,85,.16);border:1px solid var(--gold-line);}
+  .raiser{font-size:10.5px;color:var(--ink-faint);letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+  .raiser .mk{font-family:var(--mono);font-size:10px;color:var(--ink-mute);}
+  .finding .body code{
+    font-family:var(--mono);font-size:12.5px;color:var(--gold-bright);
+    background:rgba(224,164,85,.08);padding:2px 7px;border-radius:4px;
+    border:1px solid var(--gold-line-soft);letter-spacing:0;
+  }
+  .finding .body p{margin:8px 0 0;font-size:13px;color:var(--ink-soft);line-height:1.55;}
+  .finding .body p em{color:var(--ember-bright);font-style:italic;}
+  .blocks-note{font-size:11px;color:var(--ember-bright);margin-top:5px;letter-spacing:.02em;display:inline-flex;align-items:center;gap:5px;}
+
+  /* verdict */
+  .verdict{
+    background:linear-gradient(135deg, rgba(210,96,63,.14), rgba(210,96,63,.04));
+    border:1px solid rgba(210,96,63,.32);
+    border-radius:var(--r-md);padding:20px 22px;position:relative;overflow:hidden;
+  }
+  .verdict::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+    background:linear-gradient(180deg,var(--ember-bright),var(--ember-deep));
+    box-shadow:0 0 20px var(--ember-glow);
+  }
+  .verdict .vhead{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .verdict .rec{
+    font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);
+  }
+  .verdict .stamp{
+    font-family:var(--serif);font-weight:600;font-style:italic;font-size:22px;
+    color:var(--ember-bright);letter-spacing:.02em;
+    text-shadow:0 0 22px var(--ember-glow);
+  }
+  .verdict p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.62;font-weight:300;}
+  .verdict p .agent{font-family:var(--serif);font-style:italic;color:var(--ink);}
+
+  /* trace */
+  .trace{font-family:var(--mono);font-size:12.5px;}
+  .trace .tstep{
+    display:grid;grid-template-columns:74px 92px 1fr auto;gap:14px;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid rgba(224,164,85,.06);position:relative;
+  }
+  .trace .tstep:last-child{border-bottom:none;}
+  .trace .ts{color:var(--ink-faint);}
+  .trace .verb{color:var(--gold);font-weight:500;letter-spacing:.04em;text-transform:uppercase;font-size:11px;}
+  .trace .desc{color:var(--ink-soft);font-family:var(--sans);font-size:13px;letter-spacing:.01em;}
+  .trace .desc b{color:var(--ink);font-weight:500;}
+  .trace .dur{color:var(--ink-mute);text-align:right;font-variant-numeric:tabular-nums;}
+  .trace .tstep.gate .verb{color:var(--ember-bright);}
+  .trace .tstep.gate .desc b{color:var(--ember-bright);}
+
+  /* action bar */
+  .actionbar{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    padding:20px 26px;background:linear-gradient(180deg, transparent, rgba(0,0,0,.18));
+  }
+  .act{
+    display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.015em;
+    padding:11px 17px;border-radius:var(--r-md);border:1px solid var(--gold-line);
+    background:rgba(224,164,85,.04);color:var(--ink-soft);
+    transition:transform .15s,background .2s,border-color .2s,color .2s;
+  }
+  .act:hover{transform:translateY(-1px);background:rgba(224,164,85,.10);color:var(--ink);border-color:var(--gold);}
+  .act.danger{
+    color:#f0c6b3;border-color:rgba(210,96,63,.4);background:rgba(210,96,63,.06);
+  }
+  .act.danger:hover{background:rgba(210,96,63,.16);border-color:var(--ember);color:#ffe2d4;}
+  .act.danger .guard{
+    font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ember-bright);
+    border:1px solid rgba(210,96,63,.4);border-radius:3px;padding:1px 5px;margin-left:3px;
+  }
+  .act.reject:hover{background:rgba(155,180,135,.06);}
+  .note{flex:1;min-width:240px;display:flex;flex-direction:column;gap:6px;}
+  .note label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-ghost);}
+  .note textarea{
+    width:100%;resize:vertical;min-height:42px;
+    font-family:var(--sans);font-size:13px;color:var(--ink);
+    background:var(--espresso-1);border:1px solid var(--gold-line-soft);
+    border-radius:var(--r-sm);padding:9px 12px;line-height:1.5;
+  }
+  .note textarea::placeholder{color:var(--ink-ghost);}
+  .note textarea:focus{border-color:var(--gold-line);background:var(--espresso-2);}
+
+  /* confirm flash */
+  .confirm-flash{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(180deg,var(--espresso-4),var(--espresso-3));
+    border:1px solid rgba(210,96,63,.45);
+    box-shadow:0 0 0 1px rgba(210,96,63,.2),0 16px 40px -12px rgba(0,0,0,.8),0 0 40px -10px var(--ember-glow);
+    color:var(--ink);padding:14px 22px;border-radius:var(--r-md);
+    font-size:13.5px;z-index:80;opacity:0;pointer-events:none;
+    transition:opacity .3s, transform .3s;display:flex;align-items:center;gap:12px;
+  }
+  .confirm-flash.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .confirm-flash b{color:var(--ember-bright);font-weight:600;}
+
+  /* ============================================================
+     UPLOAD DROPZONE
+     ============================================================ */
+  .upload-wrap{margin-top:34px;}
+  .dropzone{
+    position:relative;
+    border:1.5px dashed var(--gold-line);border-radius:var(--r-lg);
+    background:
+      radial-gradient(600px 200px at 50% 0%, rgba(224,164,85,.06), transparent 70%),
+      linear-gradient(180deg,var(--espresso-3),var(--espresso-2));
+    padding:46px 40px;
+    display:flex;align-items:center;gap:34px;
+    box-shadow:var(--shadow-warm);
+    transition:border-color .25s, background .25s, transform .2s;
+    overflow:hidden;
+  }
+  .dropzone::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(400px 300px at 84% 120%, rgba(210,96,63,.05), transparent 60%);
+  }
+  .dropzone.drag{border-color:var(--gold);background:
+      radial-gradient(600px 240px at 50% 0%, rgba(224,164,85,.14), transparent 70%),
+      linear-gradient(180deg,var(--espresso-4),var(--espresso-3));
+    transform:translateY(-2px);}
+  .dz-mark{
+    width:78px;height:78px;flex:none;border-radius:18px;
+    display:grid;place-items:center;
+    background:radial-gradient(circle at 36% 30%, rgba(224,164,85,.18), rgba(224,164,85,.04));
+    border:1px solid var(--gold-line);
+    box-shadow:0 0 28px -10px var(--gold-glow);
+  }
+  .dz-body{flex:1;}
+  .dz-body h3{
+    font-family:var(--serif);font-optical-sizing:auto;font-style:italic;
+    font-weight:400;font-size:25px;color:var(--ink);margin:0 0 7px;letter-spacing:.005em;
+  }
+  .dz-body .formats{font-size:13.5px;color:var(--ink-mute);font-weight:300;}
+  .dz-body .formats b{color:var(--gold-bright);font-weight:500;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;}
+  .dz-hint{
+    display:flex;align-items:center;gap:9px;margin-top:13px;
+    font-size:12px;color:var(--ink-faint);letter-spacing:.01em;
+  }
+  .dz-hint .dot.live{width:7px;height:7px;}
+  .dz-cta{flex:none;}
+
+  /* footer note */
+  .footnote{
+    margin-top:40px;text-align:center;
+    font-family:var(--serif);font-style:italic;font-weight:300;
+    font-size:13px;color:var(--ink-ghost);letter-spacing:.02em;
+  }
+  .footnote span{color:var(--gold-deep);}
+
+  .legend{
+    display:flex;flex-wrap:wrap;gap:18px;align-items:center;
+    margin-top:26px;padding:16px 22px;
+    border:1px solid var(--gold-line-soft);border-radius:var(--r-md);
+    background:rgba(40,31,23,.5);
+  }
+  .legend .lg-title{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-ghost);}
+  .legend .lg{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);}
+  .legend .sq{width:10px;height:10px;border-radius:3px;}
+  .legend .lg-ct{
+    font-family:var(--mono);font-size:10px;font-variant-numeric:tabular-nums;
+    color:var(--gold-bright);background:rgba(224,164,85,.10);
+    border:1px solid var(--gold-line-soft);border-radius:4px;padding:1px 6px;letter-spacing:0;
+  }
+  .legend .lg-ct.off{color:var(--ink-ghost);background:transparent;border-color:transparent;
+    font-family:var(--sans);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:1px 0;}
+  .legend .live-lvl{color:var(--ink-soft);}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar reveal d1">
+    <div class="brand">
+      <svg class="flame" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2c2.2 3.4 1 5.2-.4 6.8C10 10.6 8.5 12 8.5 14.6A3.5 3.5 0 0 0 12 18a3.5 3.5 0 0 0 3.5-3.4c0-1.5-.6-2.4-1.2-3.3 1.6.5 3.2 2 3.2 4.6A5.5 5.5 0 0 1 12 21.4 5.5 5.5 0 0 1 6.5 16C6.5 9.8 12 8.4 12 2Z" fill="url(#fg)"/>
+        <defs><linearGradient id="fg" x1="12" y1="2" x2="12" y2="21" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#f2bf73"/><stop offset="1" stop-color="#d2603f"/>
+        </linearGradient></defs>
+      </svg>
+      <span class="wordmark">Galati<span class="q">q</span></span>
+      <span class="descriptor">Accounts Payable</span>
+    </div>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="#" class="active" aria-current="page">Inbox</a>
+      <a href="#">Vendors</a>
+      <a href="#">Purchase Orders</a>
+      <a href="#">Audit</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <button class="btn btn-gold" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      Upload invoice
+    </button>
+
+    <div class="user">
+      <div class="meta">
+        <b>Dana Okafor</b><br/>
+        <span>Accounts Payable</span>
+      </div>
+      <div class="avatar" aria-hidden="true">DO</div>
+    </div>
+  </header>
+
+  <main class="page">
+
+    <!-- ============ LEAD ============ -->
+    <div class="reveal d2">
+      <div class="eyebrow">Acme Corp · The counting house, after dark</div>
+      <h1 class="h-lead">Five invoices the agents <em>couldn't clear.</em></h1>
+      <p class="lede">Autonomous agents read every incoming invoice, match it against the vendor master and open
+      purchase orders, and pay what is clean — touchless. What they cannot reconcile arrives here, with the full
+      reasoning attached. This is where money decisions get made.</p>
+    </div>
+
+    <!-- ============ KPI STRIP ============ -->
+    <section class="kpis reveal d3" aria-label="Summary">
+      <div class="kpi accent">
+        <div class="label"><span class="dot gold"></span>Needs review</div>
+        <div class="val num">5</div>
+        <div class="sub">awaiting a human</div>
+      </div>
+      <div class="kpi held">
+        <div class="label">Held value</div>
+        <div class="val num">$128,970</div>
+        <div class="sub">money in suspense</div>
+      </div>
+      <div class="kpi">
+        <div class="label"><span class="dot live"></span>Processing</div>
+        <div class="val num">1</div>
+        <div class="sub">agents working now</div>
+      </div>
+      <div class="kpi calm">
+        <div class="label"><span class="dot sage"></span>Paid today</div>
+        <div class="val num">2</div>
+        <div class="sub">settled touchless</div>
+      </div>
+      <div class="kpi calm">
+        <div class="label">Touchless rate · 7d</div>
+        <div class="val num">94%</div>
+        <div class="sub">cleared without a hand</div>
+      </div>
+    </section>
+
+    <!-- ============ MAIN GRID ============ -->
+    <div class="grid">
+
+      <!-- ---- INBOX / QUEUE ---- -->
+      <section class="panel reveal d4" aria-label="Inbox queue">
+        <div class="panel-head">
+          <div class="panel-title">Inbox <small>9 invoices · live</small></div>
+          <span class="alarm none"><span class="num" style="color:var(--ink-faint)">sorted by alarm</span></span>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Invoice</th>
+              <th>Vendor</th>
+              <th class="r">Amount</th>
+              <th>Status</th>
+              <th>Flag</th>
+              <th>Alarm</th>
+              <th class="r">Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- THE EMBER ROW -->
+            <tr class="row selected" tabindex="0" aria-current="true">
+              <td><span class="inv-id">INV-1003</span></td>
+              <td><span class="vendor unknown">Fraudster LLC</span></td>
+              <td class="r"><span class="amt">$100,000.00</span></td>
+              <td><span class="chip review"><span class="tick"></span>Needs review</span></td>
+              <td><span class="flag">Fraud suspected</span></td>
+              <td>
+                <span class="alarm critical">
+                  <span class="bar"><i class="b1 on"></i><i class="b2 on"></i><i class="b3 on"></i><i class="b4 on"></i></span>
+                  Critical
+                </span>
+              </td>
+              <td class="r recv">2m ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1002</span></td>
+              <td><span class="vendor">Gadgets Co.</span></td>
+              <td class="r"><span class="amt">$15,000.00</span></td>
+              <td><span class="chip review"><span class="tick"></span>Needs review</span></td>
+              <td><span class="flag">Over budget</span></td>
+              <td>
+                <span class="alarm medium">
+                  <span class="bar"><i class="b1 on"></i><i class="b2 on"></i><i class="b3"></i><i class="b4"></i></span>
+                  Medium
+                </span>
+              </td>
+              <td class="r recv">14m ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1008</span></td>
+              <td><span class="vendor">Northwind Supply</span></td>
+              <td class="r"><span class="amt">$8,420.00</span></td>
+              <td><span class="chip review"><span class="tick"></span>Needs review</span></td>
+              <td><span class="flag">Unknown item</span></td>
+              <td>
+                <span class="alarm low">
+                  <span class="bar"><i class="b1 on"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></span>
+                  Low
+                </span>
+              </td>
+              <td class="r recv">1h ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1016</span></td>
+              <td><span class="vendor">Northwind Supply</span></td>
+              <td class="r"><span class="amt">$3,150.00</span></td>
+              <td><span class="chip review"><span class="tick"></span>Needs review</span></td>
+              <td><span class="flag">Unknown item</span></td>
+              <td>
+                <span class="alarm low">
+                  <span class="bar"><i class="b1 on"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i></span>
+                  Low
+                </span>
+              </td>
+              <td class="r recv">2h ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1009</span></td>
+              <td><span class="vendor">Orion Components</span></td>
+              <td class="r"><span class="amt">$2,400.00</span></td>
+              <td><span class="chip review"><span class="tick"></span>Needs review</span></td>
+              <td><span class="flag">Data integrity</span></td>
+              <td>
+                <span class="alarm medium">
+                  <span class="bar"><i class="b1 on"></i><i class="b2 on"></i><i class="b3"></i><i class="b4"></i></span>
+                  Medium
+                </span>
+              </td>
+              <td class="r recv">3h ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1011</span></td>
+              <td><span class="vendor">Bluepeak Logistics</span></td>
+              <td class="r"><span class="amt">$12,300.00</span></td>
+              <td><span class="chip processing"><span class="tick"></span>Processing</span></td>
+              <td><span class="flag proc">extracting…</span></td>
+              <td><span class="alarm none">—</span></td>
+              <td class="r recv">just now</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1004</span></td>
+              <td><span class="vendor">Precision Parts Ltd.</span></td>
+              <td class="r"><span class="amt">$4,750.00</span></td>
+              <td><span class="chip paid"><span class="tick"></span>Paid</span></td>
+              <td><span class="flag">Touchless</span></td>
+              <td><span class="alarm none">—</span></td>
+              <td class="r recv">4h ago</td>
+            </tr>
+
+            <tr class="row" tabindex="0">
+              <td><span class="inv-id">INV-1001</span></td>
+              <td><span class="vendor">Widgets Inc.</span></td>
+              <td class="r"><span class="amt">$5,000.00</span></td>
+              <td><span class="chip paid"><span class="tick"></span>Paid</span></td>
+              <td><span class="flag">Touchless</span></td>
+              <td><span class="alarm none">—</span></td>
+              <td class="r recv">5h ago</td>
+            </tr>
+
+            <tr class="row muted-row" tabindex="0">
+              <td><span class="inv-id">INV-1004-R</span></td>
+              <td><span class="vendor">Precision Parts Ltd.</span></td>
+              <td class="r"><span class="amt">$4,750.00</span></td>
+              <td><span class="chip superseded"><span class="tick"></span>Superseded</span></td>
+              <td><span class="flag">Exact duplicate</span></td>
+              <td><span class="alarm none">—</span></td>
+              <td class="r recv">4h ago</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="legend" aria-hidden="true">
+          <span class="lg-title">Alarm scale — loudest first</span>
+          <span class="lg live-lvl"><span class="sq" style="background:var(--ember)"></span>Critical <span class="lg-ct">1</span></span>
+          <span class="lg"><span class="sq" style="background:#e0925b"></span>High <span class="lg-ct off">none live</span></span>
+          <span class="lg live-lvl"><span class="sq" style="background:var(--gold)"></span>Medium <span class="lg-ct">2</span></span>
+          <span class="lg live-lvl"><span class="sq" style="background:var(--ink-mute)"></span>Low <span class="lg-ct">2</span></span>
+          <span class="lg"><span class="sq" style="background:var(--ink-ghost)"></span>Info <span class="lg-ct off">none live</span></span>
+        </div>
+      </section>
+
+      <!-- ---- REVIEW DETAIL : THE HERO ---- -->
+      <section class="panel review reveal d5" aria-label="Review detail — INV-1003">
+        <div class="rev-head">
+          <div class="rev-eyebrow"><span class="embdot"></span>Routed to you — fraud review</div>
+          <h2 class="rev-title">
+            <span class="id">INV-1003</span>
+            <span class="v">Fraudster LLC</span>
+          </h2>
+          <div class="rev-sub">
+            <span class="chip review"><span class="tick"></span>Needs review</span>
+            <span class="alarm critical">
+              <span class="bar"><i class="b1 on"></i><i class="b2 on"></i><i class="b3 on"></i><i class="b4 on"></i></span>
+              Critical alarm
+            </span>
+            <span class="flag" style="color:#e6b59a;font-size:13px">Category — Fraud suspected</span>
+          </div>
+        </div>
+
+        <div class="rev-amount">
+          <span class="big num">$100,000.00</span>
+          <span class="cur">USD</span>
+        </div>
+
+        <div class="factgrid">
+          <div class="fact">
+            <div class="k">Invoice date</div>
+            <div class="v num" style="font-family:var(--mono);font-size:13.5px">2026-01-20</div>
+          </div>
+          <div class="fact">
+            <div class="k">Due</div>
+            <div class="v warn">yesterday<small>could not parse</small></div>
+          </div>
+          <div class="fact">
+            <div class="k">Terms</div>
+            <div class="v">Immediate</div>
+          </div>
+          <div class="fact">
+            <div class="k">Vendor master</div>
+            <div class="v warn">Not found<small>no record on file</small></div>
+          </div>
+        </div>
+
+        <!-- VENDOR -->
+        <div class="section">
+          <div class="sec-label">Vendor</div>
+          <div class="vendor-flag">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a1.9 1.9 0 0 0 1.7 2.9h15.8a1.9 1.9 0 0 0 1.7-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z"
+                stroke="#e87b52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <b>Fraudster LLC</b><span class="nf">Not found in vendor master</span>
+              <p>No vendor by this name in the master. We have no relationship and no banking details on file —
+              there is nowhere legitimate to send this money.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINE ITEMS -->
+        <div class="section">
+          <div class="sec-label">Line items <span class="count">1 line</span></div>
+          <table class="li">
+            <thead>
+              <tr><th>Item</th><th class="r">Qty</th><th class="r">Unit</th><th class="r">Amount</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="item">FakeItem</span>
+                  <span class="liflag">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                      <path d="M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                    not on any purchase order
+                  </span>
+                </td>
+                <td class="r num">×100</td>
+                <td class="r num">$1,000.00</td>
+                <td class="r num">$100,000.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="r totlabel">Invoice total</td>
+                <td class="r tot num">$100,000.00</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- FINDINGS -->
+        <div class="section">
+          <div class="sec-label">Findings <span class="count">4 raised · 2 block touchless</span></div>
+
+          <div class="finding">
+            <div class="sev">
+              <span class="sevtag error">Error</span>
+              <span class="raiser"><span class="mk">{ }</span>deterministic</span>
+            </div>
+            <div class="body">
+              <code>unknown_vendor</code>
+              <p>No vendor <em>“Fraudster LLC”</em> in the master. We have no relationship or banking details on file.</p>
+              <span class="blocks-note">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                blocks touchless pay
+              </span>
+            </div>
+          </div>
+
+          <div class="finding">
+            <div class="sev">
+              <span class="sevtag error">Error</span>
+              <span class="raiser"><span class="mk">{ }</span>deterministic</span>
+            </div>
+            <div class="body">
+              <code>item_not_on_po</code>
+              <p><em>“FakeItem”</em> matches no authorized purchase-order line for any vendor.</p>
+              <span class="blocks-note">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                blocks touchless pay
+              </span>
+            </div>
+          </div>
+
+          <div class="finding">
+            <div class="sev">
+              <span class="sevtag warning">Warning</span>
+              <span class="raiser"><span class="mk">✶</span>agent · LLM</span>
+            </div>
+            <div class="body">
+              <code>suspicious_pressure</code>
+              <p>Document pressures an immediate wire transfer (<em>“URGENT — pay immediately to avoid penalties”</em>).
+              Classic fraud pattern.</p>
+            </div>
+          </div>
+
+          <div class="finding">
+            <div class="sev">
+              <span class="sevtag warning">Warning</span>
+              <span class="raiser"><span class="mk">{ }</span>deterministic</span>
+            </div>
+            <div class="body">
+              <code>due_date_invalid</code>
+              <p>Due date <em>“yesterday”</em> is not a parseable date.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERDICT -->
+        <div class="section">
+          <div class="sec-label">Agent verdict</div>
+          <div class="verdict">
+            <div class="vhead">
+              <span class="rec">Recommendation</span>
+              <span class="stamp">Hold — do not pay</span>
+            </div>
+            <p><span class="agent">An unknown vendor, an unauthorized six-figure line item, and explicit wire-transfer
+            urgency</span> together read as a fabricated invoice. Do not pay. Route to AP fraud review.</p>
+          </div>
+        </div>
+
+        <!-- TRACE -->
+        <div class="section">
+          <div class="sec-label">Trace — audit trail</div>
+          <div class="trace">
+            <div class="tstep">
+              <span class="ts">14:32:06</span><span class="verb">ingest</span>
+              <span class="desc">routed <b>text/plain</b></span><span class="dur">8 ms</span>
+            </div>
+            <div class="tstep">
+              <span class="ts">14:32:06</span><span class="verb">extract</span>
+              <span class="desc">LLM <b>(grok)</b> — parsed 5 fields, 1 line item</span><span class="dur">1,180 ms</span>
+            </div>
+            <div class="tstep">
+              <span class="ts">14:32:07</span><span class="verb">validate</span>
+              <span class="desc">vendor master + PO match — <b>3 findings</b> raised</span><span class="dur">42 ms</span>
+            </div>
+            <div class="tstep">
+              <span class="ts">14:32:07</span><span class="verb">judge</span>
+              <span class="desc">LLM critique loop (2 passes) — verdict <b>HOLD</b></span><span class="dur">1,640 ms</span>
+            </div>
+            <div class="tstep gate">
+              <span class="ts">14:32:09</span><span class="verb">gate</span>
+              <span class="desc">→ <b>NEEDS_REVIEW</b> (fraud_suspected, critical)</span><span class="dur">2 ms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="actionbar">
+          <button class="act danger" type="button" id="payBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6l-8-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Approve &amp; Pay
+            <span class="guard">requires confirm</span>
+          </button>
+          <button class="act" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+            Request more info
+          </button>
+          <button class="act reject" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Reject &amp; log reason
+          </button>
+          <div class="note">
+            <label for="rnote">Reviewer note</label>
+            <textarea id="rnote" placeholder="Add context for the audit trail before you act…"></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ UPLOAD ============ -->
+    <section class="upload-wrap reveal d6" aria-label="Upload invoice">
+      <div class="eyebrow">Bring in work</div>
+      <div class="dropzone" id="dz" tabindex="0" role="button" aria-label="Drop an invoice to process">
+        <div class="dz-mark" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+            <path d="M12 16V4M12 4 7.5 8.5M12 4l4.5 4.5" stroke="url(#ug)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 14v3.5A2.5 2.5 0 0 0 6.5 20h11a2.5 2.5 0 0 0 2.5-2.5V14" stroke="url(#ug)" stroke-width="1.8" stroke-linecap="round"/>
+            <defs><linearGradient id="ug" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#f2bf73"/><stop offset="1" stop-color="#e0a455"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="dz-body">
+          <h3>Drop an invoice to process</h3>
+          <div class="formats"><b>PDF · CSV · JSON · XML · TXT</b> — the same API backs the web app and the CLI.</div>
+          <div class="dz-hint"><span class="dot live"></span>Processing runs as a background job; watch it move through the queue.</div>
+        </div>
+        <div class="dz-cta">
+          <button class="btn btn-gold" type="button">Browse files</button>
+        </div>
+      </div>
+
+      <div class="footnote">
+        Galatiq · the agents pay what is clean — <span>you decide the rest.</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="confirm-flash" id="flash" role="status" aria-live="polite">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a1.9 1.9 0 0 0 1.7 2.9h15.8a1.9 1.9 0 0 0 1.7-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z"
+      stroke="#e87b52" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span><b>Hold in force.</b> Approving a critical-fraud invoice needs a second confirmation — click again to override.</span>
+</div>
+
+<script>
+  // Selecting a queue row marks it active (visual only — INV-1003 is the open one).
+  const rows = document.querySelectorAll('.row');
+  rows.forEach(r=>{
+    const activate = ()=>{
+      rows.forEach(x=>x.classList.remove('is-focus'));
+      r.classList.add('is-focus');
+    };
+    r.addEventListener('click', activate);
+    r.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); activate(); }});
+  });
+
+  // Guard the dangerous Approve & Pay action: first click warns, second confirms.
+  const payBtn = document.getElementById('payBtn');
+  const flash  = document.getElementById('flash');
+  let armed = false, t;
+  payBtn.addEventListener('click', ()=>{
+    if(!armed){
+      armed = true;
+      flash.classList.add('show');
+      payBtn.style.borderColor = 'var(--ember)';
+      payBtn.style.background = 'rgba(210,96,63,.2)';
+      clearTimeout(t);
+      t = setTimeout(()=>{ armed=false; flash.classList.remove('show');
+        payBtn.style.borderColor=''; payBtn.style.background=''; }, 4200);
+    } else {
+      armed = false;
+      flash.querySelector('span').innerHTML = '<b>Logged.</b> Override recorded against your name in the audit trail.';
+      clearTimeout(t);
+      t = setTimeout(()=>{ flash.classList.remove('show'); payBtn.style.borderColor=''; payBtn.style.background='';
+        flash.querySelector('span').innerHTML = '<b>Hold in force.</b> Approving a critical-fraud invoice needs a second confirmation — click again to override.'; }, 2600);
+    }
+  });
+
+  // Dropzone drag affordance.
+  const dz = document.getElementById('dz');
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
+</script>
+</body>
+</html>

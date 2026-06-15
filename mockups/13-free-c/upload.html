@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galatiq · Accounts Payable — Upload</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .stage {
+    min-height: calc(100vh - 220px);
+    display: grid; place-items: center;
+    padding: 40px 0 80px;
+  }
+  .upload-wrap { width: 100%; max-width: 720px; text-align: center; }
+
+  .upload-wrap .kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--vermillion); margin: 0 0 18px;
+  }
+  .upload-wrap h1 {
+    font-family: var(--serif-disp); font-weight: 500; font-size: 44px; line-height: 1.08;
+    margin: 0 0 36px; letter-spacing: -.5px;
+  }
+  .upload-wrap h1 b { font-weight: 800; }
+
+  .dropzone {
+    border: 2px dashed var(--rule);
+    background:
+      radial-gradient(circle at 50% 38%, rgba(255,255,255,.45), transparent 70%);
+    padding: 64px 40px 56px;
+    transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+    cursor: pointer;
+    position: relative;
+  }
+  .dropzone:hover, .dropzone.drag {
+    border-color: var(--vermillion);
+    background: radial-gradient(circle at 50% 38%, rgba(199,52,31,.07), transparent 72%);
+  }
+  .dropzone.drag { transform: scale(1.008); }
+
+  .glyph {
+    width: 64px; height: 64px; margin: 0 auto 26px;
+    border: 2px solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center;
+    transition: border-color .2s var(--ease), transform .2s var(--ease);
+  }
+  .dropzone:hover .glyph, .dropzone.drag .glyph { border-color: var(--vermillion); transform: translateY(-3px); }
+  .glyph svg { width: 26px; height: 26px; stroke: var(--ink); }
+  .dropzone:hover .glyph svg, .dropzone.drag .glyph svg { stroke: var(--vermillion); }
+
+  .dropzone .big {
+    font-family: var(--serif-disp); font-weight: 500; font-style: italic; font-size: 27px;
+    margin: 0 0 22px; letter-spacing: -.2px;
+  }
+  .browse {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    background: var(--ink); color: var(--paper); border: 1.5px solid var(--ink);
+    padding: 12px 24px; cursor: pointer;
+    transition: background .18s var(--ease);
+  }
+  .browse:hover { background: var(--vermillion); border-color: var(--vermillion); }
+
+  .formats {
+    margin-top: 30px;
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+  }
+  .formats .f {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1.5px;
+    color: var(--ink-soft); border: 1px solid var(--rule); padding: 5px 11px;
+  }
+
+  .hint {
+    margin-top: 34px; font-family: var(--serif-body); font-size: 15.5px; color: var(--ink-faint);
+    font-style: italic;
+  }
+  .hint a { color: var(--ink-soft); text-underline-offset: 3px; }
+  .hint a:hover { color: var(--vermillion-d); }
+
+  .filename {
+    margin-top: 18px; font-family: var(--mono); font-size: 12px; color: var(--green);
+    letter-spacing: .5px; min-height: 16px;
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html">Vendors</a>
+      <a class="btn-upload" href="upload.html" aria-current="page">Upload invoice</a>
+    </nav>
+    <div class="user"><span class="dot">DO</span> Dana Okafor</div>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="stage">
+    <div class="upload-wrap reveal" style="animation-delay:.05s">
+      <p class="kicker">New filing</p>
+      <h1>Hand it to the <b>agents</b>.</h1>
+
+      <label class="dropzone" id="zone" for="file">
+        <div class="glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>
+          </svg>
+        </div>
+        <p class="big">Drop an invoice to process.</p>
+        <span class="browse" id="browse">Browse files</span>
+        <input id="file" type="file" accept=".pdf,.csv,.json,.xml,.txt" hidden>
+        <div class="filename" id="filename" aria-live="polite"></div>
+      </label>
+
+      <div class="formats">
+        <span class="f">PDF</span>
+        <span class="f">CSV</span>
+        <span class="f">JSON</span>
+        <span class="f">XML</span>
+        <span class="f">TXT</span>
+      </div>
+
+      <p class="hint">Processing runs in the background — watch it move through your <a href="index.html">inbox</a>.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  (function () {
+    var zone = document.getElementById('zone');
+    var input = document.getElementById('file');
+    var name = document.getElementById('filename');
+    var browse = document.getElementById('browse');
+
+    browse.addEventListener('click', function (e) { e.preventDefault(); input.click(); });
+    input.addEventListener('change', function () {
+      if (input.files && input.files[0]) name.textContent = '✓ ' + input.files[0].name + ' — queued for processing';
+    });
+    ['dragenter','dragover'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.add('drag'); });
+    });
+    ['dragleave','drop'].forEach(function (ev) {
+      zone.addEventListener(ev, function (e) { e.preventDefault(); zone.classList.remove('drag'); });
+    });
+    zone.addEventListener('drop', function (e) {
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) name.textContent = '✓ ' + f.name + ' — queued for processing';
+    });
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Audit · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Frijole&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .audit-head { padding: 56px 0 8px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mustard-deep); margin: 0 0 14px; }
+  .audit-title { font-family: var(--face); font-weight: 700; font-size: clamp(26px, 3.4vw, 40px); margin: 0; color: var(--ink); }
+  .audit-sub { margin: 12px 0 0; font-size: 15px; font-weight: 600; color: var(--ink-soft); max-width: 52ch; }
+
+  .timeline { margin: 36px 0 0; position: relative; padding-left: 30px; }
+  .timeline::before { content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .event { position: relative; padding: 0 0 26px 18px; }
+  .event::before {
+    content: ""; position: absolute; left: -29px; top: 4px; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--mustard); box-shadow: 0 0 0 4px var(--cream);
+  }
+  .event.critical::before { background: var(--critical); }
+  .event.paid::before { background: var(--paid); }
+  .ev-when { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink-faint); letter-spacing: .04em; }
+  .ev-text { margin: 4px 0 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+  .ev-text b { font-weight: 700; }
+  .ev-text .who { color: var(--sienna); }
+  .ev-text .crit { color: var(--critical); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html" class="active">Audit</a>
+    </div>
+    <div class="nav-right">
+      <span class="org-pill">Acme Corp</span>
+      <a href="upload.html"><button class="btn-upload">Upload invoice</button></a>
+      <span class="whoami"><span class="avatar">DO</span> Dana Okafor</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <header class="audit-head">
+    <p class="eyebrow rise" style="animation-delay:.04s">Activity log</p>
+    <h1 class="audit-title rise" style="animation-delay:.1s">Audit trail</h1>
+    <p class="audit-sub rise" style="animation-delay:.16s">Every decision the agents and your team made today, in order. Append-only.</p>
+  </header>
+
+  <div class="timeline rise" style="animation-delay:.24s">
+    <div class="event critical">
+      <div class="ev-when">2m ago &middot; 09:58</div>
+      <p class="ev-text"><b>INV-1003</b> · Fraudster LLC <span class="crit">HELD for review</span> — 3 fraud signals, agent confidence 0.94.</p>
+    </div>
+    <div class="event">
+      <div class="ev-when">14m ago &middot; 09:46</div>
+      <p class="ev-text"><b>INV-1002</b> · Gadgets Co. flagged <b>over budget</b>, routed to Dana Okafor.</p>
+    </div>
+    <div class="event paid">
+      <div class="ev-when">38m ago &middot; 09:22</div>
+      <p class="ev-text"><b>INV-1004</b> · Precision Parts Ltd. <span style="color:var(--paid)">paid touchless</span> — matched PO-4471, $4,750.00.</p>
+    </div>
+    <div class="event paid">
+      <div class="ev-when">1h ago &middot; 08:55</div>
+      <p class="ev-text"><b>INV-1001</b> · Widgets Inc. <span style="color:var(--paid)">paid touchless</span> — $5,000.00.</p>
+    </div>
+    <div class="event">
+      <div class="ev-when">2h ago &middot; 07:40</div>
+      <p class="ev-text">Morning batch ingested — <span class="who">41 invoices</span> cleared without a human.</p>
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  <span><span class="sun"></span>Galatiq — autonomous accounts payable</span>
+  <span>Acme Corp &middot; signed in as Dana Okafor</span>
+</footer>
+
+<script>
+  // Safety net: force entrance content visible if the keyframe never advances.
+  setTimeout(() => document.querySelectorAll('.rise').forEach(el => {
+    el.style.opacity = '1'; el.style.transform = 'none';
+  }), 700);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 18px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .summary .count {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--aqua-deep);
+    font-weight: 500;
+  }
+  .summary .rule { flex: 1; height: 1px; background: var(--glass-edge); }
+  .summary .filter { font-size: 12.5px; color: var(--ink-faint); }
+
+  .list { padding: 8px; }
+  .row {
+    display: grid;
+    grid-template-columns: 14px 1.6fr 1.3fr auto 64px;
+    align-items: center;
+    gap: 18px;
+    padding: 17px 18px;
+    border-radius: var(--radius-sm);
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+  .row + .row { border-top: 1px solid var(--glass-edge); }
+  .row:hover { background: rgba(255,255,255,0.55); transform: translateX(2px); }
+  .row:hover + .row { border-top-color: transparent; }
+
+  .vendor { font-size: 15px; font-weight: 500; color: var(--ink); }
+  .inv { font-size: 12px; color: var(--ink-faint); margin-top: 2px; letter-spacing: 0.02em; }
+  .status { display: flex; align-items: center; gap: 9px; }
+  .status .label { font-size: 13px; color: var(--ink-soft); }
+  .amt { text-align: right; font-size: 15.5px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em; }
+  .time { text-align: right; font-size: 12px; color: var(--ink-faint); }
+
+  /* The critical row quietly draws the eye — warm-cool tension, soft inner glow */
+  .row.critical {
+    background: linear-gradient(100deg, var(--crit-glow), rgba(255,255,255,0.4) 70%);
+    box-shadow: inset 3px 0 0 var(--crit), var(--shadow-inset);
+  }
+  .row.critical:hover { background: linear-gradient(100deg, rgba(194,69,63,0.22), rgba(255,255,255,0.5) 70%); }
+  .row.critical .vendor { color: var(--crit); }
+  .row.muted .vendor, .row.muted .amt { color: var(--ink-soft); }
+  .row.muted { opacity: 0.82; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 12px 1fr auto; gap: 12px; }
+    .row .status, .row .time { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="atmos"><span></span><span></span><span></span></div>
+
+<div class="shell">
+  <nav class="nav reveal">
+    <a class="brand" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html" class="active">Inbox</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <span class="spacer"></span>
+    <a class="btn-upload" href="upload.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M5 12l7-7 7 7"/></svg>
+      Upload invoice
+    </a>
+    <div class="who">
+      <span class="avatar">DO</span>
+      <div>
+        <div class="name">Dana Okafor</div>
+        <div class="org">Acme Corp</div>
+      </div>
+    </div>
+  </nav>
+
+  <header class="reveal" style="animation-delay:.04s">
+    <p class="eyebrow">Inbox</p>
+    <h1 class="page-h">Decisions, <em>made calmly</em>.</h1>
+  </header>
+
+  <div class="summary reveal" style="animation-delay:.08s">
+    <span class="count">5 invoices need your review</span>
+    <span class="rule"></span>
+    <span class="filter">All vendors · newest first</span>
+  </div>
+
+  <section class="panel list reveal" style="animation-delay:.08s">
+    <a class="row critical" href="review.html">
+      <span class="dot crit"></span>
+      <div>
+        <div class="vendor">Fraudster LLC</div>
+        <div class="inv">INV-1003</div>
+      </div>
+      <div class="status">
+        <span class="tag crit">CRITICAL · fraud suspected</span>
+      </div>
+      <div class="amt money">$100,000.00</div>
+      <div class="time">2m</div>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot warn"></span>
+      <div>
+        <div class="vendor">Gadgets Co.</div>
+        <div class="inv">INV-1002</div>
+      </div>
+      <div class="status">
+        <span class="tag warn">over budget</span>
+      </div>
+      <div class="amt money">$15,000.00</div>
+      <div class="time">14m</div>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot warn"></span>
+      <div>
+        <div class="vendor">Northwind Supply</div>
+        <div class="inv">INV-1008</div>
+      </div>
+      <div class="status">
+        <span class="tag warn">unknown item</span>
+      </div>
+      <div class="amt money">$8,420.00</div>
+      <div class="time">1h</div>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot info"></span>
+      <div>
+        <div class="vendor">Orion Components</div>
+        <div class="inv">INV-1009</div>
+      </div>
+      <div class="status">
+        <span class="tag info">data integrity</span>
+      </div>
+      <div class="amt money">$2,400.00</div>
+      <div class="time">3h</div>
+    </a>
+
+    <a class="row" href="review.html">
+      <span class="dot proc"></span>
+      <div>
+        <div class="vendor">Bluepeak Logistics</div>
+        <div class="inv">INV-1011</div>
+      </div>
+      <div class="status">
+        <span class="label">processing</span>
+      </div>
+      <div class="amt money">$12,300.00</div>
+      <div class="time">just now</div>
+    </a>
+
+    <a class="row muted" href="review.html">
+      <span class="dot good"></span>
+      <div>
+        <div class="vendor">Precision Parts Ltd.</div>
+        <div class="inv">INV-1004</div>
+      </div>
+      <div class="status">
+        <span class="label">paid</span>
+      </div>
+      <div class="amt money">$4,750.00</div>
+      <div class="time">4h</div>
+    </a>
+
+    <a class="row muted" href="review.html">
+      <span class="dot good"></span>
+      <div>
+        <div class="vendor">Widgets Inc.</div>
+        <div class="inv">INV-1001</div>
+      </div>
+      <div class="status">
+        <span class="label">paid</span>
+      </div>
+      <div class="amt money">$5,000.00</div>
+      <div class="time">5h</div>
+    </a>
+  </section>
+
+  <p class="foot reveal" style="animation-delay:.11s">
+    <span class="mark">Galatiq</span> pays the clean ones touchless · only the unclear surface here.
+  </p>
+</div>
+</body>
+</html>

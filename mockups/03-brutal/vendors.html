@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Vendors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="brutal.css" />
+<script src="brutal.js"></script>
+<style>
+.vlist { border-top: var(--bw) solid var(--line); margin-top: 8px; }
+.vrow {
+  display: grid; grid-template-columns: 14px 1.6fr 1fr 0.8fr; align-items: center;
+  border-bottom: var(--bwthin) solid var(--line); background: var(--paper);
+  transition: background 0.12s linear;
+}
+.vrow:hover { background: var(--paper-2); }
+.vrow__spine { align-self: stretch; min-height: 76px; background: var(--paper); }
+.vrow--known:hover .vrow__spine { background: var(--ink); }
+.vrow--unknown .vrow__spine { background: var(--accent); }
+.vrow__name { padding: 22px 22px 22px 18px; }
+.vrow__name b { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+.vrow__name span { display: block; font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); margin-top: 4px; }
+.vrow__status { padding: 22px; font-family: "Space Mono", monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.vrow--unknown .vrow__status { color: var(--accent); font-weight: 700; }
+.vrow__num { padding: 22px var(--gut) 22px 22px; text-align: right; font-family: "Space Mono", monospace; font-variant-numeric: tabular-nums; font-size: 15px; }
+
+@media (max-width: 760px) {
+  .vrow { grid-template-columns: 14px 1fr; }
+  .vrow__status, .vrow__num { grid-column: 2; padding-top: 0; text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__wordmark">galatiq</span>
+    <span class="nav__descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav__links">
+    <a class="nav__link" href="index.html">Inbox</a>
+    <a class="nav__link" href="vendors.html" aria-current="page">Vendors</a>
+    <a class="nav__link" href="audit.html">Audit</a>
+  </div>
+  <div class="nav__right">
+    <a class="nav__cta" href="upload.html">Upload invoice</a>
+    <div class="nav__user">
+      <span class="nav__user-name">Dana Okafor</span>
+      <span class="nav__user-org">Acme Corp</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <header class="pagehead reveal">
+    <h1 class="pagehead__title">Vendors</h1>
+    <span class="regmark">MASTER &nbsp;/&nbsp; 4 ON FILE &nbsp;/&nbsp; 1 UNVERIFIED</span>
+  </header>
+
+  <section class="summaryline reveal">
+    <span class="summaryline__big">The master decides who can be paid.</span>
+    <span class="summaryline__meta">verified relationships only</span>
+  </section>
+
+  <section class="vlist reveal" aria-label="Vendor master">
+
+    <div class="vrow vrow--unknown">
+      <span class="vrow__spine" aria-hidden="true"></span>
+      <div class="vrow__name"><b>Fraudster LLC</b><span>seen on INV-1003</span></div>
+      <div class="vrow__status">Not on file · unverified</div>
+      <div class="vrow__num">—</div>
+    </div>
+
+    <div class="vrow vrow--known">
+      <span class="vrow__spine" aria-hidden="true"></span>
+      <div class="vrow__name"><b>Widgets Inc.</b><span>net-30 · verified bank</span></div>
+      <div class="vrow__status">On file</div>
+      <div class="vrow__num">$5,000.00</div>
+    </div>
+
+    <div class="vrow vrow--known">
+      <span class="vrow__spine" aria-hidden="true"></span>
+      <div class="vrow__name"><b>Precision Parts Ltd.</b><span>net-45 · verified bank</span></div>
+      <div class="vrow__status">On file</div>
+      <div class="vrow__num">$4,750.00</div>
+    </div>
+
+    <div class="vrow vrow--known">
+      <span class="vrow__spine" aria-hidden="true"></span>
+      <div class="vrow__name"><b>Gadgets Co.</b><span>net-30 · verified bank</span></div>
+      <div class="vrow__status">On file</div>
+      <div class="vrow__num">$15,000.00</div>
+    </div>
+
+    <div class="vrow vrow--known">
+      <span class="vrow__spine" aria-hidden="true"></span>
+      <div class="vrow__name"><b>Northwind Supply</b><span>net-30 · verified bank</span></div>
+      <div class="vrow__status">On file</div>
+      <div class="vrow__num">$8,420.00</div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>Galatiq AP · System of record</span>
+  <span>Master is the source of truth for payable vendors</span>
+</footer>
+
+</body>
+</html>

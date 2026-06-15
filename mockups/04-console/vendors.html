@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Galatiq · AP — Vendors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="console.css" />
+<style>
+  .ven-wrap { padding: clamp(48px,8vh,92px) 0 120px; }
+  .ven-head .line0 { font-size:12px; color:var(--ink-faint); letter-spacing:.16em; text-transform:uppercase; margin-bottom:18px; }
+  .ven-head h1 { font-size:clamp(24px,3vw,34px); font-weight:700; margin:0 0 14px; letter-spacing:-.01em; }
+  .ven-head .sub { color:var(--ink-dim); font-size:13px; margin:0; }
+  .vlist { border-top:1px solid var(--line); margin-top:30px; }
+  .vrow {
+    display:grid; grid-template-columns:1.4fr auto 0.8fr; gap:24px; align-items:center;
+    padding:18px 6px; border-bottom:1px solid var(--line-soft); font-size:14px;
+  }
+  .vrow .vn { color:var(--ink); font-weight:500; }
+  .vrow .vmeta { color:var(--ink-faint); font-size:12px; }
+  .vrow .vstatus { justify-self:end; font-size:12px; display:inline-flex; align-items:center; gap:8px; }
+  .vrow .vstatus .g { width:8px; height:8px; border-radius:50%; }
+  .vrow.onfile .vstatus { color:var(--ok-dim); } .vrow.onfile .g { background:var(--ok-dim); }
+  .vrow.unknown .vstatus { color:var(--crit); } .vrow.unknown .g { background:var(--crit); box-shadow:0 0 8px rgba(255,107,87,.6); }
+  .vrow.unknown { background:linear-gradient(90deg, var(--crit-glow), transparent 38%); }
+  @media (max-width:860px){ .vrow{ grid-template-columns:1fr auto; } .vrow .vmeta{ grid-column:1/-1; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="prompt">&gt;_</span>
+      <span class="word">Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html" aria-current="page">Vendors</a>
+      <a href="audit.html">Audit</a>
+    </div>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">+ Upload invoice</a>
+      <span class="who"><span class="dot" aria-hidden="true"></span>Dana Okafor<span class="org">· Acme Corp</span></span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="shell ven-wrap">
+    <header class="ven-head">
+      <div class="line0 reveal" style="animation-delay:.02s">acme-corp / accounts-payable / vendors</div>
+      <h1 class="reveal" style="animation-delay:.08s">Vendor master</h1>
+      <p class="sub reveal" style="animation-delay:.14s">Only vendors on file can be paid touchless. Everything else routes to review.</p>
+    </header>
+
+    <div class="vlist" role="list" aria-label="Vendor master">
+      <div class="vrow onfile reveal" role="listitem" style="animation-delay:.20s">
+        <div><div class="vn">Widgets Inc.</div><div class="vmeta">net-30 · banking on file · 14 invoices</div></div>
+        <div></div>
+        <div class="vstatus"><span class="g" aria-hidden="true"></span>on file</div>
+      </div>
+      <div class="vrow onfile reveal" role="listitem" style="animation-delay:.25s">
+        <div><div class="vn">Precision Parts Ltd.</div><div class="vmeta">net-15 · banking on file · 31 invoices</div></div>
+        <div></div>
+        <div class="vstatus"><span class="g" aria-hidden="true"></span>on file</div>
+      </div>
+      <div class="vrow onfile reveal" role="listitem" style="animation-delay:.30s">
+        <div><div class="vn">Gadgets Co.</div><div class="vmeta">net-30 · banking on file · 9 invoices</div></div>
+        <div></div>
+        <div class="vstatus"><span class="g" aria-hidden="true"></span>on file</div>
+      </div>
+      <div class="vrow onfile reveal" role="listitem" style="animation-delay:.35s">
+        <div><div class="vn">Orion Components</div><div class="vmeta">net-45 · banking on file · 6 invoices</div></div>
+        <div></div>
+        <div class="vstatus"><span class="g" aria-hidden="true"></span>on file</div>
+      </div>
+      <div class="vrow unknown reveal" role="listitem" style="animation-delay:.40s">
+        <div><div class="vn">Fraudster LLC</div><div class="vmeta">no terms · no banking details · 1 invoice (held)</div></div>
+        <div></div>
+        <div class="vstatus"><span class="g" aria-hidden="true"></span>not on file</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="khint" aria-hidden="true">
+  <span><kbd>Esc</kbd> inbox</span>
+</div>
+
+<script>
+  document.addEventListener("keydown", function (e) {
+    if (e.target.matches("input, textarea")) return;
+    if (e.key === "Escape") window.location.href = "index.html";
+  });
+</script>
+</body>
+</html>

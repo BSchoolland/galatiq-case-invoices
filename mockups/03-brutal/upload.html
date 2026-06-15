@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galatiq · Upload invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="brutal.css" />
+<script src="brutal.js"></script>
+<style>
+.upwrap {
+  min-height: calc(100vh - 200px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 0 40px;
+}
+.upwrap .label { margin-bottom: 26px; }
+
+.drop {
+  width: 100%; max-width: 760px;
+  border: var(--bw) dashed var(--ink);
+  background:
+    repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(10,10,10,0.02) 18px, rgba(10,10,10,0.02) 19px);
+  padding: clamp(48px, 9vw, 110px) 40px;
+  text-align: center;
+  transition: background 0.15s linear, border-color 0.15s linear, transform 0.08s ease;
+  cursor: pointer;
+  position: relative;
+}
+.drop::before, .drop::after {
+  content: ""; position: absolute; width: 18px; height: 18px; border: var(--bw) solid var(--accent);
+}
+.drop::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+.drop::after  { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+.drop.drag { background: var(--accent); border-style: solid; border-color: var(--ink); transform: scale(1.005); }
+.drop.drag .drop__head, .drop.drag .drop__plus { color: var(--accent-ink); }
+
+.drop__plus { font-size: 54px; line-height: 1; color: var(--accent); margin-bottom: 22px; }
+.drop__head {
+  font-family: "Archivo", sans-serif; font-weight: 800;
+  font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.02em; line-height: 1; margin: 0 0 26px;
+  text-transform: uppercase;
+}
+.browse {
+  font-family: "Space Mono", monospace; font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border: var(--bw) solid var(--ink); background: var(--ink); color: var(--paper);
+  padding: 13px 26px; cursor: pointer; transition: background 0.12s linear, color 0.12s linear, transform 0.06s ease;
+}
+.browse:hover { background: var(--accent); color: var(--accent-ink); }
+.browse:active { transform: translate(2px,2px); }
+
+.formats {
+  margin-top: 34px; display: flex; gap: 0; flex-wrap: wrap; justify-content: center;
+  border: var(--bwthin) solid var(--line);
+}
+.formats span {
+  font-family: "Space Mono", monospace; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; padding: 10px 20px; border-right: var(--bwthin) solid var(--line);
+}
+.formats span:last-child { border-right: 0; }
+.formats span:first-child { background: var(--ink); color: var(--paper); }
+
+.hint {
+  margin-top: 36px; max-width: 620px; text-align: center;
+  font-family: "Space Mono", monospace; font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2);
+  line-height: 1.6;
+}
+.hint b { color: var(--ink); }
+.hint a { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav">
+  <a class="nav__brand" href="index.html">
+    <span class="nav__wordmark">galatiq</span>
+    <span class="nav__descriptor">Accounts Payable</span>
+  </a>
+  <div class="nav__links">
+    <a class="nav__link" href="index.html">Inbox</a>
+    <a class="nav__link" href="vendors.html">Vendors</a>
+    <a class="nav__link" href="audit.html">Audit</a>
+  </div>
+  <div class="nav__right">
+    <a class="nav__cta" href="upload.html" aria-current="page">Upload invoice</a>
+    <div class="nav__user">
+      <span class="nav__user-name">Dana Okafor</span>
+      <span class="nav__user-org">Acme Corp</span>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <div class="upwrap">
+
+    <span class="label reveal">Upload · Single document</span>
+
+    <div class="drop reveal" id="drop" role="button" tabindex="0" aria-label="Drop an invoice to process, or browse">
+      <div class="drop__plus" aria-hidden="true">＋</div>
+      <h1 class="drop__head">Drop an invoice<br />to process.</h1>
+      <button class="browse" type="button" id="browse">Browse files</button>
+      <input type="file" id="file" hidden accept=".pdf,.csv,.json,.xml,.txt" />
+    </div>
+
+    <div class="formats reveal" aria-label="Accepted formats">
+      <span>FORMATS</span><span>PDF</span><span>CSV</span><span>JSON</span><span>XML</span><span>TXT</span>
+    </div>
+
+    <p class="hint reveal">
+      Processing runs in the background — <b>watch it move through your <a href="index.html">inbox</a>.</b>
+    </p>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <span>Galatiq AP · System of record</span>
+  <span>Touchless clearance ON · Human-in-the-loop for held items</span>
+</footer>
+
+<script>
+  var drop = document.getElementById('drop');
+  var input = document.getElementById('file');
+  var browse = document.getElementById('browse');
+
+  function open() { input.click(); }
+  browse.addEventListener('click', function (e) { e.stopPropagation(); open(); });
+  drop.addEventListener('click', open);
+  drop.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+  });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('drag'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('drag'); });
+  });
+</script>
+
+</body>
+</html>

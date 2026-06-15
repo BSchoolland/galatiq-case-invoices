@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galatiq · Accounts Payable — Vendors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ledger.css">
+<style>
+  .lede { padding: 46px 0 30px; border-bottom: 2px solid var(--ink); max-width: 640px; }
+  .lede .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--vermillion); margin: 0 0 14px; }
+  .lede h1 { font-family: var(--serif-disp); font-weight: 500; font-size: 44px; line-height: 1.08; margin: 0; letter-spacing: -.5px; }
+  .lede h1 b { font-weight: 800; }
+  .lede p { font-size: 16px; color: var(--ink-soft); margin: 14px 0 0; font-weight: 300; }
+
+  .roster { list-style: none; margin: 8px 0 90px; padding: 0; }
+  .v {
+    display: grid; grid-template-columns: 1fr 160px auto; gap: 26px; align-items: baseline;
+    padding: 19px 0; border-bottom: 1px solid var(--rule-soft);
+  }
+  .v .name { font-family: var(--serif-disp); font-weight: 600; font-size: 21px; letter-spacing: -.2px; }
+  .v .terms { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); letter-spacing: .5px; }
+  .v .state { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+  .v .state.ok { color: var(--green); }
+  .v .state.unknown { color: var(--vermillion-d); display: inline-flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="index.html">
+      <span class="mark">Galatiq</span>
+      <span class="desc">Accounts&nbsp;Payable</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html">Inbox</a>
+      <a href="vendors.html" aria-current="page">Vendors</a>
+      <a class="btn-upload" href="upload.html">Upload invoice</a>
+    </nav>
+    <div class="user"><span class="dot">DO</span> Dana Okafor</div>
+  </div>
+</header>
+
+<main class="shell">
+  <div class="dateline">
+    <span>Acme Corp · Vendor Master</span>
+    <span>Mon, 15 June 2026</span>
+  </div>
+
+  <section class="lede reveal" style="animation-delay:.05s">
+    <p class="kicker">The Register</p>
+    <h1>Vendors <b>on file</b>.</h1>
+    <p>Touchless payment is reserved for the known. A name not on this register is paid by no one but a human.</p>
+  </section>
+
+  <ul class="roster">
+    <li class="v reveal" style="animation-delay:.12s"><span class="name">Widgets Inc.</span><span class="terms">Net 30 · since 2019</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.16s"><span class="name">Precision Parts Ltd.</span><span class="terms">Net 45 · since 2021</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.20s"><span class="name">Gadgets Co.</span><span class="terms">Net 30 · since 2020</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.24s"><span class="name">Northwind Supply</span><span class="terms">Net 30 · since 2022</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.28s"><span class="name">Orion Components</span><span class="terms">Net 15 · since 2023</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.32s"><span class="name">Bluepeak Logistics</span><span class="terms">Net 30 · since 2024</span><span class="state ok">On file</span></li>
+    <li class="v reveal" style="animation-delay:.38s"><span class="name" style="color:var(--vermillion-d)">Fraudster LLC</span><span class="terms">No terms · no banking</span><span class="state unknown"><span class="tick critical"></span>Not in master</span></li>
+  </ul>
+</main>
+
+</body>
+</html>

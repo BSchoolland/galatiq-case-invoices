@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit · Galatiq Accounts Payable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .audit-head { padding: 64px 0 36px; }
+  .audit-head h1 { font-size: clamp(32px, 4.4vw, 52px); font-weight: 600; letter-spacing: -0.03em; margin: 10px 0 0; }
+  .audit-head .sub { color: var(--muted); font-size: 14.5px; margin-top: 14px; }
+
+  .log { border-top: 1px solid var(--line); margin-bottom: 80px; }
+  .entry {
+    display: grid; grid-template-columns: 96px 1fr auto; gap: 24px; align-items: baseline;
+    padding: 20px 6px; border-bottom: 1px solid var(--line);
+  }
+  .entry .time { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--muted-2); letter-spacing: 0.03em; }
+  .entry .what { font-size: 15px; }
+  .entry .what .id { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); margin-right: 8px; }
+  .entry .what .actor { color: var(--muted); }
+  .entry .verdict {
+    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--line); padding: 4px 10px; border-radius: var(--radius); white-space: nowrap;
+  }
+  .entry .verdict.hold { color: var(--accent); border-color: var(--accent); }
+  .entry .verdict.paid { color: var(--paper); }
+
+  @media (max-width: 720px) { .entry { grid-template-columns: 1fr auto; } .entry .time { grid-column: 1/-1; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="Galatiq Accounts Payable home">
+      <span class="mark"><span class="dot"></span>Galatiq</span>
+      <span class="desc">Accounts Payable</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Inbox</a>
+      <a href="audit.html" class="active" aria-current="page">Audit</a>
+    </nav>
+    <div class="nav-right">
+      <a class="btn-upload" href="upload.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Upload invoice
+      </a>
+      <div class="who">
+        <span class="avatar">DO</span>
+        <span>Dana Okafor <span class="org">· Acme Corp</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="audit-head reveal">
+    <div class="eyebrow">Audit</div>
+    <h1>Every decision, logged.</h1>
+    <p class="sub">Immutable record of agent and human actions across Acme Corp.</p>
+  </section>
+
+  <section class="log reveal" style="animation-delay:.08s" aria-label="Audit log">
+    <div class="entry">
+      <span class="time">2m ago</span>
+      <span class="what"><span class="id">INV-1003</span> Agent held invoice and routed to human <span class="actor">· fraud signals ×3</span></span>
+      <span class="verdict hold">Hold</span>
+    </div>
+    <div class="entry">
+      <span class="time">14m ago</span>
+      <span class="what"><span class="id">INV-1002</span> Agent flagged over budget, awaiting review <span class="actor">· auto</span></span>
+      <span class="verdict">Routed</span>
+    </div>
+    <div class="entry">
+      <span class="time">1h ago</span>
+      <span class="what"><span class="id">INV-1008</span> Agent could not match line item to a PO <span class="actor">· auto</span></span>
+      <span class="verdict">Routed</span>
+    </div>
+    <div class="entry">
+      <span class="time">4h ago</span>
+      <span class="what"><span class="id">INV-1004</span> Paid touchless <span class="actor">· vendor + PO matched, $4,750.00</span></span>
+      <span class="verdict paid">Paid</span>
+    </div>
+    <div class="entry">
+      <span class="time">5h ago</span>
+      <span class="what"><span class="id">INV-1001</span> Paid touchless <span class="actor">· vendor + PO matched, $5,000.00</span></span>
+      <span class="verdict paid">Paid</span>
+    </div>
+    <div class="entry">
+      <span class="time">yesterday</span>
+      <span class="what"><span class="id">INV-0994</span> Dana Okafor approved after info request <span class="actor">· note added</span></span>
+      <span class="verdict paid">Paid</span>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Galatiq · Accounts Payable</span>
+    <span class="mono">Acme Corp · retained 7 years</span>
+  </footer>
+</main>
+
+</body>
+</html>
