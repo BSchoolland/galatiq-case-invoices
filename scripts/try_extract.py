@@ -7,12 +7,12 @@ API. Each run creates a throwaway invoice row so the exchange is traced.
 
 import json
 import sys
-import uuid
 from pathlib import Path
 
-from backend import agents
+from backend import agents, invoices
 from backend.ingestion import load_document
 from backend.llm import RunContext
+from backend.statuses import Status
 from backend.unit_of_work import unit_of_work
 
 SAMPLES = [
@@ -32,11 +32,8 @@ def main() -> None:
         # One unit of work per invoice: it owns the connection and commits at the
         # boundary; extraction + its trace rows ride the same transaction.
         with unit_of_work() as uow:
-            trace_id = f"trc_{uuid.uuid4().hex[:12]}"
-            inv_id = uow.execute(
-                "INSERT INTO invoices (trace_id, status, source_path) VALUES (?, 'RECEIVED', ?)",
-                (trace_id, str(path)),
-            ).lastrowid
+            inv_id = invoices.create_invoice(uow, str(path), path.suffix.lstrip("."))
+            invoices.set_status(uow, inv_id, Status.PROCESSING)
             ex = agents.extract(RunContext(uow=uow, invoice_id=inv_id), doc)
         print(f"\n===== {path.name}  (kind={doc.kind}, invoice_id={inv_id}) =====")
         print(json.dumps(ex.model_dump(), indent=2, ensure_ascii=False))
