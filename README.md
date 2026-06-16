@@ -1,115 +1,125 @@
-# Galatiq Case: Invoice Processing Automation
+# Galatiq Invoice Processing
 
-## Background
+> A multi-agent accounts-payable system that reads messy invoices, validates them against ground truth, and either pays them touchless or surfaces them for human review, with a security model where a compromised LLM still cannot pay the wrong person.
 
-Acme Corp is a PE-backed manufacturing firm losing **$2M/year** on manual invoice processing. Invoices arrive via email as PDFs in messy formats with frequent errors. Staff manually extract data, validate against a legacy inventory database (inconsistent), obtain VP approval (via email chains), and process payment (via a banking API).
+### ▶ [Watch the 5-minute walkthrough (Loom)](https://www.loom.com/share/6e3e02479a754d21b59b8a6763b965f3)
 
-**Current pain points:**
-- 30% error rate
-- 5-day processing delays
-- Frustrated stakeholders
+The video is the fastest way to understand the system: the happy path, an adversarial invoice getting caught, and the architecture behind it :)
 
-## Objective
+## Overview
 
-Build a **multi-agent system** that automates the end-to-end invoice processing workflow. The system must run as a working prototype — not just designs or slides.
+AI-powered invoice processing for Acme Corp. It ingests invoices in many formats (PDF, TXT, JSON, CSV, XML, including scanned/photographed documents via vision), extracts structured data with an LLM, then runs a **two-layer decision**: deterministic code checks what is *verifiably* wrong, and an LLM judge adds a qualitative read no rule can make. If both layers clear an invoice, it pays automatically. Otherwise it lands in a clean review queue with a plain-English reason.
 
-## Workflow
+![Inbox](docs/images/inbox.png)
 
-The system should handle four stages:
+A held invoice shows exactly why.
 
-1. **Ingestion** — Extract structured data from invoice documents (PDFs, text files). Fields include: Vendor, Amount, Items (with quantities), and Due Date. Expect unstructured text, typos, missing data, and potentially fraudulent entries.
+![Flagged invoice review](docs/images/review-flagged.png)
 
-2. **Validation** — Verify extracted data against a mock inventory database (SQLite). Flag mismatches such as quantity exceeding available stock or items not found in inventory.
+## Architecture
 
-3. **Approval** — Simulate VP-level review with rule-based decision-making (e.g., invoices over $10K require additional scrutiny). The agent should reason through approval/rejection with a reflection or critique loop.
+A messy document comes in; a durable, audited resting decision comes out.
 
-4. **Payment** — If approved, call a mock payment function. If rejected, log the rejection with reasoning.
-
-## Technical Requirements
-
-- **LLM Integration**: Use xAI's Grok as the core reasoning engine (via the xAI API at https://grok.x.ai). Other models are acceptable if you don't have an API key.
-- **Multi-Agent Orchestration**: Use a framework such as LangGraph, CrewAI, AutoGen, or a custom solution.
-- **Agent Capabilities**: Function calling / tool use, structured outputs, and self-correction loops.
-- **Runtime**: Assume no internet for external APIs — simulate everything locally.
-- **Tech Stack**: Python (preferred), with libraries like `langchain`, `crewai`, `autogen`, `pdfplumber`, `PyMuPDF`, etc. Run locally — no cloud deployment.
-
-## Provided Resources
-
-### Mock Invoice Data
-
-Sample invoices are provided in the `data/invoices/` directory in various formats (PDF, CSV, JSON, TXT). Use these as inputs for testing. The data intentionally includes a mix of clean entries and problematic ones — identifying and handling issues is part of the challenge.
-
-### Mock Inventory Database (Required Setup)
-
-Before running the system, you **must** create a local SQLite database that the validation agent will check invoices against. The sample invoices in `data/invoices/` reference specific items and quantities — your database needs to contain matching inventory records so the validation stage can flag mismatches, out-of-stock items, and unknown products.
-
-Below is a starter schema and seed data that covers the core items referenced across the provided invoices:
-
-```python
-import sqlite3
-
-conn = sqlite3.connect('inventory.db')  # Persist to file so all agents can access it
-cursor = conn.cursor()
-
-cursor.execute('CREATE TABLE IF NOT EXISTS inventory (item TEXT PRIMARY KEY, stock INTEGER)')
-cursor.execute("""
-    INSERT INTO inventory VALUES
-    ('WidgetA', 15),
-    ('WidgetB', 10),
-    ('GadgetX', 5),
-    ('FakeItem', 0)
-""")
-conn.commit()
+```
+ingest ─► extract ─► validate ─┬─► judge ─► gate ─┬─► pay ─► PAID
+(code)    (LLM)     (code)      │   (LLM)   (code) │
+                                │                  └─► NEEDS_REVIEW ─► (human)
+                                └─► supersede ─► SUPERSEDED  (exact duplicate)
 ```
 
-**Why this matters:** The sample invoices are designed to test your validation logic against this database. For example:
+Orchestrated with **LangGraph**; each node runs in its own short DB transaction so progress is durable and observable mid-pipeline. A full component diagram lives in [`docs/architecture.puml`](docs/architecture.puml). 
 
-| Scenario | Invoice | What should happen |
-|---|---|---|
-| Normal order within stock | INV-1001, INV-1004, INV-1006 | Items found, quantities valid — passes validation |
-| Quantity exceeds stock | INV-1002 (requests 20× GadgetX, only 5 in stock) | Flagged as stock mismatch |
-| Fraudulent / zero-stock item | INV-1003 (references FakeItem, 0 stock) | Flagged as out of stock or suspicious |
-| Item not in database at all | INV-1008 (SuperGizmo, MegaSprocket), INV-1016 (WidgetC) | Flagged as unknown item |
-| Invalid data | INV-1009 (negative quantity) | Flagged as data integrity issue |
+### The Pipeline
 
-You may extend the seed data with additional items or columns (e.g., unit price, category) to support richer validation — the above is the minimum needed to exercise the provided test invoices. If you want your system to also validate pricing or vendor information, consider adding tables for those as well.
+1. **Ingest**: load the document; route PDFs to a text-layer read or, when there's no usable text, to the vision path.
+2. **Extract** *(LLM)*: convert the document into a strict schema, recording figures exactly as stated (never "fixing" the arithmetic) so downstream checks see the document's own numbers.
+3. **Validate** *(code)*: the deterministic three-way match against vendor master + open purchase orders: known vendor, item on an open PO, quantity within authorization, price matches, arithmetic reconciles, total under the $10K ceiling, not a duplicate.
+4. **Judge** *(LLM)*: reads the document plus the deterministic findings and adds qualitative judgment: structuring, pressure language, self-contradiction, prompt-injection attempts, and a human-facing category + alarm level.
+5. **Gate** *(code)*: pays touchless **only** when the hard checks don't block **and** the judge recommends it; otherwise routes to review.
 
-### Mock Payment API
+### The Agents
 
-```python
-def mock_payment(vendor, amount):
-    print(f"Paid {amount} to {vendor}")
-    return {"status": "success"}
+Both agents emit only through strict Pydantic schemas, with two self-correction loops:
+
+- **Schema self-correction** — invalid output is re-prompted with the exact validation error, bounded by a retry cap.
+- **Judge critique loop** — the judge drafts a verdict, then adversarially critiques its own draft (argue the other side) before finalizing.
+
+The judge's authority is deliberately **one-sided**: it can withhold payment, but it can *never* override a hard block. 
+
+## Design Decisions
+
+### Vendor + PO model (vs. the inventory table in the brief)
+
+The brief suggests validating against an **inventory** table (stock-on-hand). I deliberately changed this: an inventory count is the wrong source of truth for accounts payable. Stock is constantly out of sync.  You can order something, get invoiced before it ships, and have nothing to validate against. Worse, "we have stock" doesn't mean "we ordered this from this vendor at this price."
+
+Instead, the system validates against a **vendor master + purchase orders**, a real three-way match (PO ↔ goods/authorization ↔ invoice). An invoice is legitimate because *we ordered it*, not because an item name exists somewhere. This is both the correct AP design and a stronger anti-fraud foundation. However, it assumes a PO discipline Acme may not have today, so the system treats "known vendor, plausible items, no PO" as a soft, fixable hold rather than hard fraud.
+
+## Setup
+
+### Prerequisites
+- Python 3.12+
+- An xAI API key (the reasoning engine is Grok). 
+
+### Installation
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-### Grok API Setup
-
-```python
-from xai import Grok
-
-client = Grok(api_key="your_key")
-response = client.chat.completions.create(
-    model="grok-3",
-    messages=[{"role": "user", "content": "Reason about this..."}]
-)
+### Configuration
+Create `.env` in the project root:
+```
+XAI_API_KEY=your_key_here
+# optional:
+# XAI_MODEL=grok-4.3
+# XAI_BASE_URL=https://api.x.ai/v1
+```
+The SQLite database self-seeds on first use (vendor master, POs, aliases). To reset it explicitly:
+```bash
+python seed_db.py --reset
 ```
 
-## Running the System
+## Running It
 
-The system should be executable from the command line:
+### Web Console
+```bash
+python main.py serve        # serves API + frontend, auto-selects an open port
+```
+Open the printed URL (default http://127.0.0.1:8377). The console has four sections: **Inbox**, **Vendors**, **Purchase orders**, and **Verification bench**. Upload an invoice and watch it process live.
+
+### CLI
+```bash
+# process a single invoice end-to-end
+python main.py --invoice_path=data/invoices/invoice_1001.txt
+
+# resolve a held invoice from the command line
+python main.py --approve 7
+python main.py --reject 7 --reason "we did not order this!"
+```
+Both the CLI and the web console drive the exact same HTTP API.
+
+## Testing
+
+A safety-focused evaluation suite runs every provided invoice plus a set of self-authored adversarial cases through the full pipeline:
 
 ```bash
-python main.py --invoice_path=data/invoices/invoice1.txt
+python -m evals.run_evals            # full suite (fresh DB at evals/eval.db)
+python -m evals.run_evals --only inv_2005
 ```
 
-Output should include structured logs and results.
+The suite asserts **safety invariants** (e.g. `must_not_pay` cases are never paid) while allowing legitimate LLM judgment to vary between safe outcomes. Results feed the **Verification bench** page in the console. Latest run: **29/29** safe.
 
-## Evaluation Criteria
+The adversarial cases (`data/test_invoices/`, generated by `data/make_test_invoices.py`) cover what the provided set doesn't: plain and PDF-hidden prompt injection, scanned/photographed image-only documents, exact-duplicate resubmission, a clean >$10K invoice, and prices inside the tolerance band.
 
-- **Functionality** — Does the system work end-to-end?
-- **Code Quality** — Clean, testable, well-structured code with error handling and observability
-- **Agentic Sophistication** — LLM integration, multi-agent flow, tool use, self-correction loops
-- **Shipping Mindset** — Valuable MVP delivered under ambiguity; scope ruthlessly cut where needed
-- **Presentation** — Clear translation of technical decisions to business impact
-- **Above/Beyond** - Have you made it your own? Implemented additional features that make the solution feel great? Expanded assumptions? Added to test cases?
-- **UI/UX** - Users will understand and enjoy using this system.
+A handful of end-to-end tests also live in `tests/` (`pytest`).
+
+## Observability
+
+Every run is fully auditable:
+- **Per-invoice trace** — each pipeline stage and every LLM exchange (prompts, outputs, tokens, latency) is persisted and viewable from the review page.
+- **Wide events** — one structured event per HTTP request / job, including DB work, for system-level observability.
+
+## Trade-offs
+
+- **Live LLM required.** Did not mock LLM calls, so to run the system you must have an xAi API key.  Costs are very low per run.
+- **PO discipline assumed.** I assumed we could convince Acme to improve their purchace order dicipline and/or fix their PO system.  If Acme were not willing to work with us to improve this, the system would have to have settled for requiring more human interaction or being less secure.

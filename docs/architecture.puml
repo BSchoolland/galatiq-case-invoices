@@ -1,0 +1,110 @@
+@startuml architecture
+title Galatiq Invoice Processing — High-Level Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  BackgroundColor #FDFDFD
+  BorderColor #555555
+}
+skinparam package {
+  BackgroundColor #F4F4F4
+  BorderColor #888888
+}
+legend top right
+  | <#cfe8cf> | code (deterministic) |
+  | <#cfe0f5> | LLM agent |
+  | <#fff3c4> | persistence / observability |
+endlegend
+
+' ── Clients ──────────────────────────────────────────────
+package "Clients" {
+  [CLI\n(main.py · cli/client.py)] as CLI
+  [Web Console\n(inbox · review · vendors · upload)] as WEB
+}
+
+' ── HTTP API ─────────────────────────────────────────────
+package "HTTP API  (FastAPI · backend/app.py)" {
+  [WideEvent Middleware] as MW #fff3c4
+  rectangle "Routes" as ROUTES {
+    [POST /invoices  → enqueue] as R_SUBMIT
+    [GET  /invoices · /{id} · /source] as R_READ
+    [POST /{id}/approve · reject · correct] as R_REVIEW
+    [GET  /vendors · /events] as R_AUX
+  }
+}
+
+' ── Async processing ─────────────────────────────────────
+package "Background Jobs (jobs.py)" {
+  [Job Runner] as JOBS
+}
+
+' ── Pipeline (LangGraph) ─────────────────────────────────
+package "Pipeline  (LangGraph · pipeline.py)" {
+  [ingest\nload document] as P_INGEST #cfe8cf
+  [extract] as P_EXTRACT #cfe0f5
+  [validate\nthree-way match] as P_VALIDATE #cfe8cf
+  [judge\ndraft → self-critique → final] as P_JUDGE #cfe0f5
+  [gate\npay / hold decision] as P_GATE #cfe8cf
+  [pay\nmock payment] as P_PAY #cfe8cf
+  [supersede\nexact duplicate] as P_SUPER #cfe8cf
+  rectangle "NEEDS_REVIEW\n(human in the loop)" as HOLD
+
+  P_INGEST --> P_EXTRACT
+  P_EXTRACT --> P_VALIDATE
+  P_VALIDATE --> P_JUDGE
+  P_VALIDATE ..> P_SUPER : duplicate
+  P_JUDGE --> P_GATE
+  P_GATE --> P_PAY : touchless approve
+  P_GATE --> HOLD : blocked / judge holds
+}
+
+' ── LLM layer ────────────────────────────────────────────
+package "LLM (llm.py · agents.py)" {
+  [Structured-output client\nschema retry / self-correction] as LLM #cfe0f5
+  cloud "xAI Grok" as GROK
+}
+
+' ── Persistence ──────────────────────────────────────────
+package "Persistence (db.py · unit_of_work.py)" {
+  database "SQLite\n(app.db)" as DB #fff3c4
+  note bottom of DB
+    invoices · line_items
+    vendors · aliases
+    purchase_orders · po_lines
+    wide_events (trace)
+  end note
+  [schema.sql / seed.sql] as SEED
+}
+
+' ── Wiring ───────────────────────────────────────────────
+CLI --> MW
+WEB --> MW
+MW --> ROUTES
+
+R_SUBMIT --> JOBS : enqueue
+JOBS --> P_INGEST : run(invoice_id)
+
+P_EXTRACT --> LLM
+P_JUDGE --> LLM
+LLM --> GROK
+
+HOLD ..> R_REVIEW : reviewer acts on
+R_REVIEW ..> P_VALIDATE : correct → re-validate
+
+P_INGEST --> DB
+P_EXTRACT --> DB
+P_VALIDATE --> DB
+P_JUDGE --> DB
+P_GATE --> DB
+P_PAY --> DB
+P_SUPER --> DB
+R_READ --> DB
+R_REVIEW --> DB
+R_AUX --> DB
+LLM ..> DB : trace each call
+MW ..> DB : wide event
+SEED --> DB : seeds
+
+@enduml
