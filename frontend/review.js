@@ -8,6 +8,12 @@ const SEV = { error: 0, warning: 1, info: 2 };
 const ACTIVE = new Set(["received", "processing"]);
 let flash = null; // one-shot message shown after an action
 
+// The entrance animation plays once, on first paint. Poll refreshes rebuild the
+// DOM in place, so re-adding `reveal` would replay the rise on every tick and
+// read as a full-page reload. rc() drops it after the first render.
+let revealed = false;
+const rc = (base) => (revealed ? base : base + " reveal");
+
 const SVG = {
   back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
   flag: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>`,
@@ -125,7 +131,7 @@ function decisionCard(data) {
         "Assessed before your correction. The hard checks above were re-run on your edit, but the agent's verdict and alarm level predate it."));
   }
 
-  return el("section", { class: "card reveal", style: "animation-delay:.2s" }, hero, body);
+  return el("section", { class: rc("card"), style: "animation-delay:.2s" }, hero, body);
 }
 
 function traceSteps(trace) {
@@ -150,7 +156,7 @@ function traceSteps(trace) {
 function traceDisclosure(trace) {
   const steps = traceSteps(trace);
   if (!steps.length) return null;
-  return el("details", { class: "disclosure reveal", style: "animation-delay:.32s" },
+  return el("details", { class: rc("disclosure"), style: "animation-delay:.32s" },
     el("summary", {}, svgEl(SVG.activity), "View processing trace", svgEl(SVG.caret)),
     el("div", { class: "trace" }, ...steps.map((s) =>
       el("div", { class: "trace-step" + (s.hold ? " hold" : "") },
@@ -164,7 +170,7 @@ function documentCard(inv) {
   const name = (inv.source_path || "").split("/").pop() || "document";
   const url = `/api/invoices/${inv.id}/source`;
 
-  const card = el("section", { class: "card card-pad reveal doc-card", style: "animation-delay:.24s" },
+  const card = el("section", { class: rc("card card-pad doc-card"), style: "animation-delay:.24s" },
     el("h2", { class: "section-title" }, "Original document"),
     el("div", { class: "doc-head" },
       el("span", { class: "doc-name" }, name),
@@ -194,7 +200,7 @@ function essentialsCard(data) {
       el("li", {}, el("span", { class: "k" }, `${li.item_raw} × ${fmtQty(li.quantity)}`),
         el("span", { class: "v tabular" }, money(li.unit_price)))));
 
-  const card = el("section", { class: "card card-pad reveal", style: "animation-delay:.26s" },
+  const card = el("section", { class: rc("card card-pad"), style: "animation-delay:.26s" },
     el("h2", { class: "section-title" }, "The essentials"), facts);
 
   if (inv.status === "needs_review") card.append(correctionForm(data), actions(inv));
@@ -379,8 +385,8 @@ function resolved(inv) {
 function render(data) {
   const inv = data.invoice;
   root.replaceChildren(
-    el("a", { class: "back reveal", href: "index.html", style: "animation-delay:.05s" }, svgEl(SVG.back), "Back to inbox"),
-    el("header", { class: "r-head reveal", style: "animation-delay:.12s" },
+    el("a", { class: rc("back"), href: "index.html", style: "animation-delay:.05s" }, svgEl(SVG.back), "Back to inbox"),
+    el("header", { class: rc("r-head"), style: "animation-delay:.12s" },
       el("h1", { class: "inv-no tabular", style: "margin:0; font-weight:500" }, inv.invoice_number || `#${inv.id}`),
       el("span", { class: "sep" }, "·"),
       el("span", { class: "vendor-name" }, inv.vendor_raw || "(no vendor)"),
@@ -389,6 +395,7 @@ function render(data) {
       el("div", {}, decisionCard(data), documentCard(inv), traceDisclosure(data.trace)),
       el("aside", {}, essentialsCard(data))));
 
+  revealed = true;
   if (ACTIVE.has(inv.status)) setTimeout(load, 2000); // still processing - keep refreshing
 }
 

@@ -857,6 +857,7 @@ input[type="file"] {
 .dropzone.busy { opacity: .75; pointer-events: none; }
 
 /* ---------------------------------------------------------------- original document */
+.doc-card { margin-top: 28px; }
 .doc-card .doc-head { display: flex; align-items: center; gap: 12px; margin: 10px 0 16px; }
 .doc-name { font-size: 13.5px; font-weight: 700; color: var(--charcoal-60); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .doc-fmt {
